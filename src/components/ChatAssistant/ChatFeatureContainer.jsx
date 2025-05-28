@@ -4,6 +4,15 @@ import ChatWindow from './ChatWindow';
 import { sendMessageToGemini } from '../../services/geminiService';
 import { menuItems, menuCategories } from '../../data/menuData'; // Import menu data
 
+const INITIAL_WELCOME_MESSAGE = [
+  {
+    id: 'initial-welcome',
+    text: "Hi there! I'm Lemon, your personal dining assistant. How can I help you find the perfect Mediterranean meal today? Feel free to ask about menu items, ingredients, or dietary options!",
+    sender: 'ai',
+    itemCards: null
+  }
+];
+
 const ChatFeatureContainer = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [componentMenuItems, setComponentMenuItems] = useState([]);
@@ -22,17 +31,10 @@ const ChatFeatureContainer = () => {
       }
     } catch (error) {
       console.error("Error loading messages from localStorage:", error);
-      // localStorage.removeItem('chatMessages'); // Optionally clear corrupted data
+      localStorage.removeItem('chatMessages'); // Clear corrupted data
     }
     // If no stored messages, error, or empty array from storage, return initial welcome message
-    return [
-      {
-        id: Date.now(),
-        text: "Hi there! I'm Lemon, your personal dining assistant. How can I help you find the perfect Mediterranean meal today? Feel free to ask about menu items, ingredients, or dietary options!",
-        sender: 'ai',
-        itemCards: null
-      }
-    ];
+    return INITIAL_WELCOME_MESSAGE;
   });
 
   const [isSending, setIsSending] = useState(false);
@@ -67,6 +69,17 @@ const ChatFeatureContainer = () => {
 
   const closeChatWindow = () => {
     setIsChatOpen(false);
+  };
+
+  const handleClearChat = () => {
+    setMessages(INITIAL_WELCOME_MESSAGE);
+    try {
+      localStorage.removeItem('chatMessages');
+    } catch (error) {
+      console.error("Error removing chatMessages from localStorage:", error);
+    }
+    // Optionally, you might want to add a new welcome message after clearing,
+    // or ensure the input field is also cleared if needed.
   };
 
   const constructMenuContext = () => {
@@ -283,6 +296,7 @@ ${userInput}`;
         messages={messages}
         onSendMessage={handleSendMessage}
         isSending={isSending}
+        onClearChat={handleClearChat} // Pass the new handler
       />
     </>
   );

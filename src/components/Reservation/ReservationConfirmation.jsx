@@ -44,7 +44,7 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify }) => {
   
   return (
     <div className={styles.confirmationContainer}>
-      <h2 className={styles.sectionTitle}>Reservation Summary</h2>
+      {/* <h2 className={styles.sectionTitle}>Reservation Summary</h2> */}
       
       <div className={styles.summaryCard}>
         <div className={styles.summaryHeader}>

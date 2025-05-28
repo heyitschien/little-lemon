@@ -2,15 +2,37 @@
 
 .cartPageContainer {
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin-left: auto; /* Keep horizontal centering */
+  margin-right: auto; /* Keep horizontal centering */
+  background-color: #EDEFEE;
+  
+  /* Original padding for left, right, bottom */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+
+  /* Adjust for mobile header */
+  margin-top: calc(-1 * var(--header-height-mobile, 80px)); 
+  padding-top: calc(var(--header-height-mobile, 60px) + 1rem); 
+  min-height: calc(100vh - var(--header-height-mobile, 80px) - var(--footer-height, 60px));
+}
+
+/* Media query for desktop header */
+@media (min-width: 769px) {
+  .cartPageContainer {
+    margin-top: calc(-1 * var(--header-height-desktop, 100px));
+    padding-top: calc(var(--header-height-desktop, 100px) + 1rem);
+    min-height: calc(100vh - var(--header-height-desktop, 100px) - var(--footer-height, 60px));
+  }
 }
 
 .cartTitle {
+  font-family: 'Markazi Text', serif;
   color: #495E57;
   margin-bottom: 2rem;
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 400;
 }
 
 .cartItems {

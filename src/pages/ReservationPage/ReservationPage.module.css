@@ -4,9 +4,9 @@
   /* max-width: 1200px; */ /* Removed for full-width */
   /* margin: 0 auto; */ /* Removed for full-width */
   padding-top: 0; /* Remove top padding */
-  padding-bottom: 2rem; /* Keep bottom padding */
+  padding-bottom: 0; /* Removed bottom padding */
   min-height: 100vh; /* Ensure it takes at least full viewport height */
-  background-color: #EDEFEE; /* Explicitly set background, though body should cover it */
+  background-color: #FFFFFF; /* Changed to white */
   width: 100%; /* Ensure it spans full width */
 }
 
@@ -100,7 +100,7 @@
   padding: 2rem; /* Padding inside the card */
   border-radius: 16px; /* Rounded corners */
   max-width: 960px; /* Increased max-width for a wider card */
-  margin: 2rem auto; /* Center the card on the page and add vertical spacing */
+  margin: 0 auto; /* Removed top and bottom margin, kept auto horizontal */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
 }
 
@@ -188,18 +188,93 @@
 .successMessage {
   font-family: 'Karla', sans-serif;
   font-size: 1.125rem;
-  margin-bottom: 1.5rem;
-  color: #333333; /* Highlight Black */
+  color: #333333;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.reservationDetails {
-  font-family: 'Karla', sans-serif;
-  text-align: left;
-  background-color: rgba(244, 206, 20, 0.1); /* Primary Yellow with opacity */
+.successSummaryCard {
+  background-color: #EDEFEE; /* Highlight White from style guide */
+  border-radius: 16px; /* Rounded corners from style guide */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 0 auto 2rem auto;
+  max-width: 600px;
+}
+
+.successSummaryHeader {
+  background-color: #495E57; /* Primary Green */
+  color: white;
   padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
+  text-align: center;
+}
+
+.successSummaryTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+  font-weight: 400;
+}
+
+.successSummaryContent {
+  padding: 1.5rem;
+}
+
+.successSummaryItem {
+  display: flex;
+  margin-bottom: 1rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+}
+
+.successSummaryItem:last-child {
+  margin-bottom: 0;
+}
+
+.successSummaryLabel {
+  font-weight: 700;
+  min-width: 120px;
+  color: #333333;
+  padding-right: 1rem;
+}
+
+.successSummaryValue {
+  flex: 1;
+  color: #333333;
+}
+
+.successActionButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Responsive adjustments for success summary card */
+@media (max-width: 768px) {
+  .successSummaryCard {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 16px; /* Ensure rounded corners on mobile */
+  }
+
+  .successSummaryItem {
+    flex-direction: column;
+  }
+  
+  .successSummaryLabel {
+    margin-bottom: 0.25rem;
+    min-width: auto;
+  }
+
+  .successMessage {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* Responsive styles */
@@ -216,4 +291,14 @@
   .stepLabels {
     font-size: 0.75rem;
   }
+}
+
+.reservationDetails {
+  font-family: 'Karla', sans-serif;
+  text-align: left;
+  background-color: rgba(244, 206, 20, 0.1);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }

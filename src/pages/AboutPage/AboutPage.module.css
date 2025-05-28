@@ -38,7 +38,7 @@ section {
 /* Introduction Section */
 .introSection {
   background-color: #FFFFFF;
-  padding: 80px 0;
+  padding: 30px 0;
 }
 
 .introSection .container {
@@ -72,7 +72,7 @@ section {
 /* Founders Section */
 .foundersSection {
   background-color: #EDEFEE; /* Highlight White - Style Guide */
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .foundersSection .container {
@@ -134,7 +134,7 @@ section {
 /* Philosophy Section */
 .philosophySection {
   background-color: #FFFFFF;
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .philosophySection .container {
@@ -189,7 +189,7 @@ section {
 /* Gallery Section */
 .gallerySection {
   background-color: #EDEFEE; /* Highlight White - Style Guide */
-  padding: 80px 0;
+  padding: 0px 0;
 }
 
 .galleryTitle {
@@ -231,7 +231,11 @@ section {
 .visitSection {
   background-color: #495E57; /* Primary Green - Style Guide */
   color: #FFFFFF;
-  padding: 80px 0;
+  padding-top: 1px;
+  padding-bottom: 40px;
+}
+
+.visitSection .container {
   text-align: center;
 }
 
@@ -331,6 +335,7 @@ section {
   
   .galleryGrid {
     grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 40px;
   }
   
   .sectionTitle {

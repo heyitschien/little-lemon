@@ -17,8 +17,8 @@ function App() {
       <Router>
         <div>
           <Header />
-          {/* Add padding-top to account for the fixed header */}
-          <div style={{ flexGrow: 1, paddingTop: '82px' }}> 
+          {/* The paddingTop is now handled by App.css for responsiveness */}
+          <div className="contentAreaWrapper">
             <Routes>
               <Route path="/" element={<MainComponent />} />
               <Route path="/menu" element={<MenuPage />} />

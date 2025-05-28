@@ -21,6 +21,13 @@ const AboutPage = () => {
           <div className={styles.introContent}>
             <h2 className={styles.sectionTitle}>LITTLE LEMON</h2>
             <h3 className={styles.sectionSubtitle}>Chicago</h3>
+            <div className={styles.introImageContainer}>
+              <img 
+                src={restaurantImg} 
+                alt="Little Lemon restaurant interior" 
+                className={styles.introImage}
+                />
+            </div>
             <p>
               Little Lemon is a charming neighborhood bistro that opened its doors in 2010 in the heart of Chicago. 
               We serve simple food and classic cocktails in a lively but casual environment. The restaurant features 
@@ -33,38 +40,23 @@ const AboutPage = () => {
               one of heritage, passion, and culinary craftsmanship.
             </p>
           </div>
-          <div className={styles.introImageContainer}>
-            <img 
-              src={restaurantImg} 
-              alt="Little Lemon restaurant interior" 
-              className={styles.introImage}
-            />
-          </div>
+  
         </div>
       </section>
       
       {/* Founders Section */}
       <section className={styles.foundersSection}>
         <div className={styles.container}>
-          <div className={styles.foundersImageContainer}>
-            <div className={styles.imageWrapper1}>
-              <img 
-                src={marioAndAdrianA} 
-                alt="Mario and Adrian cooking together" 
-                className={styles.foundersImage}
-              />
-            </div>
-            <div className={styles.imageWrapper2}>
-              <img 
-                src={marioAndAdrianB} 
-                alt="Mario and Adrian in their restaurant" 
-                className={styles.foundersImage}
-              />
-            </div>
-          </div>
           <div className={styles.foundersContent}>
             <h2 className={styles.sectionTitle}>The Founders</h2>
             <h3 className={styles.sectionSubtitle}>Mario & Adrian</h3>
+            <div className={styles.introImageContainer}>
+              <img 
+                src={marioAndAdrianB} 
+                alt="Mario and Adrian in their restaurant" 
+                className={styles.introImage}
+                />
+            </div>
             <p>
               Little Lemon is owned and operated by two Italian brothers, Mario and Adrian, who moved to the 
               United States in 2001 to pursue their shared dream of owning a restaurant. Growing up in a small 
@@ -91,6 +83,13 @@ const AboutPage = () => {
           <div className={styles.philosophyContent}>
             <h2 className={styles.sectionTitle}>Our Philosophy</h2>
             <h3 className={styles.sectionSubtitle}>Food & Experience</h3>
+            <div className={styles.philosophyImageContainer}>
+              <img 
+                src={restaurantChefB} 
+                alt="Chef preparing food at Little Lemon" 
+                className={styles.philosophyImage}
+              />
+            </div>
             <p>
               At Little Lemon, we believe that dining is more than just eating—it's an experience that should 
               engage all the senses and create lasting memories. Our philosophy centers around three core principles:
@@ -113,13 +112,7 @@ const AboutPage = () => {
               </li>
             </ul>
           </div>
-          <div className={styles.philosophyImageContainer}>
-            <img 
-              src={restaurantChefB} 
-              alt="Chef preparing food at Little Lemon" 
-              className={styles.philosophyImage}
-            />
-          </div>
+
         </div>
       </section>
       

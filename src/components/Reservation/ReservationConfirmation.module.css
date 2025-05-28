@@ -1,7 +1,7 @@
 /* ReservationConfirmation.module.css */
 
 .confirmationContainer {
-  padding: 2rem;
+  padding: 2rem 0; /* Adjusted: top/bottom 2rem, left/right 0 */
   max-width: 800px;
   margin: 0 auto;
 }
@@ -121,7 +121,7 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .confirmationContainer {
-    padding: 1rem;
+    padding: 1rem 0; /* Adjusted: top/bottom 1rem, left/right 0 */
   }
   
   .summaryItem {

@@ -29,7 +29,7 @@ const MenuItemCardChat = ({ item }) => {
             onClick={handleAddToCart}
             aria-label={`Add ${item.name} to cart`}
           >
-            Add to Cart
+            + Add to Cart
           </button>
         </div>
       </div>

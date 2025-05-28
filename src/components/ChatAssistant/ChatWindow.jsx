@@ -3,7 +3,7 @@ import styles from './ChatAssistant.module.css';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 
-const ChatWindow = ({ isOpen, onClose, messages, onSendMessage, isSending }) => {
+const ChatWindow = ({ isOpen, onClose, messages, onSendMessage, isSending, onClearChat }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -24,9 +24,14 @@ const ChatWindow = ({ isOpen, onClose, messages, onSendMessage, isSending }) => 
     <div className={styles.chatWindow} role="dialog" aria-modal="true" aria-labelledby="chatWindowTitle">
       <div className={styles.chatHeader}>
         <h2 id="chatWindowTitle" className={styles.chatTitle}>Little Lemon Assistant</h2>
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Close chat">
-          &times; {/* Simple 'x' for close */}
-        </button>
+        <div> {/* Wrapper for buttons */}
+          <button className={`${styles.headerButton} ${styles.clearChatButton}`} onClick={onClearChat} aria-label="Clear chat history">
+            Clear Chat
+          </button>
+          <button className={`${styles.headerButton} ${styles.closeBtn}`} onClick={onClose} aria-label="Close chat">
+            &times; {/* Simple 'x' for close */}
+          </button>
+        </div>
       </div>
       <div className={styles.chatMessagesArea}>
         <MessageList messages={messages} />

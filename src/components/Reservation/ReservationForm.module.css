@@ -1,10 +1,7 @@
 /* ReservationForm.module.css */
 
 .reservationForm {
-  background-color: #EDEFEE; /* Highlight White from style guide */
   padding: 2rem;
-  border-radius: 16px; /* Rounded corners from style guide */
-  margin-bottom: 2rem;
 }
 
 .sectionTitle {
@@ -14,6 +11,7 @@
   color: #495E57; /* Primary Green */
   margin-top: 0;
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .formGroup {
@@ -40,6 +38,22 @@
   border-radius: 16px; /* Rounded corners */
   background-color: #fff;
   color: #333333; /* Highlight Black */
+  -webkit-transition: background-color 5000s ease-in-out 0s; /* Delay autofill style change */
+  transition: background-color 5000s ease-in-out 0s; /* Delay autofill style change */
+}
+
+/* Override browser autofill styles */
+.textInput:-webkit-autofill,
+.textInput:-webkit-autofill:hover,
+.textInput:-webkit-autofill:focus,
+.textInput:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important; /* White background */
+  box-shadow: 0 0 0px 1000px #ffffff inset !important; /* White background */
+  -webkit-text-fill-color: #333333 !important; /* Normal text color */
+  font-family: 'Karla', sans-serif !important;
+  font-size: 1rem !important;
+  border-radius: 16px !important; /* Ensure rounded corners are kept */
+  border: 1px solid #ccc !important; /* Ensure border is kept */
 }
 
 .textInput:focus,
@@ -78,6 +92,8 @@
   }
   
   .formGroup {
-    max-width: 500px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
   }
 }

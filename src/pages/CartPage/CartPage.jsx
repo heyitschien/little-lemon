@@ -8,7 +8,7 @@ const CartPage = () => {
 
   return (
     <div className={styles.cartPageWrapper}>
-      <h1 className={styles.pageTitle}>Your Shopping Cart</h1>
+      {/* <h1 className={styles.pageTitle}>Your Shopping Cart</h1> */}
       {cartItems.length === 0 ? (
         <div className={styles.emptyCartContainer}>
           <h2>Your Cart is Empty</h2>
@@ -19,7 +19,7 @@ const CartPage = () => {
         </div>
       ) : (
         <div className={styles.cartPageContainer}>
-          <h2 className={styles.cartTitle}>Your Cart</h2>
+          <h2 className={styles.cartTitle}>Your Shopping Cart</h2>
           
           <div className={styles.cartItems}>
             {cartItems.map(item => (

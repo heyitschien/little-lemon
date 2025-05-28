@@ -224,21 +224,38 @@ const ReservationPage = () => {
         
       case 4: // Success
         return (
-          <div className={styles.successContainer}>
-            <div className={styles.successCard}>
-              <h2 className={styles.successTitle}>Reservation Confirmed!</h2>
-              
-              <p className={styles.successMessage}>
-                Your reservation at Little Lemon has been confirmed. A confirmation email has been sent to {confirmedReservation.email}.
-              </p>
-              
-              <p className={styles.reservationDetails}>
-                Reservation ID: <strong>{confirmedReservation.id}</strong><br />
-                Date: <strong>{new Date(confirmedReservation.date).toLocaleDateString()}</strong><br />
-                Time: <strong>{confirmedReservation.time}</strong><br />
-                Party Size: <strong>{confirmedReservation.partySize} {confirmedReservation.partySize === 1 ? 'person' : 'people'}</strong>
-              </p>
-              
+          <div className={styles.stepContainer}>
+            <h1 className={styles.panelTitle}>Reservation Confirmed!</h1>
+            
+            <p className={styles.successMessage}>
+              Your reservation at Little Lemon has been confirmed. A confirmation email has been sent to {confirmedReservation.email}.
+            </p>
+            
+            <div className={styles.successSummaryCard}>
+              <div className={styles.successSummaryHeader}>
+                <h3 className={styles.successSummaryTitle}>Your Reservation Details</h3>
+              </div>
+              <div className={styles.successSummaryContent}>
+                <div className={styles.successSummaryItem}>
+                  <span className={styles.successSummaryLabel}>Reservation ID:</span>
+                  <span className={styles.successSummaryValue}>{confirmedReservation.id}</span>
+                </div>
+                <div className={styles.successSummaryItem}>
+                  <span className={styles.successSummaryLabel}>Date:</span>
+                  <span className={styles.successSummaryValue}>{new Date(confirmedReservation.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+                <div className={styles.successSummaryItem}>
+                  <span className={styles.successSummaryLabel}>Time:</span>
+                  <span className={styles.successSummaryValue}>{(confirmedReservation.time.split(':')[0] % 12 || 12) + ':' + confirmedReservation.time.split(':')[1] + (confirmedReservation.time.split(':')[0] >= 12 ? ' PM' : ' AM')}</span>
+                </div>
+                <div className={styles.successSummaryItem}>
+                  <span className={styles.successSummaryLabel}>Party Size:</span>
+                  <span className={styles.successSummaryValue}>{confirmedReservation.partySize} {confirmedReservation.partySize === 1 ? 'person' : 'people'}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className={styles.successActionButtons}>
               <button 
                 className={`${styles.button} ${styles.primaryButton}`}
                 onClick={handleReturnHome}

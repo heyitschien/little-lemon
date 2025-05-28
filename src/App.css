@@ -12,6 +12,18 @@
   /* You might want to add padding here later, e.g., padding: 2rem; */ 
 }
 
+.contentAreaWrapper {
+  flex-grow: 1;
+  padding-top: 82px; /* Default for desktop header */
+  background-color: #FFFFFF; /* Make the padded area white */
+}
+
+@media (max-width: 768px) {
+  .contentAreaWrapper {
+    padding-top: 72px; /* Adjusted for mobile header height */
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
