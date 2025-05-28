@@ -1,0 +1,27 @@
+/* Placeholder for MenuPage.module.css */
+.container {
+  padding: 20px;
+}
+
+.menuPageContainer {
+  /* This can be used for overall page background or global padding if needed */
+  /* For now, it primarily serves as a wrapper */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: var(--highlight-white, #EDEFEE);
+}
+
+/* Responsive adjustments for padding */
+@media (max-width: 768px) {
+  .menuPageContainer {
+    padding: 0; /* Remove all padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .menuPageContainer {
+    padding: 0; /* Remove all padding */
+  }
+}

@@ -1,0 +1,382 @@
+/* AboutPage.module.css */
+
+.aboutPage {
+  font-family: 'Karla', sans-serif;
+  color: #333333; /* Highlight Black - Style Guide */
+  background-color: #EDEFEE; /* Highlight White - Style Guide */
+}
+
+/* Common Section Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+section {
+  padding: 60px 0;
+}
+
+.sectionTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 40pt; /* Display Title - Style Guide */
+  font-weight: 400; /* Style Guide: Markazi Text Regular */
+  color: #F4CE14; /* Primary Yellow - Style Guide */
+  margin-top: 0;
+  margin-bottom: 0px; /* Reduced space */
+}
+
+.sectionSubtitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 32pt; /* Slightly smaller than title */
+  font-weight: 400; /* Style Guide: Markazi Text Regular */
+  color: #333333; /* Highlight Black - Style Guide */
+  margin-top: -10px; /* Pull up closer to title */
+  margin-bottom: 20px;
+}
+
+/* Introduction Section */
+.introSection {
+  background-color: #FFFFFF;
+  padding: 80px 0;
+}
+
+.introSection .container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.introContent {
+  flex: 1;
+}
+
+.introContent p {
+  font-size: 16pt; /* Paragraph Text - Style Guide */
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.introImageContainer {
+  flex: 1;
+  max-width: 500px;
+}
+
+.introImage {
+  width: 100%;
+  height: auto;
+  border-radius: 16px; /* Rounded Corners - Style Guide */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Founders Section */
+.foundersSection {
+  background-color: #EDEFEE; /* Highlight White - Style Guide */
+  padding: 80px 0;
+}
+
+.foundersSection .container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.foundersContent {
+  flex: 1;
+}
+
+.foundersContent p {
+  font-size: 16pt; /* Paragraph Text - Style Guide */
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.foundersImageContainer {
+  flex: 1;
+  position: relative;
+  min-height: 450px;
+}
+
+.imageWrapper1,
+.imageWrapper2 {
+  position: absolute;
+  border-radius: 16px; /* Rounded Corners - Style Guide */
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.foundersImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.imageWrapper1 {
+  width: 280px;
+  height: 350px;
+  z-index: 0;
+  top: 20px;
+  left: 20px;
+  transform: rotate(-8deg);
+}
+
+.imageWrapper2 {
+  width: 280px;
+  height: 350px;
+  z-index: 1;
+  top: 100px;
+  left: 150px;
+  transform: rotate(5deg);
+}
+
+/* Philosophy Section */
+.philosophySection {
+  background-color: #FFFFFF;
+  padding: 80px 0;
+}
+
+.philosophySection .container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.philosophyContent {
+  flex: 1;
+}
+
+.philosophyContent p {
+  font-size: 16pt; /* Paragraph Text - Style Guide */
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.philosophyList {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+}
+
+.philosophyList li {
+  margin-bottom: 20px;
+  padding-left: 20px;
+  border-left: 4px solid #F4CE14; /* Primary Yellow - Style Guide */
+}
+
+.listTitle {
+  display: block;
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+  font-size: 18pt; /* Lead Text - Style Guide */
+  color: #495E57; /* Primary Green - Style Guide */
+  margin-bottom: 10px;
+}
+
+.philosophyImageContainer {
+  flex: 1;
+  max-width: 500px;
+}
+
+.philosophyImage {
+  width: 100%;
+  height: auto;
+  border-radius: 16px; /* Rounded Corners - Style Guide */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Gallery Section */
+.gallerySection {
+  background-color: #EDEFEE; /* Highlight White - Style Guide */
+  padding: 80px 0;
+}
+
+.galleryTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 40pt; /* Display Title - Style Guide */
+  font-weight: 400; /* Style Guide: Markazi Text Regular */
+  color: #495E57; /* Primary Green - Style Guide */
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.galleryItem {
+  border-radius: 16px; /* Rounded Corners - Style Guide */
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.galleryItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Visit Us Section */
+.visitSection {
+  background-color: #495E57; /* Primary Green - Style Guide */
+  color: #FFFFFF;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.visitContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.visitTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 40pt; /* Display Title - Style Guide */
+  font-weight: 400; /* Style Guide: Markazi Text Regular */
+  color: #F4CE14; /* Primary Yellow - Style Guide */
+  margin-bottom: 20px;
+}
+
+.visitText {
+  font-size: 18pt; /* Lead Text - Style Guide */
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.reserveButton {
+  display: inline-block;
+  background-color: #F4CE14; /* Primary Yellow - Style Guide */
+  color: #333333; /* Highlight Black - Style Guide */
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+  font-size: 16pt;
+  padding: 15px 30px;
+  border-radius: 16px; /* Rounded Corners - Style Guide */
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.reserveButton:hover {
+  background-color: #e0b70f; /* Slightly darker yellow */
+  transform: scale(1.05);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .sectionTitle {
+    font-size: 36pt;
+  }
+  
+  .sectionSubtitle {
+    font-size: 28pt;
+  }
+  
+  .introContent p,
+  .foundersContent p,
+  .philosophyContent p {
+    font-size: 14pt;
+  }
+  
+  .visitText {
+    font-size: 16pt;
+  }
+  
+  .listTitle {
+    font-size: 16pt;
+  }
+}
+
+@media (max-width: 768px) {
+  .introSection .container,
+  .foundersSection .container,
+  .philosophySection .container {
+    flex-direction: column;
+  }
+  
+  .introContent,
+  .foundersContent,
+  .philosophyContent,
+  .introImageContainer,
+  .philosophyImageContainer {
+    flex: 1;
+    max-width: 100%;
+  }
+  
+  .foundersImageContainer {
+    min-height: 400px;
+    margin-bottom: 30px;
+    order: -1; /* Move images above content on mobile */
+  }
+  
+  .imageWrapper1,
+  .imageWrapper2 {
+    width: 220px;
+    height: 280px;
+  }
+  
+  .imageWrapper2 {
+    left: 100px;
+  }
+  
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .sectionTitle {
+    font-size: 32pt;
+  }
+  
+  .sectionSubtitle {
+    font-size: 24pt;
+  }
+}
+
+@media (max-width: 576px) {
+  .galleryGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .imageWrapper1,
+  .imageWrapper2 {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto 20px;
+    transform: none;
+    top: auto;
+    left: auto;
+  }
+  
+  .foundersImageContainer {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sectionTitle {
+    font-size: 28pt;
+    text-align: center;
+  }
+  
+  .sectionSubtitle {
+    font-size: 22pt;
+    text-align: center;
+  }
+  
+  .reserveButton {
+    padding: 12px 24px;
+    font-size: 14pt;
+  }
+}

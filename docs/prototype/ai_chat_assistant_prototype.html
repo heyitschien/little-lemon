@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant Prototype - Little Lemon</title>
+    <style>
+        body {
+            font-family: 'Karla', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4; /* Light background for the page */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Style Guide Variables (from memory/docs) */
+        :root {
+            --primary-green: #495E57;
+            --primary-yellow: #F4CE14;
+            --secondary-orange: #EE9972;
+            --secondary-peach: #FBDABB;
+            --highlight-white: #EDEFEE;
+            --highlight-black: #333333;
+            --font-markazi: 'Markazi Text', serif;
+            --font-karla: 'Karla', sans-serif;
+            --border-radius: 16px;
+        }
+
+        /* Floating Chat Button */
+        .chat-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-green);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            width: 370px;
+            height: 550px;
+            background-color: var(--highlight-white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: fixed; /* For prototype, fixed on page */
+            bottom: 100px;
+            right: 30px;
+            z-index: 999;
+            /* display: none; */ /* Toggle this for show/hide */
+        }
+
+        .chat-header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 15px;
+            font-family: var(--font-markazi);
+            font-size: 24pt; /* Display Title / Sub Title size */
+            text-align: center;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            position: relative;
+        }
+
+        .chat-header .close-btn {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--highlight-white);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            line-height: 1.5;
+            font-size: 16pt; /* Paragraph Text */
+            font-family: var(--font-karla);
+        }
+
+        .user-message {
+            background-color: var(--secondary-peach);
+            color: var(--highlight-black);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px; /* Bubble tail effect */
+        }
+
+        .ai-message {
+            background-color: #ffffff;
+            color: var(--highlight-black);
+            align-self: flex-start;
+            border: 1px solid #ddd;
+            border-bottom-left-radius: 4px; /* Bubble tail effect */
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            margin-right: 10px;
+            font-family: var(--font-karla);
+            font-size: 16pt;
+        }
+
+        .chat-input-area button {
+            background-color: var(--primary-yellow);
+            color: var(--highlight-black);
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: var(--font-karla);
+            font-weight: bold; /* Lead Text */
+            font-size: 18pt;
+        }
+
+        /* Menu Item Card in Chat */
+        .menu-item-card-chat {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-top: 5px; /* Spacing if part of an AI message */
+            max-width: 100%; /* Fit within AI message bubble */
+        }
+
+        .menu-item-card-chat img {
+            width: 100%;
+            height: 120px; /* Fixed height for consistency */
+            object-fit: cover;
+            border-radius: calc(var(--border-radius) - 5px); /* Slightly smaller radius */
+        }
+
+        .menu-item-card-chat h4 {
+            font-family: var(--font-markazi);
+            font-size: 20pt; /* Card Title (adapted) */
+            color: var(--primary-green);
+            margin: 8px 0 4px 0;
+        }
+
+        .menu-item-card-chat p {
+            font-family: var(--font-karla);
+            font-size: 14pt; /* Smaller for card */
+            color: var(--highlight-black);
+            margin: 4px 0;
+            line-height: 1.4;
+        }
+        .menu-item-card-chat .price {
+            font-weight: bold; /* Highlight Text */
+            color: var(--secondary-orange);
+        }
+
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;700&family=Markazi+Text:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="chat-fab" onclick="toggleChat()">
+        <span>💬</span>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            Little Lemon Assistant
+            <button class="close-btn" onclick="toggleChat(false)">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Hi there! I'm Lemon, your personal dining assistant. How can I help you find the perfect Mediterranean meal today?
+            </div>
+            <div class="message user-message">
+                I'm looking for a vegetarian main course.
+            </div>
+            <div class="message ai-message">
+                Certainly! We have a few delicious vegetarian main courses. How about our Traditional Moussaka (vegetarian version available) or our Pasta Aglio e Olio?
+            </div>
+            <div class="message user-message">
+                Tell me more about the Moussaka, and show me a picture!
+            </div>
+            <div class="message ai-message">
+                Our Vegetarian Moussaka is a delightful dish! Here are the details:
+                <div class="menu-item-card-chat">
+                    <img src="../../src/assets/images/traditional-moussaka.png" alt="Vegetarian Moussaka">
+                    <h4>Vegetarian Moussaka</h4>
+                    <p class="description">Layers of baked eggplant, lentils, and vegetables, topped with a creamy béchamel sauce.</p>
+                    <p class="price">$18.50</p>
+                </div>
+                 Would you like to add this to your order or explore other options?
+            </div>
+             <div class="message ai-message">
+                I can also recommend these based on your preference:
+                <div class="menu-item-card-chat">
+                    <img src="../../src/assets/images/pasta-aglio-e-olio.png" alt="Pasta Aglio e Olio">
+                    <h4>Pasta Aglio e Olio</h4>
+                    <p class="description">Simple yet flavorful spaghetti tossed with garlic, olive oil, red pepper flakes, and fresh parsley.</p>
+                    <p class="price">$17.00</p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" placeholder="Type your message...">
+            <button>Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chatWindow');
+        let chatVisible = true; // Start with chat window visible for prototype
+
+        function toggleChat(forceState) {
+            if (typeof forceState === 'boolean') {
+                chatVisible = forceState;
+            } else {
+                chatVisible = !chatVisible;
+            }
+            chatWindow.style.display = chatVisible ? 'flex' : 'none';
+        }
+        // Initialize
+        toggleChat(true);
+    </script>
+
+</body>
+</html>

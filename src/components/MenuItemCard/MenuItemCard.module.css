@@ -1,0 +1,102 @@
+.menuItemCard {
+  background-color: #FFFFFF; /* Changed from var(--highlight-white) to pure white */
+  border-radius: 16px; /* From style guide */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Ensures child elements like image respect border radius */
+  transition: transform 0.2s ease-in-out;
+}
+
+.menuItemCard:hover {
+  transform: translateY(-5px);
+}
+
+.menuItemImageContainer {
+  width: 100%;
+  height: 220px; /* Fixed height for uniform card appearance */
+  overflow: hidden;
+}
+
+.menuItemImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover ensures the image fills the container, might crop */
+  display: block;
+}
+
+.menuItemContent {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows content to fill space if card heights vary due to description */
+  color: var(--highlight-black, #333333);
+}
+
+.menuItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.menuItemTitle {
+  font-family: 'Karla', sans-serif; /* Card Title from style guide */
+  font-weight: 700; /* Bold */
+  font-size: 18pt;
+  color: var(--highlight-black, #333333);
+  margin: 0;
+}
+
+.menuItemPrice {
+  font-family: 'Karla', sans-serif; /* Highlight Text from style guide */
+  font-weight: 500; /* Medium */
+  font-size: 16pt;
+  color: var(--primary-orange, #EE9972); /* Using a secondary color for price */
+}
+
+.menuItemDescription {
+  font-family: 'Karla', sans-serif; /* Paragraph Text from style guide */
+  font-size: 16pt; /* Adjusted to match prototype, style guide says 16pt */
+  line-height: 1.5;
+  color: var(--highlight-black, #333333);
+  flex-grow: 1; /* Allows description to take available space */
+  margin-bottom: 15px;
+}
+
+.menuItemFooter {
+  margin-top: auto; /* Pushes button to the bottom */
+}
+
+/* Button styles - adapted from prototype's .btn and .btn-tertiary */
+.btn {
+  display: inline-block;
+  font-family: 'Karla', sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 16pt; /* Lead Text for CTAs is 18pt, but 16pt might fit better */
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px; /* Slightly less than card for visual hierarchy */
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border: none;
+  text-align: center;
+}
+
+.btnTertiary {
+  background-color: var(--primary-yellow, #F4CE14);
+  color: var(--highlight-black, #333333);
+  border: 2px solid var(--primary-yellow, #F4CE14);
+}
+
+.btnTertiary:hover, .btnTertiary:focus {
+  background-color: #e0b700; /* Darker yellow */
+  color: var(--highlight-black, #333333);
+  outline: none;
+}
+
+/* Placeholder for potential order icon if re-added */
+/* .btn img {
+  margin-left: 8px;
+  vertical-align: middle;
+} */

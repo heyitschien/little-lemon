@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Lemon Restaurant - Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;700;800&family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Karla', sans-serif;
+            line-height: 1.5;
+            color: #333333;
+            background-color: var(--highlight-white); /* Consistent background */
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Markazi Text', serif;
+        }
+        
+        /* Color Variables */
+        :root {
+            --primary-green: #495E57;
+            --primary-yellow: #F4CE14;
+            --secondary-orange: #EE9972;
+            --secondary-pink: #FBDABB;
+            --highlight-white: #EDEFEE;
+            --highlight-black: #333333;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid #EDEFEE; /* Matched to index.html */
+            background-color: white; 
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 50px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--highlight-black);
+            font-family: 'Karla', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover, nav a.active { 
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-family: 'Karla', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none; /* Ensure btns don't have default borders */
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-yellow);
+            color: var(--highlight-black);
+        }
+        
+        .btn-primary:hover {
+            background-color: #E9C412;
+        }
+
+        .btn-secondary { 
+            background-color: var(--primary-green);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #3A4B45;
+        }
+        
+        .btn-tertiary {
+            background-color: transparent;
+            color: var(--highlight-black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--primary-green); 
+        }
+        .btn-tertiary:hover {
+            background-color: var(--secondary-pink);
+        }
+
+        /* Menu Page Specific Styles */
+        .menu-hero {
+            background-color: var(--primary-green);
+            padding: 40px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .menu-hero h1 {
+            font-size: 56px; 
+            font-weight: 500;
+            color: var(--primary-yellow);
+            margin-bottom: 10px;
+        }
+
+        .menu-hero p {
+            font-size: 20px;
+            max-width: 70ch;
+            margin: 0 auto;
+            color: var(--highlight-white);
+        }
+
+        /* Ingredient Spotlight Section */
+        .ingredient-spotlight-section {
+            padding: 40px 0;
+            background-color: #FFFFFF; /* White background to stand out */
+            text-align: center;
+            border-bottom: 1px solid #DDDDDD;
+        }
+
+        .ingredient-spotlight-section h2 {
+            font-size: 36px;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+
+        #get-spotlight-btn {
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .spotlight-content {
+            background-color: var(--highlight-white);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            min-height: 150px; /* Ensure space even when empty */
+            display: flex; /* For loader centering */
+            flex-direction: column;
+            justify-content: center; /* For loader centering */
+            align-items: center; /* For loader centering */
+        }
+        .spotlight-content h3 {
+            font-size: 28px;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-family: 'Markazi Text', serif;
+        }
+        .spotlight-content p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            color: var(--highlight-black);
+        }
+        .spotlight-content strong {
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+        .spotlight-featured-dish {
+            margin-top:15px;
+            padding-top:15px;
+            border-top: 1px dashed var(--primary-yellow);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 5px solid var(--secondary-pink);
+            border-top: 5px solid var(--primary-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal for Messages */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto; 
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            width: 80%; 
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .close-btn {
+            background-color: var(--primary-yellow);
+            color: var(--highlight-black);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            border: none;
+        }
+        .close-btn:hover {
+            background-color: #E9C412;
+        }
+
+
+        .menu-section {
+            padding: 60px 0;
+        }
+
+        .menu-category {
+            margin-bottom: 50px;
+        }
+
+        .menu-category-title {
+            font-size: 40px; 
+            font-weight: 500;
+            color: var(--primary-green);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-yellow);
+            display: inline-block;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 30px;
+        }
+
+        .menu-item-card {
+            background-color: white; 
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .menu-item-image {
+            height: 220px; 
+            overflow: hidden;
+        }
+
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .menu-item-content {
+            padding: 20px;
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; 
+            margin-bottom: 10px;
+        }
+
+        .menu-item-title {
+            font-family: 'Markazi Text', serif; 
+            font-size: 24px; 
+            font-weight: 700;
+            color: var(--highlight-black);
+        }
+
+        .menu-item-price {
+            color: var(--secondary-orange);
+            font-size: 20px; 
+            font-weight: 700;
+            font-family: 'Karla', sans-serif;
+        }
+
+        .menu-item-description {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555555; 
+            flex-grow: 1;
+        }
+        
+        .menu-item-footer {
+            margin-top: auto; 
+        }
+
+        .menu-item-footer .btn-tertiary img {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: white; 
+            color: var(--highlight-black); 
+            padding: 60px 0;
+            border-top: 1px solid #ddd; /* Matched to index.html */
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .footer-logo {
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section p {
+            color: var(--highlight-black); /* Adjusted for contrast */
+        }
+        
+        .footer-section h3 {
+            font-family: 'Karla', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: var(--highlight-black);  /* Matched to index.html (inherited) */
+        }
+        
+        .footer-nav ul, .footer-contact ul, .footer-social ul {
+            list-style: none;
+        }
+        
+        .footer-nav li, .footer-contact li, .footer-social li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-nav a, .footer-contact li, .footer-contact a, .footer-social a { 
+            text-decoration: none;
+            color: var(--highlight-black);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .footer-nav a:hover, .footer-contact a:hover, .footer-social a:hover {
+            color: var(--primary-yellow);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .menu-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px; 
+            }
+            .footer-logo-section {
+                grid-column: span 2; 
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none; 
+            }
+            .header-container {
+                justify-content: center; 
+            }
+            .menu-hero h1 {
+                font-size: 44px;
+            }
+            .menu-hero p {
+                font-size: 18px;
+            }
+            .ingredient-spotlight-section h2 {
+                font-size: 30px;
+            }
+            .spotlight-content h3 {
+                font-size: 24px;
+            }
+            .menu-category-title {
+                font-size: 32px;
+            }
+            .menu-grid {
+                grid-template-columns: 1fr; 
+            }
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            .footer-logo-section {
+                grid-column: span 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <img src="../../src/assets/icons/Logo.svg" alt="Little Lemon Logo" class="logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="menu.html" class="active">Menu</a></li>
+                    <li><a href="#">Reservations</a></li>
+                    <li><a href="#">Order Online</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="menu-hero">
+        <div class="container">
+            <h1>Our Culinary Delights</h1>
+            <p>Explore a world of flavor with our traditional Mediterranean recipes, served with a modern twist. Fresh ingredients, authentic taste.</p>
+        </div>
+    </section>
+
+    <section class="ingredient-spotlight-section">
+        <div class="container">
+            <h2>✨ Today's Featured Ingredient Spotlight ✨</h2>
+            <button id="get-spotlight-btn" class="btn btn-primary">Discover an Ingredient!</button>
+            <div id="spotlight-result" class="spotlight-content">
+                <p>Click the button above to learn about a special Mediterranean ingredient and a dish that features it!</p>
+            </div>
+        </div>
+    </section>
+
+    <main class="menu-section">
+        <div class="container">
+            <section class="menu-category">
+                <h2 class="menu-category-title">Appetizers</h2>
+                <div class="menu-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/bruchetta.svg" alt="Bruschetta">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Bruschetta</h3>
+                                <span class="menu-item-price">$8.99</span>
+                            </div>
+                            <p class="menu-item-description">Grilled bread rubbed with garlic and topped with fresh tomatoes, basil, and a drizzle of balsamic glaze.</p>
+                            <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/crispy-calamari.png" alt="Fried Calamari">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Crispy Calamari</h3>
+                                <span class="menu-item-price">$12.50</span>
+                            </div>
+                            <p class="menu-item-description">Tender calamari rings lightly battered and fried until golden, served with a zesty lemon-aioli.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/stuffed-mushrooms.png" alt="Stuffed Mushrooms">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Stuffed Mushrooms</h3>
+                                <span class="menu-item-price">$10.00</span>
+                            </div>
+                            <p class="menu-item-description">Large mushroom caps filled with a savory mixture of herbs, cheese, and breadcrumbs, baked to perfection.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="menu-category">
+                <h2 class="menu-category-title">Main Courses</h2>
+                <div class="menu-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/greek_salad.jpg" alt="Greek Salad">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Classic Greek Salad</h3>
+                                <span class="menu-item-price">$15.99</span>
+                            </div>
+                            <p class="menu-item-description">A hearty portion of crispy lettuce, ripe tomatoes, cucumbers, Kalamata olives, red onions, and authentic feta cheese, tossed in our signature lemon-herb vinaigrette. Served with pita bread.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/lemon-herb-chicken.png" alt="Lemon Herb Chicken">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Lemon Herb Chicken</h3>
+                                <span class="menu-item-price">$22.00</span>
+                            </div>
+                            <p class="menu-item-description">Grilled chicken breast marinated in lemon juice, garlic, and Mediterranean herbs, served with roasted vegetables and a side of tzatziki sauce.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/traditional-moussaka.png" alt="Moussaka">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Traditional Moussaka</h3>
+                                <span class="menu-item-price">$19.50</span>
+                            </div>
+                            <p class="menu-item-description">Layers of baked eggplant, seasoned ground lamb, and creamy béchamel sauce, a true Mediterranean classic.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/pasta-aglio-e-olio.png" alt="Pasta Aglio Olio">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Pasta Aglio e Olio</h3>
+                                <span class="menu-item-price">$17.00</span>
+                            </div>
+                            <p class="menu-item-description">Simple yet flavorful spaghetti tossed with garlic, olive oil, red pepper flakes, and fresh parsley. A taste of Italy.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="menu-category">
+                <h2 class="menu-category-title">Desserts</h2>
+                <div class="menu-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/lemon_dessert.jpg" alt="Lemon Dessert">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Grandma's Lemon Cake</h3>
+                                <span class="menu-item-price">$9.00</span>
+                            </div>
+                            <p class="menu-item-description">Our famous lemon dessert, a secret family recipe. Moist, tangy, and utterly irresistible. Served with a dollop of fresh cream.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/baklava.png" alt="Baklava">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Baklava</h3>
+                                <span class="menu-item-price">$7.50</span>
+                            </div>
+                            <p class="menu-item-description">Rich, sweet pastry made of layers of filo filled with chopped nuts and sweetened and held together with syrup.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section class="menu-category">
+                <h2 class="menu-category-title">Drinks</h2>
+                <div class="menu-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/freshly-squeezed-lemonade.png" alt="Fresh Lemonade">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Freshly Squeezed Lemonade</h3>
+                                <span class="menu-item-price">$4.50</span>
+                            </div>
+                            <p class="menu-item-description">Cool and refreshing, made daily with fresh lemons and a hint of mint.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/mediterranean-mint-tea.png" alt="Mediterranean Mint Tea">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Mediterranean Mint Tea</h3>
+                                <span class="menu-item-price">$4.00</span>
+                            </div>
+                            <p class="menu-item-description">Aromatic black tea infused with fresh mint leaves, served chilled or hot.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="menu-item-card">
+                        <div class="menu-item-image">
+                            <img src="../../src/assets/images/italian-espresso.png" alt="Espresso">
+                        </div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">Italian Espresso</h3>
+                                <span class="menu-item-price">$3.50</span>
+                            </div>
+                            <p class="menu-item-description">Rich and aromatic single shot of espresso, the perfect pick-me-up.</p>
+                             <div class="menu-item-footer">
+                                <a href="#" class="btn btn-tertiary">Add to Order <img src="https://placehold.co/20x20/495E57/FFFFFF?text=+" alt="Order"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-section footer-logo-section">
+                <img src="../../src/assets/icons/Logo.svg" alt="Little Lemon Logo" class="footer-logo">
+                <p>&copy; 2025 Little Lemon. All rights reserved.</p>
+            </div>
+            
+            <div class="footer-section footer-nav">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="#">Reservations</a></li>
+                    <li><a href="#">Order Online</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section footer-contact">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li>123 Main Street</li>
+                    <li>Chicago, IL 60614</li>
+                    <li>(123) 456-7890</li>
+                    <li><a href="mailto:info@littlelemon.com">info@littlelemon.com</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section footer-social">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Yelp</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Notification</h3>
+            <p id="modalMessage">Something went wrong.</p>
+            <button id="closeModalBtn" class="close-btn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const getSpotlightBtn = document.getElementById('get-spotlight-btn');
+        const spotlightResultDiv = document.getElementById('spotlight-result');
+        const messageModal = document.getElementById('messageModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // --- Modal Logic ---
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            messageModal.style.display = 'block';
+        }
+
+        closeModalBtn.onclick = function() {
+            messageModal.style.display = 'none';
+        }
+        // Close modal if user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target == messageModal) {
+                messageModal.style.display = 'none';
+            }
+        }
+        // --- End Modal Logic ---
+
+
+        // Event listener for the button
+        getSpotlightBtn.addEventListener('click', fetchIngredientSpotlight);
+
+        async function fetchIngredientSpotlight() {
+            // Show loader and clear previous results
+            spotlightResultDiv.innerHTML = '<div class="loader"></div>';
+            getSpotlightBtn.disabled = true;
+            getSpotlightBtn.textContent = 'Fetching...';
+
+            const apiKey = ""; // API key will be injected by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const menuItems = [
+                "Bruschetta", "Crispy Calamari", "Stuffed Mushrooms", 
+                "Classic Greek Salad", "Lemon Herb Chicken", "Traditional Moussaka", 
+                "Pasta Aglio e Olio", "Grandma's Lemon Cake", "Baklava"
+            ];
+
+            const prompt = `You are a food content creator for Little Lemon, a Mediterranean restaurant. Your task is to generate a spotlight on a common Mediterranean ingredient.
+Our menu includes: ${menuItems.join(", ")}.
+
+Please provide the following information based on the schema:
+1.  ingredientName: The name of a common Mediterranean ingredient (e.g., olive oil, feta, lemon, oregano, chickpeas, eggplant, tomatoes, garlic, basil).
+2.  ingredientDescription: A short, engaging paragraph (3-4 sentences) about this ingredient, highlighting its importance/role in Mediterranean cuisine, its typical flavor profile, and perhaps a fun fact.
+3.  featuredDishName: Select ONE dish from our menu list provided above that beautifully showcases this ingredient.
+4.  dishReasoning: Briefly explain (1-2 sentences) why this dish is a great example for the chosen ingredient.`;
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "ingredientName": { "type": "STRING" },
+                            "ingredientDescription": { "type": "STRING" },
+                            "featuredDishName": { "type": "STRING" },
+                            "dishReasoning": { "type": "STRING" }
+                        },
+                        required: ["ingredientName", "ingredientDescription", "featuredDishName", "dishReasoning"]
+                    }
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('API Error Response:', errorData);
+                    throw new Error(`API request failed with status ${response.status}: ${errorData?.error?.message || response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    
+                    const rawJsonText = result.candidates[0].content.parts[0].text;
+                    const spotlightData = JSON.parse(rawJsonText); // Parse the JSON string
+
+                    // Display the structured content
+                    spotlightResultDiv.innerHTML = `
+                        <h3>Spotlight on: ${spotlightData.ingredientName}</h3>
+                        <p>${spotlightData.ingredientDescription}</p>
+                        <div class="spotlight-featured-dish">
+                            <p><strong>Try it in our:</strong> ${spotlightData.featuredDishName}</p>
+                            <p><em>${spotlightData.dishReasoning}</em></p>
+                        </div>
+                    `;
+                } else {
+                    console.error('Unexpected API response structure:', result);
+                    throw new Error('Failed to get valid content from the API.');
+                }
+
+            } catch (error) {
+                console.error('Error fetching ingredient spotlight:', error);
+                spotlightResultDiv.innerHTML = `<p style="color: var(--secondary-orange);">Oops! We couldn't fetch the ingredient spotlight right now. Please try again later.</p>`;
+                showModal('Error', `Could not fetch ingredient spotlight: ${error.message}`);
+            } finally {
+                getSpotlightBtn.disabled = false;
+                getSpotlightBtn.textContent = 'Discover Another Ingredient!';
+            }
+        }
+    </script>
+</body>
+</html>

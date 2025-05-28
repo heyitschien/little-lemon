@@ -1,0 +1,10 @@
+/* src/components/MainComponent/MainComponent.module.css */
+
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fill the height of its parent in App.jsx */
+  /* No specific background color here, it should inherit or be transparent */
+  /* to show App.jsx's wrapper background */
+}

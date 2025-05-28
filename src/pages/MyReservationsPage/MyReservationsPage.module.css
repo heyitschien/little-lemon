@@ -1,0 +1,14 @@
+/* MyReservationsPage.module.css */
+
+.myReservationsPage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem; /* This padding will apply to the content below the hero */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .myReservationsPage {
+    padding: 1rem;
+  }
+}
