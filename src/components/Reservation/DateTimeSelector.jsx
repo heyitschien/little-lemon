@@ -96,6 +96,24 @@ const DateTimeSelector = ({
     return `${hours12}:${minutes} ${period}`;
   };
   
+  // Format date for display (e.g., "2023-03-15" to "March 15, 2023")
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    
+    // Parse the date string directly without creating a Date object
+    // This avoids timezone issues where the date might shift
+    const [year, month, day] = dateString.split('-').map(num => parseInt(num, 10));
+    
+    // Create a date object with explicit UTC time to avoid timezone shifts
+    // Note: months are 0-indexed in JavaScript Date
+    const dateObj = new Date(Date.UTC(year, month - 1, day));
+    
+    // Format the date parts
+    const monthName = dateObj.toLocaleString('default', { month: 'long', timeZone: 'UTC' });
+    
+    return `${monthName} ${day}, ${year}`;
+  };
+  
   return (
     <div className={styles.dateTimeSelector}>
       <h2 className={styles.sectionTitle}>Select Date & Time</h2>
@@ -104,17 +122,25 @@ const DateTimeSelector = ({
         <label htmlFor="reservation-date" className={styles.label}>
           Date
         </label>
-        <input
-          type="date"
-          id="reservation-date"
-          className={styles.dateInput}
-          value={selectedDate}
-          onChange={handleDateChange}
-          min={today}
-          max={maxDateString}
-          required
-        />
-        {dateError && <p className={styles.errorText}>{dateError}</p>}
+        <div className={styles.dateInputWrapper}>
+          {/* Label that will trigger the date input when clicked */}
+          <label htmlFor="reservation-date" className={styles.customDateButton}>
+            {selectedDate ? formatDateForDisplay(selectedDate) : 'Select a date'}
+          </label>
+          
+          {/* The actual date input that will be triggered by the label */}
+          <input
+            type="date"
+            id="reservation-date"
+            className={styles.hiddenDateInput}
+            value={selectedDate}
+            onChange={handleDateChange}
+            min={today}
+            max={maxDateString}
+            required
+            aria-label="Select a date for your reservation"
+          />
+        </div>
       </div>
       
       <div className={styles.formGroup}>

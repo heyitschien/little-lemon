@@ -5,13 +5,13 @@
 }
 
 .sectionTitle {
-  font-family: 'Markazi Text', serif; /* Primary Typeface for headings */
-  font-weight: 400; /* Regular weight as per style guide */
-  font-size: 2.5rem; /* 40pt as per style guide */
-  color: #495E57; /* Primary Green */
+  font-family: 'Markazi Text', serif;
+  font-weight: 400;
+  font-size: 2.5rem;
+  color: #495E57;
   margin-top: 0;
   margin-bottom: 1.5rem;
-  text-align: center; /* Center the title */
+  text-align: center;
 }
 
 .formGroup {
@@ -20,44 +20,94 @@
 
 .label {
   display: block;
-  font-family: 'Karla', sans-serif; /* Secondary Typeface */
-  font-weight: 500; /* Medium weight as per style guide */
-  font-size: 1.125rem; /* 18pt as per style guide for Lead Text */
-  color: #333333; /* Highlight Black */
+  font-family: 'Karla', sans-serif;
+  font-weight: 500;
+  font-size: 1.125rem;
+  color: #333333;
   margin-bottom: 0.5rem;
 }
 
-.dateInput,
+/* Date input styling */
+.dateInputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.hiddenDateInput {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.customDateButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background-color: #fff;
+  color: #333333;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.customDateButton::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23333333' d='M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-left: auto;
+}
+
+.customDateButton:hover {
+  border-color: #495E57;
+}
+
+.customDateButton:focus {
+  outline: none;
+  border-color: #495E57;
+  box-shadow: 0 0 0 2px rgba(73, 94, 87, 0.2);
+}
+
+/* Time and party size select styling */
 .timeSelect,
 .partySizeSelect {
   width: 100%;
   padding: 0.75rem 1rem;
   font-family: 'Karla', sans-serif;
-  font-size: 1rem; /* 16pt as per style guide for Paragraph Text */
+  font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 16px; /* Rounded corners */
+  border-radius: 16px;
   background-color: #fff;
-  color: #333333; /* Highlight Black */
-  appearance: none; /* Remove default styling for select elements */
-}
-
-.dateInput:focus,
-.timeSelect:focus,
-.partySizeSelect:focus {
-  outline: none;
-  border-color: #495E57; /* Primary Green */
-  box-shadow: 0 0 0 2px rgba(73, 94, 87, 0.2); /* Primary Green with opacity */
-}
-
-.timeSelect,
-.partySizeSelect {
+  color: #333333;
+  appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  padding-right: 2.5rem; /* Make room for the dropdown arrow */
+  padding-right: 2.5rem;
 }
 
-.dateInput:disabled,
+.timeSelect:focus,
+.partySizeSelect:focus {
+  outline: none;
+  border-color: #495E57;
+  box-shadow: 0 0 0 2px rgba(73, 94, 87, 0.2);
+}
+
 .timeSelect:disabled,
 .partySizeSelect:disabled {
   background-color: #f0f0f0;
@@ -66,7 +116,7 @@
 }
 
 .errorText {
-  color: #EE9972; /* Secondary Orange for alerts */
+  color: #EE9972;
   font-family: 'Karla', sans-serif;
   font-size: 0.875rem;
   margin-top: 0.5rem;
@@ -74,7 +124,7 @@
 }
 
 .noTimesText {
-  color: #333333; /* Highlight Black */
+  color: #333333;
   font-family: 'Karla', sans-serif;
   font-size: 0.875rem;
   font-style: italic;
@@ -83,6 +133,21 @@
 }
 
 /* Responsive styles */
+@media (max-width: 767px) {
+  .customDateButton {
+    padding: 0.8rem 1rem;
+    height: 3rem;
+  }
+  
+  .formGroup {
+    margin-bottom: 1.25rem;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+  }
+}
+
 @media (min-width: 768px) {
   .dateTimeSelector {
     padding: 2.5rem;

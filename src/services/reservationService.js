@@ -11,24 +11,16 @@
  * replaced with actual API calls in the future.
  */
 
-// Mock data for available time slots
-const availableTimeSlots = {
-  // Format: "YYYY-MM-DD": ["HH:MM", "HH:MM", ...]
-  // This would typically come from a backend API
-  generateTimeSlots: () => {
-    // Generate time slots from 17:00 to 22:00 (5 PM to 10 PM) in 30-minute intervals
-    // This is just a mock implementation
-    const slots = [];
-    for (let hour = 17; hour < 22; hour++) {
-      slots.push(`${hour}:00`);
-      slots.push(`${hour}:30`);
-    }
-    slots.push('22:00');
-    
-    // Randomly remove some slots to simulate unavailability
-    // In a real implementation, this would come from the backend
-    return slots.filter(() => Math.random() > 0.3);
+// Base operating time slots for the restaurant
+const baseOperatingTimeSlots = () => {
+  // Generate time slots from 17:00 to 22:00 (5 PM to 10 PM) in 30-minute intervals
+  const slots = [];
+  for (let hour = 17; hour < 22; hour++) {
+    slots.push(`${hour}:00`);
+    slots.push(`${hour}:30`);
   }
+  slots.push('22:00');
+  return slots;
 };
 
 /**
@@ -66,9 +58,19 @@ const generateReservationId = () => {
  * @returns {Array} - Array of available time slots
  */
 export const getAvailableTimeSlots = (date) => {
-  // In a real implementation, this would make an API call to get available slots
-  // For now, we're using the mock data
-  return availableTimeSlots.generateTimeSlots(date);
+  const allReservations = getReservationsFromStorage();
+  const bookedSlotsForDate = allReservations
+    .filter(reservation => reservation.date === date && reservation.status === 'confirmed')
+    .map(reservation => reservation.time);
+
+  const allPotentialSlots = baseOperatingTimeSlots();
+  
+  // Filter out booked slots
+  // In a real system, this would also consider table capacity, party size vs. table availability etc.
+  // For this mock, we assume one booking makes the slot unavailable.
+  const availableSlots = allPotentialSlots.filter(slot => !bookedSlotsForDate.includes(slot));
+  
+  return availableSlots;
 };
 
 /**
@@ -78,7 +80,7 @@ export const getAvailableTimeSlots = (date) => {
  * @param {number} partySize - Number of people
  * @returns {boolean} - Whether the slot is available
  */
-export const isTimeSlotAvailable = (date, time) => {
+export const isTimeSlotAvailable = (date, time, partySize) => { // Added partySize for consistency, though not used in current mock logic
   // In a real implementation, this would make an API call to check availability
   // For now, we're using the mock data
   const availableSlots = getAvailableTimeSlots(date);
