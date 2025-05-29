@@ -3,11 +3,19 @@
 .reservationPage {
   /* max-width: 1200px; */ /* Removed for full-width */
   /* margin: 0 auto; */ /* Removed for full-width */
-  padding-top: 0; /* Remove top padding */
+  padding-top: 0; /* Mobile padding */
   padding-bottom: 0; /* Removed bottom padding */
   min-height: 100vh; /* Ensure it takes at least full viewport height */
-  background-color: #FFFFFF; /* Changed to white */
+  background-color: #FFFFFF; /* Default background for mobile */
   width: 100%; /* Ensure it spans full width */
+}
+
+/* Desktop styles for reservation page */
+@media (min-width: 768px) {
+  .reservationPage {
+    padding-top: 60px; /* Add padding at the top for desktop to prevent sticking to nav */
+    background-color: #EDEFEE; /* Highlight White (Backgrounds) as specified */
+  }
 }
 
 /* Panel Title */
@@ -104,12 +112,21 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
 }
 
+/* Desktop styles for step container */
+@media (min-width: 768px) {
+  .stepContainer {
+    margin: 0 auto 60px; /* Add bottom margin on desktop */
+    padding: 3rem 2.5rem; /* Standardized padding: more top/bottom padding */
+  }
+}
+
 /* Navigation Buttons */
 .navigationButtons {
   display: flex;
   justify-content: space-between;
   margin-top: 2rem;
-  padding: 1rem 0; /* Keep vertical padding, horizontal might not be needed if card has padding */
+  padding: 1rem 0 0; /* Removed bottom padding */
+  margin-bottom: 0; /* Ensure no bottom margin */
 }
 
 .button {
@@ -251,7 +268,22 @@
   display: flex;
   justify-content: center;
   margin-top: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 0; /* Removed excessive bottom padding */
+}
+
+/* Desktop styles for success page */
+@media (min-width: 768px) {
+  .stepContainer {
+    padding-bottom: 3rem; /* Add consistent bottom padding for all steps */
+  }
+  
+  .successSummaryCard {
+    margin-bottom: 3rem; /* Consistent bottom margin */
+  }
+  
+  .successActionButtons {
+    margin-bottom: 0; /* Remove bottom margin */
+  }
 }
 
 /* Responsive adjustments for success summary card */

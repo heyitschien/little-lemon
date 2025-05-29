@@ -1,25 +1,28 @@
 /* CartPage.module.css */
 
+/* Add a wrapper for the full-width background */
+.cartPageWrapper {
+  width: 100%;
+  background-color: #EDEFEE;
+  margin-top: calc(-1 * var(--header-height-mobile, 80px)); 
+  padding-top: calc(var(--header-height-mobile, 60px) + 1rem);
+  min-height: calc(100vh - var(--header-height-mobile, 80px) - var(--footer-height, 60px));
+}
+
 .cartPageContainer {
   max-width: 1200px;
-  margin-left: auto; /* Keep horizontal centering */
-  margin-right: auto; /* Keep horizontal centering */
-  background-color: #EDEFEE;
+  margin-left: auto;
+  margin-right: auto;
   
   /* Original padding for left, right, bottom */
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 2rem;
-
-  /* Adjust for mobile header */
-  margin-top: calc(-1 * var(--header-height-mobile, 80px)); 
-  padding-top: calc(var(--header-height-mobile, 60px) + 1rem); 
-  min-height: calc(100vh - var(--header-height-mobile, 80px) - var(--footer-height, 60px));
 }
 
 /* Media query for desktop header */
 @media (min-width: 769px) {
-  .cartPageContainer {
+  .cartPageWrapper {
     margin-top: calc(-1 * var(--header-height-desktop, 100px));
     padding-top: calc(var(--header-height-desktop, 100px) + 1rem);
     min-height: calc(100vh - var(--header-height-desktop, 100px) - var(--footer-height, 60px));
@@ -113,8 +116,8 @@
 .quantityButton {
   background-color: #F4CE14;
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -122,6 +125,9 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
+  /* Ensure perfect circle */
+  aspect-ratio: 1 / 1;
+  padding: 0;
 }
 
 .quantityButton:hover {
@@ -133,6 +139,7 @@
   font-weight: bold;
   min-width: 20px;
   text-align: center;
+  color: #333333; /* Ensure text is visible against white background */
 }
 
 .removeButton {

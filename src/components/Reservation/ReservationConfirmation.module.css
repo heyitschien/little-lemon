@@ -1,7 +1,7 @@
 /* ReservationConfirmation.module.css */
 
 .confirmationContainer {
-  padding: 2rem 0; /* Adjusted: top/bottom 2rem, left/right 0 */
+  padding: 0.75rem 0; /* Reduced padding for mobile */
   max-width: 800px;
   margin: 0 auto;
 }
@@ -119,6 +119,7 @@
 }
 
 /* Responsive styles */
+/* Mobile styles */
 @media (max-width: 768px) {
   .confirmationContainer {
     padding: 1rem 0; /* Adjusted: top/bottom 1rem, left/right 0 */
@@ -138,5 +139,24 @@
   
   .button {
     width: 100%;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .confirmationContainer {
+    padding: 3rem 0; /* Standardized padding: more top/bottom padding */
+  }
+  
+  .summaryCard {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .actionButtons {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
