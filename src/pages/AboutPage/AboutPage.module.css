@@ -4,6 +4,7 @@
   font-family: 'Karla', sans-serif;
   color: #333333; /* Highlight Black - Style Guide */
   background-color: #EDEFEE; /* Highlight White - Style Guide */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Common Section Styles */
@@ -11,6 +12,13 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  width: 100%;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
 }
 
 section {
@@ -38,17 +46,47 @@ section {
 /* Introduction Section */
 .introSection {
   background-color: #FFFFFF;
-  padding: 30px 0;
+  padding: 80px 0;
+  position: relative;
+}
+
+.introSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(73, 94, 87, 0) 0%, rgba(73, 94, 87, 0.3) 50%, rgba(73, 94, 87, 0) 100%);
 }
 
 .introSection .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 40px;
 }
 
+@media (min-width: 1200px) {
+  .introSection {
+    padding: 100px 0;
+  }
+  
+  .introSection .container {
+    gap: 60px;
+  }
+}
+
 .introContent {
-  flex: 1;
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (min-width: 1200px) {
+  .introContent {
+    max-width: 900px;
+  }
 }
 
 .introContent p {
@@ -58,31 +96,94 @@ section {
 }
 
 .introImageContainer {
-  flex: 1;
-  max-width: 500px;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+}
+
+@media (min-width: 1200px) {
+  .introImageContainer {
+    max-width: 900px;
+  }
+  
+  .introImageContainer::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100px;
+    height: 100px;
+    border-top: 3px solid #F4CE14;
+    border-left: 3px solid #F4CE14;
+    z-index: 1;
+  }
+  
+  .introImageContainer::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    border-bottom: 3px solid #F4CE14;
+    border-right: 3px solid #F4CE14;
+    z-index: 1;
+  }
 }
 
 .introImage {
   width: 100%;
   height: auto;
   border-radius: 16px; /* Rounded Corners - Style Guide */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
 }
 
 /* Founders Section */
 .foundersSection {
   background-color: #EDEFEE; /* Highlight White - Style Guide */
-  padding: 40px 0;
+  padding: 80px 0;
+  position: relative;
+}
+
+.foundersSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(73, 94, 87, 0) 0%, rgba(73, 94, 87, 0.3) 50%, rgba(73, 94, 87, 0) 100%);
 }
 
 .foundersSection .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 40px;
 }
 
+@media (min-width: 1200px) {
+  .foundersSection {
+    padding: 100px 0;
+  }
+  
+  .foundersSection .container {
+    gap: 60px;
+  }
+}
+
 .foundersContent {
-  flex: 1;
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (min-width: 1200px) {
+  .foundersContent {
+    max-width: 900px;
+  }
 }
 
 .foundersContent p {
@@ -92,17 +193,28 @@ section {
 }
 
 .foundersImageContainer {
-  flex: 1;
+  width: 100%;
+  max-width: 800px;
   position: relative;
-  min-height: 450px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1200px) {
+  .foundersImageContainer {
+    max-width: 900px;
+    margin-bottom: 30px;
+  }
 }
 
 .imageWrapper1,
 .imageWrapper2 {
-  position: absolute;
   border-radius: 16px; /* Rounded Corners - Style Guide */
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .foundersImage {
@@ -114,37 +226,61 @@ section {
 }
 
 .imageWrapper1 {
-  width: 280px;
-  height: 350px;
-  z-index: 0;
-  top: 20px;
-  left: 20px;
-  transform: rotate(-8deg);
+  width: 100%;
+  height: auto;
+  z-index: 2;
+  position: relative;
+  transform: none;
 }
 
 .imageWrapper2 {
-  width: 280px;
-  height: 350px;
-  z-index: 1;
-  top: 100px;
-  left: 150px;
-  transform: rotate(5deg);
+  display: none; /* Hide second image on all devices */
 }
 
 /* Philosophy Section */
 .philosophySection {
   background-color: #FFFFFF;
-  padding: 40px 0;
+  padding: 80px 0;
+  position: relative;
+}
+
+.philosophySection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(73, 94, 87, 0) 0%, rgba(73, 94, 87, 0.3) 50%, rgba(73, 94, 87, 0) 100%);
 }
 
 .philosophySection .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 40px;
 }
 
+@media (min-width: 1200px) {
+  .philosophySection {
+    padding: 100px 0;
+  }
+  
+  .philosophySection .container {
+    gap: 60px;
+  }
+}
+
 .philosophyContent {
-  flex: 1;
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (min-width: 1200px) {
+  .philosophyContent {
+    max-width: 900px;
+  }
 }
 
 .philosophyContent p {
@@ -157,12 +293,27 @@ section {
   list-style: none;
   padding: 0;
   margin: 30px 0;
+  width: 100%;
+  max-width: 800px;
+  text-align: left;
+}
+
+@media (min-width: 1200px) {
+  .philosophyList {
+    margin: 40px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1000px;
+  }
 }
 
 .philosophyList li {
   margin-bottom: 20px;
-  padding-left: 20px;
+  padding: 20px;
   border-left: 4px solid #F4CE14; /* Primary Yellow - Style Guide */
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0 8px 8px 0;
 }
 
 .listTitle {
@@ -175,21 +326,59 @@ section {
 }
 
 .philosophyImageContainer {
-  flex: 1;
-  max-width: 500px;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+}
+
+@media (min-width: 1200px) {
+  .philosophyImageContainer {
+    max-width: 900px;
+  }
+  
+  .philosophyImageContainer::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100px;
+    height: 100px;
+    border-top: 3px solid #F4CE14;
+    border-left: 3px solid #F4CE14;
+    z-index: 1;
+  }
 }
 
 .philosophyImage {
   width: 100%;
   height: auto;
   border-radius: 16px; /* Rounded Corners - Style Guide */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
 }
 
 /* Gallery Section */
 .gallerySection {
   background-color: #EDEFEE; /* Highlight White - Style Guide */
-  padding: 0px 0;
+  padding: 80px 0;
+  position: relative;
+}
+
+.gallerySection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(73, 94, 87, 0) 0%, rgba(73, 94, 87, 0.3) 50%, rgba(73, 94, 87, 0) 100%);
+}
+
+@media (min-width: 1200px) {
+  .gallerySection {
+    padding: 100px 0;
+  }
 }
 
 .galleryTitle {
@@ -199,6 +388,24 @@ section {
   color: #495E57; /* Primary Green - Style Guide */
   text-align: center;
   margin-bottom: 40px;
+  position: relative;
+}
+
+@media (min-width: 1200px) {
+  .galleryTitle {
+    margin-bottom: 60px;
+  }
+  
+  .galleryTitle::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #F4CE14;
+  }
 }
 
 .galleryGrid {
@@ -206,6 +413,12 @@ section {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-top: 30px;
+}
+
+@media (min-width: 1200px) {
+  .galleryGrid {
+    gap: 30px;
+  }
 }
 
 .galleryItem {
@@ -227,12 +440,23 @@ section {
   display: block;
 }
 
+@media (min-width: 1200px) {
+  .galleryImage {
+    height: 300px;
+  }
+}
+
 /* Visit Us Section */
 .visitSection {
   background-color: #495E57; /* Primary Green - Style Guide */
   color: #FFFFFF;
-  padding-top: 1px;
-  padding-bottom: 40px;
+  padding: 80px 0;
+}
+
+@media (min-width: 1200px) {
+  .visitSection {
+    padding: 100px 0;
+  }
 }
 
 .visitSection .container {

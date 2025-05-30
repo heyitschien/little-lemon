@@ -48,7 +48,7 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify }) => {
       
       <div className={styles.summaryCard}>
         <div className={styles.summaryHeader}>
-          <h3 className={styles.summaryTitle}>Little Lemon Reservation</h3>
+          <h3 className={styles.summaryTitle}>Reservation Summary</h3>
           {reservationData.id && (
             <p className={styles.reservationId}>Confirmation #{reservationData.id}</p>
           )}

@@ -16,10 +16,11 @@
 .headerContent {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 32px; /* Horizontal padding for logo and nav */
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .logo {
@@ -75,6 +76,34 @@
   transition: all 0.3s linear;
 }
 
+/* Main navigation styles */
+.mainNav {
+  display: flex;
+  align-items: center;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .headerContent {
+    padding: 0 4rem;
+  }
+
+  .hamburger,
+  .mobileCartLink {
+    display: none;
+  }
+
+  .logo {
+    height: 50px;
+    margin-right: 2rem;
+  }
+
+  .mainNav {
+    flex: 1;
+    justify-content: flex-end;
+  }
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .headerContent {
@@ -98,8 +127,18 @@
     justify-self: end; /* Align to the right */
   }
   
-  /* Hide desktop nav on mobile */
-  .desktopNav {
-    display: none;
+  .mainNav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+  }
+  
+  /* Show the navigation when navVisible class is applied */
+  .navVisible {
+    display: block !important;
   }
 }

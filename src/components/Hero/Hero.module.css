@@ -1,30 +1,30 @@
 .hero {
-  background-color: #495E57; /* Primary green color */
-  color: #FFFFFF; /* White text */
-  padding: 40px 0; /* Reduced vertical padding to match image */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background-color: #495E57;
+  color: #FFFFFF;
+  padding: 2rem 0;
   width: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
 }
 
 .heroContainer {
   display: grid;
-  grid-template-columns: 60% 40%; /* Adjust ratio to match image - more space for text */
-  gap: 20px; /* Reduced gap between content and image */
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
   align-items: center;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 4rem;
 }
 
 .heroContent h1 {
   font-family: 'Markazi Text', serif;
-  font-size: 64px;
-  font-weight: 500; /* Slightly bolder to match image */
-  color: #F4CE14; /* Yellow color */
-  margin: 0; /* Remove margin */
+  font-size: 4rem;
+  font-weight: 500;
+  color: #F4CE14;
+  margin: 0;
   line-height: 1;
 }
 
@@ -68,12 +68,12 @@
 }
 
 .heroImageContainer {
-  border-radius: 8px; /* Less rounded corners to match image */
+  border-radius: 16px;
   overflow: hidden;
-  height: 250px; /* Adjusted height to match image proportion */
   width: 100%;
-  max-width: 380px; /* Adjusted width */
-  justify-self: end; /* Align to right */
+  height: 400px;
+  justify-self: end;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .heroImageContainer img {
@@ -141,8 +141,8 @@
     padding: 10px 22px; /* 20% smaller padding */
     font-size: 16px; /* 20% smaller font */
     border-radius: 32px;
-    transform: scale(0.1); /* Make button 20% smaller overall */
-    transform-origin: left center; /* Scale from left side for left-aligned text */
+    transform: none;
+  transform-origin: center;
   }
 }
 

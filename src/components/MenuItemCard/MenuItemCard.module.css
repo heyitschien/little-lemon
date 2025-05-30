@@ -1,11 +1,13 @@
 .menuItemCard {
-  background-color: #FFFFFF; /* Changed from var(--highlight-white) to pure white */
-  border-radius: 16px; /* From style guide */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Ensures child elements like image respect border radius */
-  transition: transform 0.2s ease-in-out;
+  transition: all 0.3s ease;
+  height: 100%;
+  border: 1px solid #EDEFEE;
+  position: relative;
 }
 
 .menuItemCard:hover {
@@ -14,22 +16,27 @@
 
 .menuItemImageContainer {
   width: 100%;
-  height: 220px; /* Fixed height for uniform card appearance */
+  padding-top: 75%; /* 4:3 aspect ratio */
+  position: relative;
+  border-radius: 12px;
   overflow: hidden;
+  margin-bottom: 1rem;
 }
 
 .menuItemImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Cover ensures the image fills the container, might crop */
+  object-fit: cover;
   display: block;
 }
 
 .menuItemContent {
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Allows content to fill space if card heights vary due to description */
+  flex-grow: 1;
   color: var(--highlight-black, #333333);
 }
 
@@ -41,27 +48,29 @@
 }
 
 .menuItemTitle {
-  font-family: 'Karla', sans-serif; /* Card Title from style guide */
-  font-weight: 700; /* Bold */
-  font-size: 18pt;
-  color: var(--highlight-black, #333333);
-  margin: 0;
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #333333;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
 }
 
 .menuItemPrice {
-  font-family: 'Karla', sans-serif; /* Highlight Text from style guide */
-  font-weight: 500; /* Medium */
-  font-size: 16pt;
-  color: var(--primary-orange, #EE9972); /* Using a secondary color for price */
+  font-family: 'Karla', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #495E57;
+  margin-bottom: 1rem;
 }
 
 .menuItemDescription {
-  font-family: 'Karla', sans-serif; /* Paragraph Text from style guide */
-  font-size: 16pt; /* Adjusted to match prototype, style guide says 16pt */
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
   line-height: 1.5;
-  color: var(--highlight-black, #333333);
-  flex-grow: 1; /* Allows description to take available space */
-  margin-bottom: 15px;
+  color: #666666;
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
 }
 
 .menuItemFooter {
@@ -84,9 +93,30 @@
 }
 
 .btnTertiary {
-  background-color: var(--primary-yellow, #F4CE14);
-  color: var(--highlight-black, #333333);
-  border: 2px solid var(--primary-yellow, #F4CE14);
+  background-color: #F4CE14;
+  color: #333333;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .menuItemCard {
+    padding: 1.5rem;
+  }
+
+  .menuItemImageContainer {
+    padding-top: 66.67%; /* 3:2 aspect ratio for desktop */
+  }
+
+  .btnTertiary {
+    width: auto;
+  }
 }
 
 .btnTertiary:hover, .btnTertiary:focus {

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './ReservationPage.module.css';
 import DateTimeSelector from '../../components/Reservation/DateTimeSelector';
 import ReservationForm from '../../components/Reservation/ReservationForm';
 import ReservationConfirmation from '../../components/Reservation/ReservationConfirmation';
 import Button from '../../components/Button/Button';
-import { createReservation } from '../../services/reservationService';
+import { useReservation } from '../../hooks/useReservation';
 
 /**
  * ReservationPage Component
@@ -15,94 +15,40 @@ import { createReservation } from '../../services/reservationService';
 const ReservationPage = () => {
   const navigate = useNavigate();
   
-  // State for the current step in the reservation process
-  const [currentStep, setCurrentStep] = useState(1);
-  
-  // State for reservation data
-  const [reservationData, setReservationData] = useState({
-    date: '',
-    time: '',
-    partySize: '',
-    name: '',
-    email: '',
-    phone: '',
-    occasion: '',
-    specialRequests: ''
-  });
-  
-  // State for the confirmed reservation (after submission)
-  const [confirmedReservation, setConfirmedReservation] = useState(null);
-  
-  // State for error message
-  const [errorMessage, setErrorMessage] = useState('');
-  
-  // Handle date, time, and party size changes
-  const handleDateTimeChange = (field, value) => {
-    setReservationData({
-      ...reservationData,
-      [field]: value
-    });
-  };
-  
-  // Handle form data changes
-  const handleFormChange = (newFormData) => {
-    setReservationData({
-      ...reservationData,
-      ...newFormData
-    });
-  };
-  
-  // Check if the current step is complete and can proceed to the next step
-  const canProceedToNextStep = () => {
-    if (currentStep === 1) {
-      // Check if date, time, and party size are selected
-      return reservationData.date && reservationData.time && reservationData.partySize;
-    }
-    
-    if (currentStep === 2) {
-      // Check if required form fields are filled
-      return reservationData.name && reservationData.email && reservationData.phone;
-    }
-    
-    return true;
-  };
-  
-  // Handle proceeding to the next step
+  // Use our custom reservation hook
+  const {
+    reservationData,
+    currentStep,
+    confirmedReservation,
+    errorMessage,
+    handleDateTimeChange,
+    handleFormChange,
+    handleNextStep: baseHandleNextStep,
+    handlePreviousStep: baseHandlePreviousStep,
+    handleConfirmReservation: baseHandleConfirmReservation,
+    canProceedToNextStep
+  } = useReservation();
+
+  // Wrap the step navigation functions to include scroll behavior
   const handleNextStep = () => {
-    if (canProceedToNextStep()) {
-      setCurrentStep(currentStep + 1);
-      setErrorMessage('');
-    } else {
-      setErrorMessage('Please fill in all required fields before proceeding.');
-    }
+    window.scrollTo(0, 0);
+    baseHandleNextStep();
   };
-  
-  // Handle going back to the previous step
+
   const handlePreviousStep = () => {
-    setCurrentStep(currentStep - 1);
-    setErrorMessage('');
+    window.scrollTo(0, 0);
+    baseHandlePreviousStep();
   };
-  
-  // Handle reservation confirmation
+
   const handleConfirmReservation = async () => {
-    try {
-      // Create the reservation
-      const newReservation = await createReservation(reservationData);
-      
-      // Set the confirmed reservation
-      setConfirmedReservation(newReservation);
-      
-      // Move to the success step
-      setCurrentStep(4);
-      setErrorMessage('');
-    } catch (error) {
-      console.error('Error creating reservation:', error);
-      setErrorMessage(`Failed to create reservation: ${error.message}`);
-    }
+    const result = await baseHandleConfirmReservation();
+    window.scrollTo(0, 0);
+    return result;
   };
   
   // Handle returning to home page
   const handleReturnHome = () => {
+    window.scrollTo(0, 0);
     navigate('/');
   };
   
@@ -111,7 +57,6 @@ const ReservationPage = () => {
     // Common progress indicator JSX
     const progressIndicator = currentStep < 4 && (
       <div className={styles.stepIndicator}>
-        <h1 className={styles.panelTitle}>Reserve Your Table</h1>
         <div className={styles.stepProgress}>
           <div 
             className={`${styles.stepCircle} ${currentStep >= 1 ? styles.activeStep : ''}`}

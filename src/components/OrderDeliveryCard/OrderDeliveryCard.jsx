@@ -20,6 +20,9 @@ const OrderDeliveryCard = ({ item }) => {
 
   return (
     <div className={styles.orderDeliveryCard}>
+      <div className={styles.cardImageContainer}>
+        <img src={image} alt={name} className={styles.cardImage} />
+      </div>
       <div className={styles.cardContent}>
         <h3 className={styles.cardTitle}>{name}</h3>
         <p className={styles.cardDescription}>{description}</p>
@@ -31,12 +34,9 @@ const OrderDeliveryCard = ({ item }) => {
             aria-label={`Add ${name} to cart`}
           >
             <span className={styles.plusIcon}>+</span>
-            Add to Cart
+            <span>Add to Cart</span>
           </button>
         </div>
-      </div>
-      <div className={styles.cardImageContainer}>
-        <img src={image} alt={name} className={styles.cardImage} />
       </div>
     </div>
   );

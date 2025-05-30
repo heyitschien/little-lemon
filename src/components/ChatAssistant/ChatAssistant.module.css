@@ -16,14 +16,14 @@
   padding: 0; /* Remove padding to allow image to fill */
   cursor: pointer;
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); Removed as per user request to eliminate 'border' effect */
   z-index: 1000;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out; /* Removed box-shadow from transition */
 }
 
 .chatFab:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); Removed as per user request */
 }
 
 .chatFab:active {

@@ -45,13 +45,8 @@ function Header() {
           {cartCount > 0 && <span className={styles.cartCount}>{cartCount}</span>}
         </a>
 
-        {/* Desktop navigation - hidden on mobile */}
-        <div className={styles.desktopNav}>
-          <Nav />
-        </div>
-
-        {/* Mobile Navigation - rendered outside headerContent for full-width display if needed, but managed by Nav component */}
-        <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+        {/* Navigation - responsive for both desktop and mobile */}
+        <Nav menuOpen={menuOpen} setMenuOpen={setMenuOpen} className={`${styles.mainNav} ${menuOpen ? styles.navVisible : ''}`} />
       </div>
     </header>
   );

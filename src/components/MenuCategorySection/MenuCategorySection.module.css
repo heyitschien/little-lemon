@@ -1,16 +1,16 @@
 /* Placeholder for MenuCategorySection.module.css */
 
 .menuCategorySection {
-  margin-bottom: 40px;
-  padding: 20px 0; /* Vertical padding for the section itself */
+  margin-bottom: 4rem;
+  padding: 3rem 0;
+  background-color: #fff;
 }
 
 .sectionContentWrapper {
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 20px; /* Standard horizontal padding */
-  padding-right: 20px; /* Standard horizontal padding */
+  margin: 0 auto;
+  padding: 0 4rem;
+  width: 100%;
 }
 
 .categoryTitle {
@@ -27,15 +27,27 @@
 
 .menuGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-  gap: 30px; /* Spacing between cards */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
 }
 
 /* Responsive adjustments for smaller screens if needed */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .menuGrid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionContentWrapper {
+    padding: 0 2rem;
+  }
+
+  .menuGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .categoryTitle {
