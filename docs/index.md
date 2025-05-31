@@ -2,6 +2,10 @@
 
 This directory contains all documentation for the Little Lemon project. Use this index to navigate to the specific documentation you need.
 
+## Executive Overview
+
+For a high-level overview of the documentation structure and purpose, see the [Executive Overview](/docs/executive-overview.md) document. This is especially useful for stakeholders who need a quick understanding of the project documentation.
+
 ## Documentation Categories
 
 ### Architecture
