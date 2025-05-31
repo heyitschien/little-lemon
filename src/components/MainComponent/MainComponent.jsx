@@ -1,7 +1,7 @@
 // src/components/MainComponent/MainComponent.jsx
 import React from 'react';
 import styles from './MainComponent.module.css'; // For future styles
-import Hero from '../Hero/Hero'; // Import the Hero component
+import Hero from '../layout/Hero/Hero'; // Import the Hero component
 import OrderForDelivery from '../OrderForDelivery/OrderForDelivery'; // Import the OrderForDelivery component
 import Testimonials from '../Testimonials/Testimonials'; // Import the Testimonials component
 import About from '../About/About'; // Import the About component
