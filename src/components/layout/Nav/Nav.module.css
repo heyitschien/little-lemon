@@ -1,0 +1,74 @@
+/* src/components/Nav/Nav.module.css */
+
+.navContainer { 
+  position: relative;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  transition: transform 0.3s ease-in-out; /* For potential slide-in effect */
+}
+
+.navLink {
+  color: #333333;
+  text-decoration: none;
+  padding: 0.5rem 0; /* Add some padding for easier clicking */
+  display: block; /* Ensures padding applies correctly */
+}
+
+.navLink:hover {
+  color: #495E57; /* Little Lemon Primary Green for hover */
+}
+
+/* --- Cart Styles --- */
+.cartLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) { 
+  .navContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  .navList {
+    /* Default mobile state: hidden and ready to be shown */
+    display: none; /* Hide by default on mobile */
+    flex-direction: column;
+    position: fixed;
+    top: 70px; /* Position below the header bar, adjust if header height changes */
+    left: 0;
+    background-color: #EDEFEE; /* Style Guide: Highlight White */
+    width: 100%; /* Full width dropdown for mobile */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    padding: 1rem;
+    gap: 1rem; /* Spacing for vertical links */
+    align-items: center; /* Center align links on mobile */
+    z-index: 998;
+  }
+
+  /* 
+  More specific selector to override the display:none on .navList
+  */
+  .navList.navListMobileOpen {
+    display: flex !important; 
+  }
+
+  .navLink {
+    width: 100%; /* Make links take full width of mobile menu */
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 0.75rem 0;
+  }
+}

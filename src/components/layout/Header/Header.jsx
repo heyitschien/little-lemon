@@ -1,6 +1,6 @@
 // src/components/layout/Header/Header.jsx
 import React, { useState } from 'react';
-import Nav from '../../Nav/Nav';
+import Nav from '../Nav/Nav';
 import styles from './Header.module.css';
 import logoSrc from '../../../assets/icons/Logo.svg'; 
 import BasketIcon from '../../../assets/icons/Basket.svg'; 
