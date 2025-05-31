@@ -4,7 +4,7 @@ import styles from './ReservationPage.module.css';
 import DateTimeSelector from '../../components/Reservation/DateTimeSelector';
 import ReservationForm from '../../components/Reservation/ReservationForm';
 import ReservationConfirmation from '../../components/Reservation/ReservationConfirmation';
-import Button from '../../components/Button/Button';
+import Button from '../../components/common/Button/Button';
 import { useReservation } from '../../hooks/useReservation';
 
 /**

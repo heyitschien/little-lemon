@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCart } from '../../context/useCart';
 import styles from './CartPage.module.css';
-import Button from '../../components/Button/Button';
+import Button from '../../components/common/Button/Button';
 
 const CartPage = () => {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();

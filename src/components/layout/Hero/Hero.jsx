@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Hero.module.css';
 import defaultHeroImage from '../../../assets/images/restauranfood.jpg'; // Renamed for clarity
-import Button from '../../Button/Button'; // Import the new Button component
+import Button from '../../common/Button/Button'; // Import the new Button component
 
 const Hero = ({
   title = "Little Lemon",
