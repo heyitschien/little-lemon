@@ -1,0 +1,497 @@
+/* Styles for Chat Assistant Components */
+
+.chatFab {
+  position: fixed;
+  bottom: 30px;
+  right: 0; /* Stick to right edge */
+  background-color: transparent; /* Make background transparent */
+  /* color: white; Removed as image is used */
+  width: 180px; /* Increased from 60px */
+  height: 240px; /* Increased height (was 180px) */
+  /* border-radius: 50%; Removed for straight edge icon */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 24px; Removed as image is used */
+  padding: 0; /* Remove padding to allow image to fill */
+  cursor: pointer;
+  border: none;
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); Removed as per user request to eliminate 'border' effect */
+  z-index: 1000;
+  transition: transform 0.2s ease-in-out; /* Removed box-shadow from transition */
+}
+
+.chatFab:hover {
+  transform: scale(1.1);
+  /* box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); Removed as per user request */
+}
+
+.chatFab:active {
+  transform: scale(1.05);
+}
+
+/* Chat Window Styles */
+.chatWindow {
+  position: fixed;
+  bottom: 100px; /* Adjust to be above the FAB */
+  right: 30px;
+  width: 380px; /* Slightly wider */
+  height: 600px; /* Slightly taller */
+  background-color: #EDEFEE; /* var(--highlight-white) */
+  border-radius: 16px; /* var(--border-radius) */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999;
+  font-family: 'Karla', sans-serif; /* var(--font-karla) */
+}
+
+@media (max-width: 600px) { /* Targeting smaller screens for chat window adjustments */
+  .chatWindow {
+    width: 90vw; /* Take up most of the viewport width */
+    max-width: none; /* Allow it to be 90vw */
+    height: 75vh; /* Adjust height relative to viewport */
+    max-height: 550px; /* Cap maximum height */
+    bottom: 15px; /* Closer to the bottom edge */
+    right: 5vw; /* Centered by using 5vw on left and right */
+    left: 5vw; /* Centered */
+  }
+
+  .chatFab {
+    bottom: 20px; /* Ensure FAB doesn't overlap too much or get hidden */
+    right: 0; /* Stick to right edge */
+    width: 100px; /* Increased from 50px for better mobile visibility */
+    height: 140px; /* Increased height (was 100px) */
+    /* font-size: 20px; This is likely irrelevant now with an image */
+  }
+
+  .chatTitle {
+    font-size: 1.5rem; /* Slightly smaller title for mobile */
+  }
+
+  .closeBtn {
+    font-size: 24px;
+  }
+
+  .chatMessagesArea {
+    padding: 10px;
+  }
+
+  .chatInputAreaContainer {
+    padding: 8px;
+  }
+
+  .chatInput {
+    font-size: 0.9rem;
+    margin-right: 8px;
+  }
+
+  .sendButton {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .quickReplyButton {
+    padding: 5px 10px;
+    font-size: 0.8em;
+  }
+}
+
+.chatHeader {
+  background-color: #495E57; /* var(--primary-green) */
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f9f9f9; /* Light background for header */
+  border-radius: 8px 8px 0 0;
+}
+
+.chatTitle {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+}
+
+.headerButton {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  color: #555;
+}
+
+.headerButton:hover {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.clearChatButton {
+  margin-right: 8px; /* Space between Clear and Close buttons */
+  font-size: 0.85em; /* Slightly smaller text */
+  color: #d32f2f; /* Reddish color for clear/destructive action */
+}
+
+.clearChatButton:hover {
+  background-color: #ffebee; /* Light red on hover */
+  color: #c62828; /* Darker red on hover */
+}
+
+.closeBtn {
+  font-size: 1.5em; /* Make the 'x' a bit larger */
+  line-height: 1;
+}
+
+.chatMessagesArea {
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #FFFFFF; /* Brighter white for message background */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatInputAreaContainer {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid #cccccc;
+  background-color: #f9f9f9;
+}
+
+/* Wrapper for the entire input area (form + quick replies) */
+.chatInputArea {
+  padding: 10px;
+  border-top: 1px solid #eee; /* Separator line */
+  background-color: #f9f9f9; /* Slightly different background for input area */
+}
+
+/* Ensure .chatInputForm is styled for flex display if not already */
+.chatInputForm {
+  display: flex; /* Added to ensure input and button are side-by-side */
+  gap: 10px; /* Space between input field and send button */
+}
+
+/* Chat Input Styles */
+.chatInput {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 16px; /* var(--border-radius) */
+  margin-right: 10px;
+  font-family: 'Karla', sans-serif; /* var(--font-karla) */
+  font-size: 1rem; /* Approx 16pt */
+  line-height: 1.4;
+}
+
+.chatInput:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.sendButton {
+  background-color: #F4CE14; /* var(--primary-yellow) */
+  color: #333333; /* var(--highlight-black) */
+  border: none;
+  padding: 10px 15px;
+  border-radius: 16px; /* var(--border-radius) */
+  cursor: pointer;
+  font-family: 'Karla', sans-serif; /* var(--font-karla) */
+  font-weight: bold;
+  font-size: 1rem; /* Approx 16pt-18pt */
+  transition: background-color 0.2s ease;
+}
+
+.sendButton:hover:not(:disabled) {
+  background-color: #e0b70f; /* Darker yellow */
+}
+
+.sendButton:disabled {
+  background-color: #f9e79f; /* Lighter yellow for disabled */
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.quickRepliesContainer {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap to next line if needed */
+  gap: 8px; /* Space between quick reply buttons */
+  margin-top: 10px; /* Space above the quick reply buttons */
+  justify-content: flex-start; /* Align buttons to the start */
+}
+
+.quickReplyButton {
+  background-color: #e9ecef; /* Light grey background */
+  color: #495057; /* Darker text color */
+  border: 1px solid #ced4da; /* Subtle border */
+  border-radius: 15px; /* Pill-shaped buttons */
+  padding: 6px 12px; /* Padding inside buttons */
+  font-size: 0.85em; /* Slightly smaller font */
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.quickReplyButton:hover {
+  background-color: #dee2e6; /* Slightly darker on hover */
+  border-color: #adb5bd;
+}
+
+.quickReplyButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(73, 94, 87, 0.25); /* Focus ring similar to Little Lemon theme */
+}
+
+/* Ensure .chatInputField takes up available space */
+.chatInputField {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Consistent with send button if desired */
+  font-size: 1em;
+}
+
+/* .chatSendButton styles - ensure consistency */
+.chatSendButton {
+  background-color: #F4CE14; /* Little Lemon Yellow */
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.chatSendButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Message Bubble Styles */
+.messageBubble {
+  padding: 10px 15px;
+  border-radius: 16px; /* var(--border-radius) */
+  max-width: 80%;
+  line-height: 1.5;
+  font-size: 0.95rem; /* Approx 14-15pt */
+  word-wrap: break-word;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 10px; /* Add space between bubbles */
+}
+
+.userMessage {
+  background-color: #FBDABB; /* var(--secondary-peach) */
+  color: #333333; /* var(--highlight-black) */
+  align-self: flex-end;
+  border-bottom-right-radius: 4px; /* Bubble tail effect */
+  margin-left: auto; /* Push to right */
+}
+
+.aiMessage {
+  background-color: #f0f0f0; /* Lighter than window bg, distinct from user */
+  color: #333333; /* var(--highlight-black) */
+  align-self: flex-start;
+  border: 1px solid #e0e0e0;
+  border-bottom-left-radius: 4px; /* Bubble tail effect */
+  margin-right: auto; /* Push to left */
+}
+
+.messageText {
+  margin: 0;
+}
+
+/* Styles for Markdown content within .messageText */
+.messageText p { /* Target paragraphs generated by ReactMarkdown */
+  margin-top: 0;
+  margin-bottom: 0.5em; /* Add a little space between paragraphs in a multi-paragraph message */
+}
+
+.messageText p:last-child {
+  margin-bottom: 0; /* No extra space after the last paragraph */
+}
+
+.messageText strong {
+  font-weight: bold; /* Ensure consistent bolding */
+}
+
+.messageText em {
+  font-style: italic; /* Ensure consistent italics */
+}
+
+.messageText ul,
+.messageText ol {
+  padding-left: 20px; /* Indent lists */
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.messageText li {
+  margin-bottom: 0.25em; /* Space out list items slightly */
+}
+
+/* Message List Styles */
+.messageList {
+  /* This class is mainly for semantic grouping if needed,
+     the parent .chatMessagesArea already handles flex and scroll */
+  width: 100%;
+}
+
+.emptyChat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #888;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Styles for MenuItemCardChat */
+.menuItemCardChat {
+  display: flex;
+  align-items: center;
+  background-color: #fff; /* White background for the card */
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px;
+  margin-top: 10px; /* Space above the card if it's part of a message */
+  margin-bottom: 5px; /* Space below the card */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-width: 300px; /* Max width for the card */
+}
+
+.menuItemCardChatImage {
+  width: 80px; /* Fixed width for the image */
+  height: 80px; /* Fixed height for the image */
+  object-fit: cover; /* Cover the area, cropping if necessary */
+  border-radius: 4px; /* Slightly rounded corners for the image */
+  margin-right: 10px; /* Space between image and text */
+}
+
+.menuItemCardChatDetails {
+  flex-grow: 1; /* Allow details to take remaining space */
+}
+
+.menuItemCardChatName {
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.menuItemCardChatDescription {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 8px;
+  /* Clamp description to a few lines if it's too long */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Show 2 lines */
+  line-clamp: 2; /* Standard property for compatibility */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menuItemCardChatFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px; /* Increased margin-top for better spacing */
+  flex-wrap: wrap; /* Allow items to wrap */
+  gap: 8px; /* Add gap between items when they wrap */
+}
+
+.menuItemCardChatPrice {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #495E57; /* Little Lemon Green */
+  margin-bottom: 0; /* Remove default bottom margin if any */
+  flex-shrink: 0; /* Prevent price from shrinking too much */
+}
+
+.addToCartButton {
+  background-color: #F4CE14; /* Little Lemon Yellow */
+  color: #333333;
+  border: none;
+  border-radius: 16px;
+  padding: 5px 10px;
+  font-size: 0.8em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-grow: 1; /* Allow button to grow if space is available */
+  min-width: 100px; /* Ensure button has a minimum width */
+  text-align: center; /* Center text in button */
+}
+
+.addToCartButton:hover {
+  background-color: #495E57; /* Little Lemon Green on hover */
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Container for multiple item cards */
+.itemCardsContainer {
+  display: flex;
+  flex-direction: column; /* Stack cards vertically */
+  gap: 10px; /* Space between cards */
+  margin-top: 10px; /* Space above the first card if there's text before it */
+}
+
+/* Styles for ErrorBoundary fallback UI */
+.errorMessageBoundary {
+  padding: 10px;
+  background-color: #fff0f0; /* Light red background */
+  border: 1px solid #ffcccc; /* Reddish border */
+  border-radius: 4px;
+  color: #a00; /* Dark red text */
+  font-size: 0.9em;
+}
+
+.errorMessageBoundary p {
+  margin: 0;
+}
+
+/* Loading Indicator Styles */
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align to start for AI messages */
+  padding: 10px 0; /* Match typical message padding */
+}
+
+.loadingIndicator .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  background-color: #b0b0b0; /* Grey color for dots */
+  border-radius: 50%;
+  display: inline-block;
+  animation: wave 1.3s infinite ease-in-out;
+}
+
+.loadingIndicator .dot:nth-child(1) {
+  animation-delay: -0.3s;
+}
+
+.loadingIndicator .dot:nth-child(2) {
+  animation-delay: -0.15s;
+}
+
+@keyframes wave {
+  0%, 60%, 100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-8px); /* Make dots jump up */
+  }
+}

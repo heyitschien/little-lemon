@@ -8,7 +8,7 @@ import MenuPage from './pages/MenuPage/MenuPage';
 import CartPage from './pages/CartPage/CartPage';
 import ReservationPage from './pages/ReservationPage/ReservationPage';
 import AboutPage from './pages/AboutPage/AboutPage';
-import ChatFeatureContainer from './components/ChatAssistant/ChatFeatureContainer';
+import ChatFeatureContainer from './components/features/ChatAssistant/ChatFeatureContainer';
 import { CartProvider } from './context/CartContext';
 
 function App() {
