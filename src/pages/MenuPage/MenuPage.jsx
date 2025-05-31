@@ -3,7 +3,7 @@ import styles from './MenuPage.module.css';
 // import IngredientSpotlight from '../../components/IngredientSpotlight/IngredientSpotlight';
 // import MenuCategorySection from '../../components/MenuCategorySection/MenuCategorySection';
 // import { menuItems, menuCategories } from '../../data/menuData';
-import OrderForDelivery from '../../components/OrderForDelivery/OrderForDelivery'; // Import OrderForDelivery
+import MenuSection from '../../components/features/Menu/MenuSection/MenuSection'; // Import MenuSection
 
 const MenuPage = () => {
   return (
@@ -22,7 +22,7 @@ const MenuPage = () => {
             );
           })
         */}
-        <OrderForDelivery title="Our Menu" /> {/* Use OrderForDelivery with new title */}
+        <MenuSection title="Our Menu" /> {/* Use MenuSection with new title */}
       </main>
     </div>
   );

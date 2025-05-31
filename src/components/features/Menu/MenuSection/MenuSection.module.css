@@ -1,0 +1,174 @@
+.orderForDeliverySection {
+  padding: 2rem 0;
+  background-color: #f8f8f8;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.sectionTitleContainer {
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 2.5rem;
+  color: #495E57;
+  text-transform: none;
+  margin: 0;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+}
+
+.bikeIcon {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.filterContainer {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  /* Using standard properties for better cross-browser compatibility */
+}
+
+.filterContainer::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+.filterPill {
+  flex-shrink: 0;
+  padding: 0.5rem 1.2rem;
+  margin-right: 0.8rem;
+  background-color: #edefee;
+  border: none;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  color: #333333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filterPill:last-child {
+  margin-right: 0;
+}
+
+.filterPill.active {
+  background-color: #495E57;
+  color: white;
+}
+
+.menuCategoriesContainer {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.categorySection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.categoryTitle {
+  font-family: 'Markazi Text', serif;
+  font-size: 2rem;
+  color: var(--primary-green, #495E57);
+  position: relative;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.categoryTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-yellow, #F4CE14);
+  border-radius: 2px;
+}
+
+.menuItemsGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .menuItemsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .categoryTitle {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .menuItemsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categoryTitle {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .menuItemsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .categoryTitle {
+    font-size: 2rem;
+  }
+
+  .menuCategoriesContainer {
+    gap: 2rem;
+  }
+
+  .categorySection {
+    gap: 1rem;
+  }
+}
+
+/* --- Sticky Header Styles --- */
+.stickyWrapper {
+  position: sticky;
+  top: 70px; /* Match your header height */
+  background-color: #f8f8f8;
+  z-index: 10;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  margin-top: -1rem; /* Offset the padding of the parent section */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .orderForDeliverySection {
+    padding: 1.5rem 0;
+  }
+  
+  .stickyWrapper {
+    top: 70px; /* Adjust based on mobile header height */
+    padding-top: 0.5rem;
+  }
+  
+  .filterPill {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+  }
+}
