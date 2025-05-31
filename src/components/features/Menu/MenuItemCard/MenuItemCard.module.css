@@ -1,4 +1,4 @@
-.orderDeliveryCard {
+.menuItemCard {
   background-color: white;
   border-radius: 16px;
   padding: 1rem;
@@ -101,7 +101,7 @@
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  .orderDeliveryCard {
+  .menuItemCard {
     width: 100%;
   }
   

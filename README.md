@@ -3,6 +3,12 @@
 ## Project Overview
 This is the capstone project for the Meta Front-End Developer Professional Certificate program. The Little Lemon web application is a responsive React-based solution for the fictional Mediterranean restaurant "Little Lemon", focusing on improving the user experience for table reservations.
 
+## Project Information
+- **Developer**: Chien
+- **Project Start Date**: May 27, 2025
+- **Current Status**: In Development - Post House Cleaning
+- **Repository**: [github.com/heyitschien/little-lemon](https://github.com/heyitschien/little-lemon)
+
 ## Project Objectives
 The main goal is to create a fully functional and user-friendly table reservation system that addresses previous user complaints about confusion, appearance, and functionality. The application will showcase skills learned throughout the Meta Front-End Developer program.
 
@@ -63,47 +69,65 @@ The project is organized to promote scalability, maintainability, and a clear se
 
 ```
 little-lemon/
-├── .gitignore            # Specifies intentionally untracked files that Git should ignore.
-├── .prettierrc           # Configuration file for Prettier code formatter.
-├── README.md             # This file: Project overview, setup, structure, and guidelines.
-├── docs/                 # All project documentation, planning, and design artifacts.
-│   ├── Exercise-Wireframing-the-project-Wireframe/ # Wireframes and related assets.
-│   ├── project-structure.md  # (Can be merged into README or kept for specific notes)
-│   └── prototype/            # Design prototypes.
-├── eslint.config.js      # Configuration for ESLint.
-├── index.html            # The main HTML page that serves as the entry point for the SPA.
-├── node_modules/         # Directory where project dependencies are installed (managed by npm).
-├── package-lock.json     # Records the exact versions of dependencies.
-├── package.json          # Lists project dependencies and defines scripts (dev, build, lint, etc.).
-├── public/               # Static assets that bypass the build process.
-│   └── vite.svg          # (Example: Vite logo, or your favicon.ico)
-├── src/                  # Main application source code.
-│   ├── App.css           # Styles for the main App component and global layout utilities.
-│   ├── App.jsx           # The root React component of the application.
-│   ├── main.jsx          # The entry point for the React application (renders App into the DOM).
-│   ├── index.css         # Global styles, CSS resets, and CSS custom properties (variables).
-│   ├── assets/           # UI assets processed by Vite (images, icons, fonts).
-│   │   ├── icons/        # SVG icons and other icon formats.
-│   │   └── images/       # Image files (jpg, png, webp, etc.).
-│   ├── components/       # Reusable React UI components.
-│   │   ├── Header/
-│   │   │   ├── Header.jsx
-│   │   │   └── Header.module.css
-│   │   ├── Nav/
-│   │   │   ├── Nav.jsx
-│   │   │   └── Nav.module.css
-│   │   ├── MainComponent/
-│   │   │   ├── MainComponent.jsx
-│   │   │   └── MainComponent.module.css
-│   │   └── Footer/
-│   │       ├── Footer.jsx
-│   │       └── Footer.module.css
-│   ├── contexts/         # (Empty) For React Context API files (global state management).
-│   ├── hooks/            # (Empty) For custom React Hooks.
-│   ├── pages/            # (Empty) For top-level components representing application pages/views.
-│   ├── services/         # (Empty) For API call logic and other external service integrations.
-│   └── utils/            # (Empty) For general utility functions.
-└── vite.config.js        # Configuration file for Vite build tool.
+├── .gitignore            # Specifies intentionally untracked files that Git should ignore
+├── .prettierrc           # Configuration file for Prettier code formatter
+├── .github/              # GitHub configuration files
+│   └── workflows/        # GitHub Actions workflow definitions
+├── README.md             # This file: Project overview, setup, structure, and guidelines
+├── docs/                 # All project documentation, planning, and design artifacts
+│   ├── bugs/             # Bug reports and tracking
+│   ├── ci-cd-pipeline/   # CI/CD pipeline documentation
+│   ├── design/           # Design documents and specifications
+│   ├── high-level/       # High-level architecture and project structure
+│   ├── house-cleaning/   # House cleaning plans and documentation
+│   ├── logs/             # Project progress logs
+│   ├── testing/          # Testing documentation and guides
+│   ├── ui-style/         # UI style guides and design system
+│   └── wire-frame/       # Wireframes and mockups
+├── eslint.config.js      # Configuration for ESLint
+├── index.html            # The main HTML page that serves as the entry point for the SPA
+├── node_modules/         # Directory where project dependencies are installed (managed by npm)
+├── package-lock.json     # Records the exact versions of dependencies
+├── package.json          # Lists project dependencies and defines scripts (dev, build, lint, etc.)
+├── playwright.config.ts  # Configuration for Playwright testing
+├── scripts/              # Utility scripts for development and deployment
+├── src/                  # Main application source code
+│   ├── App.css           # Styles for the main App component and global layout utilities
+│   ├── App.jsx           # The root React component of the application
+│   ├── main.jsx          # The entry point for the React application (renders App into the DOM)
+│   ├── index.css         # Global styles, CSS resets, and CSS custom properties (variables)
+│   ├── assets/           # UI assets processed by Vite (images, icons, fonts)
+│   │   ├── icons/        # SVG icons and other icon formats
+│   │   └── images/       # Image files (jpg, png, webp, etc.)
+│   ├── components/       # Reusable React UI components
+│   │   ├── common/       # Shared components used across multiple features
+│   │   │   └── Button/   # Button component and styles
+│   │   ├── features/     # Feature-specific components
+│   │   │   ├── About/    # About page components
+│   │   │   ├── ChatAssistant/ # Chat assistant feature components
+│   │   │   ├── Menu/     # Menu-related components
+│   │   │   ├── Reservation/ # Reservation-related components
+│   │   │   └── Testimonials/ # Testimonial components
+│   │   └── layout/       # Layout components
+│   │       ├── Footer/   # Footer component and styles
+│   │       ├── Header/   # Header component and styles
+│   │       ├── Hero/     # Hero section component and styles
+│   │       ├── MainComponent/ # Main content wrapper component
+│   │       └── Nav/      # Navigation component and styles
+│   ├── context/          # React Context API files (global state management)
+│   ├── data/             # Static data and mock data for development
+│   ├── hooks/            # Custom React Hooks
+│   ├── pages/            # Top-level components representing application pages/views
+│   │   ├── AboutPage/    # About page
+│   │   ├── CartPage/     # Shopping cart page
+│   │   ├── MenuPage/     # Menu page
+│   │   ├── MyReservationsPage/ # User reservations page
+│   │   └── ReservationPage/ # Reservation booking page
+│   ├── services/         # API call logic and other external service integrations
+│   └── utils/            # General utility functions
+├── tests/                # Test files for the application
+├── tests-examples/       # Example test files
+└── vite.config.js        # Configuration file for Vite build tool
 ```
 
 ### Directory Guidelines: What Goes Where
@@ -115,9 +139,12 @@ little-lemon/
 *   **`src/`**: This is where all your application's source code lives.
     *   **`src/assets/`**: Store images, icons, custom fonts, etc., that are directly imported and used within your React components. Vite will process these assets (optimize, hash filenames).
     *   **`src/components/`**:
-        *   This is for all your reusable UI building blocks.
-        *   Each component should ideally reside in its own folder (e.g., `src/components/Button/`) containing its JSX file (`Button.jsx`) and its scoped styles (`Button.module.css`).
-        *   Aim for small, focused components.
+        *   This directory contains all UI components organized into three main categories:
+            * **`common/`**: Shared components that are used across multiple features (e.g., `Button`, form elements)
+            * **`features/`**: Feature-specific components organized by feature area (e.g., `Menu`, `Reservation`)
+            * **`layout/`**: Components that define the application's layout structure (e.g., `Header`, `Footer`, `Nav`)
+        *   Each component should reside in its own folder containing its JSX file and scoped styles (e.g., `Button.jsx` and `Button.module.css`)
+        *   Aim for small, focused components with clear responsibilities
     *   **`src/contexts/`**:
         *   Use this for React Context API providers and consumers if you need to share state across different parts of your application without prop drilling (e.g., theme context, user authentication context).
     *   **`src/hooks/`**:
@@ -157,7 +184,6 @@ This capstone project integrates skills from all previous courses in the Meta Fr
 - Form validation
 - Unit testing
 - Accessibility compliance
-- Version control with Git
 
 ## Expanding the ESLint configuration
 

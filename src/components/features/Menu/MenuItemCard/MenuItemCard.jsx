@@ -19,7 +19,7 @@ const MenuItemCard = ({ item }) => {
   };
 
   return (
-    <div className={styles.orderDeliveryCard}>
+    <div className={styles.menuItemCard}>
       <div className={styles.cardImageContainer}>
         <img src={image} alt={name} className={styles.cardImage} />
       </div>

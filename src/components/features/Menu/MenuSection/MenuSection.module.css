@@ -1,4 +1,4 @@
-.orderForDeliverySection {
+.menuSection {
   padding: 2rem 0;
   background-color: #f8f8f8;
 }
@@ -158,7 +158,7 @@
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  .orderForDeliverySection {
+  .menuSection {
     padding: 1.5rem 0;
   }
   

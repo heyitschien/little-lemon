@@ -21,7 +21,7 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
   // Handle category click
   const handleCategoryClick = (category) => {
     // First, scroll to the top of the menu section to reset the view
-    const menuSection = document.querySelector(`.${styles.orderForDeliverySection}`);
+    const menuSection = document.querySelector(`.${styles.menuSection}`);
     if (menuSection) {
       // Use scrollTo to position right below the sticky header
       window.scrollTo({
@@ -43,7 +43,7 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
     : { [activeCategory]: filteredItems };
 
   return (
-    <section className={styles.orderForDeliverySection}>
+    <section className={styles.menuSection}>
       <div className={styles.stickyWrapper}>
         <div className={styles.container}>
           <div className={styles.sectionTitleContainer}>
