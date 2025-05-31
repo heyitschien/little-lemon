@@ -8,6 +8,9 @@ This is the capstone project for the Meta Front-End Developer Professional Certi
 - **Project Start Date**: May 27, 2025
 - **Current Status**: In Development - Post House Cleaning
 - **Repository**: [github.com/heyitschien/little-lemon](https://github.com/heyitschien/little-lemon)
+- **Environments**:
+  - **Production**: [little-lemon.vercel.app](https://little-lemon.vercel.app) (main branch)
+  - **Staging**: [little-lemon-staging.vercel.app](https://little-lemon-staging.vercel.app) (staging branch)
 
 ## Project Objectives
 The main goal is to create a fully functional and user-friendly table reservation system that addresses previous user complaints about confusion, appearance, and functionality. The application will showcase skills learned throughout the Meta Front-End Developer program.
