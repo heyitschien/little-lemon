@@ -1,0 +1,85 @@
+/* src/components/Footer/Footer.module.css */
+.footerContainer {
+    background-color: white; /* Matched to prototype */
+    padding: 60px 0;
+    border-top: 1px solid #ddd;
+    width: 100%;
+    color: #333333; /* --highlight-black */
+    box-sizing: border-box; /* Ensure padding and border don't add to width */
+}
+
+.footerSections { /* Corresponds to .footer-container in prototype */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* From .container in prototype */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footerSection h3 {
+    font-family: 'Karla', sans-serif; /* From prototype */
+    font-size: 18px;
+    font-weight: 700; /* Style Guide: Karla Bold */
+    margin-bottom: 15px;
+    text-transform: uppercase; /* From prototype */
+    color: #495E57; /* --primary-green, assumed for headings if not black */
+}
+
+.footerSection ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footerSection ul li {
+    margin-bottom: 10px; /* From prototype */
+}
+
+.footerSection ul li a,
+.footerSection ul li {
+    text-decoration: none;
+    color: #333333; /* --highlight-black */
+    font-size: 16px; /* From prototype */
+    font-family: 'Karla', sans-serif; /* Assuming Karla for links too */
+}
+
+.footerSection ul li a:hover {
+    color: #495E57; /* --primary-green */
+    text-decoration: underline; /* Common hover effect */
+}
+
+.logoSection {
+    /* Specific styles for logo section if needed */
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-start; /* Default for flex-direction: column */
+}
+
+.logoSection p {
+    margin-top: 10px; /* Adjust as needed, prototype had margin-bottom on logo */
+    font-family: 'Karla', sans-serif; /* Assuming Karla for copyright */
+    font-size: 16px; /* Matching link font size */
+}
+
+.footerLogo {
+    height: 80px; /* From prototype .footer-logo */
+    margin-bottom: 20px; /* From prototype .footer-logo */
+}
+
+/* Responsive Styles from prototype */
+@media (max-width: 992px) {
+    .footerSections {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .footerSections {
+        grid-template-columns: 1fr; /* Stack columns */
+        text-align: center; /* Center content in stacked view */
+    }
+
+    .logoSection {
+        align-items: center; /* Center logo and copyright in stacked view */
+    }
+}
