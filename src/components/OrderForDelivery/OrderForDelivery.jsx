@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './OrderForDelivery.module.css';
-import OrderDeliveryCard from '../OrderDeliveryCard/OrderDeliveryCard';
+import MenuItemCard from '../features/Menu/MenuItemCard/MenuItemCard';
 import { menuItems, menuCategories } from '../../data/menuData';
 import bikeIcon from '../../assets/icons/bike.svg';
 
@@ -86,7 +86,7 @@ const OrderForDelivery = ({ title = "ORDER FOR DELIVERY!" }) => {
                 <h3 className={styles.categoryTitle}>{category}</h3>
                 <div className={styles.menuItemsGrid}>
                   {items.map((item) => (
-                    <OrderDeliveryCard key={item.id} item={item} />
+                    <MenuItemCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>
