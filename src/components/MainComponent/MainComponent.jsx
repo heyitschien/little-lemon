@@ -4,7 +4,7 @@ import styles from './MainComponent.module.css'; // For future styles
 import Hero from '../layout/Hero/Hero'; // Import the Hero component
 import MenuSection from '../features/Menu/MenuSection/MenuSection'; // Import the MenuSection component
 import Testimonials from '../Testimonials/Testimonials'; // Import the Testimonials component
-import About from '../About/About'; // Import the About component
+import About from '../features/About/About'; // Import the About component
 
 function MainComponent() {
     return (
