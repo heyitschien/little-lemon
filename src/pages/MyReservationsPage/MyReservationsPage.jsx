@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './MyReservationsPage.module.css';
-import ReservationList from '../../components/Reservation/ReservationList';
+import ReservationList from '../../components/features/Reservation/ReservationList';
 
 /**
  * MyReservationsPage Component

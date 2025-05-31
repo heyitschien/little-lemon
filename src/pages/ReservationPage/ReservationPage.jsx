@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './ReservationPage.module.css';
-import DateTimeSelector from '../../components/Reservation/DateTimeSelector';
-import ReservationForm from '../../components/Reservation/ReservationForm';
-import ReservationConfirmation from '../../components/Reservation/ReservationConfirmation';
+import DateTimeSelector from '../../components/features/Reservation/DateTimeSelector';
+import ReservationForm from '../../components/features/Reservation/ReservationForm';
+import ReservationConfirmation from '../../components/features/Reservation/ReservationConfirmation';
 import Button from '../../components/common/Button/Button';
 import { useReservation } from '../../hooks/useReservation';
 
