@@ -1,8 +1,13 @@
-# Developer Daily Checklist
+---
+Title: Developer Daily Checklist
+Author: Chien Escalera Duong
+Date Created: 2025-05-30
+Time Created: 19:25:20 PDT
+Last Updated: 2025-06-02 11:48:00 PDT
+Version: 1.1
+---
 
-**Date Created:** 2025-05-30  
-**Time:** 19:25:20 PDT  
-**Author:** Chien  
+# Developer Daily Checklist  
 
 ## Overview
 
@@ -152,4 +157,4 @@ This document provides standardized checklists for developers to follow at the b
 
 ---
 
-Last updated: 2025-05-30 19:25:20 PDT
+Last Updated: 2025-06-02 11:48:00 PDT
