@@ -3,8 +3,8 @@ Title: Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
 Author: Chien Escalera Duong
 Date Created: 2025-06-02
 Time Created: 11:44:23 PDT
-Last Updated: 2025-06-02 13:14:12 PDT
-Version: 1.3
+Last Updated: 2025-06-02 13:54:00 PDT
+Version: 1.4
 ---
 
 # Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
@@ -93,7 +93,7 @@ Our chosen testing stack for this Vite-based project is:
 
 ## 4. Test Progress & Coverage
 
-As of 2025-06-02, we have **17 passing unit tests**.
+As of 2025-06-02, we have **21 passing unit tests**.
 
 ### 4.1. `ReservationForm.jsx` (Component)
 - **Status:** Completed (10 tests)
@@ -121,21 +121,17 @@ As of 2025-06-02, we have **17 passing unit tests**.
   - Returns an empty array if all time slots for the given date are booked.
   - Returns all base slots if existing bookings are for a different date.
 
-#### 4.2.3. `createReservation()` (Next)
-- **Status:** Pending
-- **Test Plan:**
+#### 4.2.3. `createReservation()`
+- **Status:** Completed (4 tests)
+- **Coverage (Tested by controlling `localStorage`, `generateReservationId` is an internal function and its output format is verified):
   - **Success Case:**
-    - Given valid reservation data and an available time slot.
-    - Mock `generateReservationId` to return a predictable ID.
-    - Verify it saves the reservation to `localStorage` (via `localStorageMock.setItem`).
-    - Verify it returns the created reservation object with the mocked ID.
+    - Successfully creates and stores a reservation when the slot is available.
+    - Correctly adds a new reservation when other non-conflicting reservations exist.
+    - Verifies the returned reservation object structure, ID format, status, and `createdAt` timestamp.
+    - Verifies `localStorage.setItem` is called with the correctly updated list of reservations.
   - **Error Cases (Throwing Errors):**
-    - Missing required fields (name, email, phone, date, time).
-    - Invalid email format.
-    - Time slot not available for the given date (control via `localStorageMock.getItem` to influence the internal `getAvailableTimeSlots` call).
-  - **Mocking Strategy:**
-    - `localStorageMock.getItem` will be used to simulate existing reservations, thus controlling the behavior of the internal `getAvailableTimeSlots` call.
-    - `generateReservationId` (from `./utils/generateId`) will be mocked using `vi.mock` to provide predictable IDs for assertions.
+    - Throws an error if required reservation information is missing.
+    - Throws an error if the selected time slot is not available (controlled via `localStorageMock.getItem`).
 
 ### 4.3. Reporting
 - **Vitest UI:** Use `npm run test:ui` for an interactive HTML view of test execution and results.
