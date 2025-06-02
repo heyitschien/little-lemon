@@ -3,8 +3,8 @@ Title: Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
 Author: Chien Escalera Duong
 Date Created: 2025-06-02
 Time Created: 11:44:23 PDT
-Last Updated: 2025-06-02 13:54:00 PDT
-Version: 1.4
+Last Updated: 2025-06-02 16:25:00 PDT
+Version: 1.5
 ---
 
 # Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
@@ -93,7 +93,7 @@ Our chosen testing stack for this Vite-based project is:
 
 ## 4. Test Progress & Coverage
 
-As of 2025-06-02, we have **21 passing unit tests**.
+As of 2025-06-02, we have **30 passing unit tests**.
 
 ### 4.1. `ReservationForm.jsx` (Component)
 - **Status:** Completed (10 tests)
@@ -132,6 +132,33 @@ As of 2025-06-02, we have **21 passing unit tests**.
   - **Error Cases (Throwing Errors):**
     - Throws an error if required reservation information is missing.
     - Throws an error if the selected time slot is not available (controlled via `localStorageMock.getItem`).
+
+#### 4.2.4. `getReservationById()`
+- **Status:** Completed (3 tests)
+- **Coverage (Tested by controlling `localStorage`):
+  - Returns the correct reservation object if the ID is found.
+  - Returns `null` if the reservation ID is not found.
+  - Returns `null` if `localStorage` is empty or contains no reservations.
+
+#### 4.2.5. `updateReservation()`
+- **Status:** Completed (3 tests)
+- **Coverage (Tested by controlling `localStorage`):
+  - Successfully updates specified fields of an existing reservation.
+  - Adds/updates an `updatedAt` timestamp.
+  - Returns the complete updated reservation object.
+  - Verifies `localStorage.setItem` is called with the correctly modified list of reservations.
+  - Returns `null` if the reservation ID to update is not found.
+  - Ensures `createdAt` timestamp and unspecified fields remain unchanged.
+
+#### 4.2.6. `cancelReservation()`
+- **Status:** Completed (3 tests)
+- **Coverage (Tested by controlling `localStorage`):
+  - Successfully changes the status of an existing reservation to 'cancelled'.
+  - Adds a `cancelledAt` timestamp.
+  - Returns `true` upon successful cancellation.
+  - Verifies `localStorage.setItem` is called with the correctly modified list of reservations.
+  - Returns `false` if the reservation ID to cancel is not found.
+  - Ensures other reservations are not affected when one is cancelled.
 
 ### 4.3. Reporting
 - **Vitest UI:** Use `npm run test:ui` for an interactive HTML view of test execution and results.

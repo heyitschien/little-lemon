@@ -1,7 +1,14 @@
 // src/services/reservationService.test.js
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 // Import actual service functions. We will control dependencies via localStorage mock.
-import { getAvailableTimeSlots, getReservationsFromStorage as actualGetReservationsFromStorage_fromService, createReservation } from './reservationService';
+import {
+  getAvailableTimeSlots,
+  getReservationsFromStorage as actualGetReservationsFromStorage_fromService,
+  createReservation,
+  getReservationById,
+  updateReservation,
+  cancelReservation
+} from './reservationService';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -180,6 +187,141 @@ describe('Reservation Service', () => {
         expect.objectContaining(existingReservations[1]),
         expect.objectContaining(newReservation)
       ]));
+    });
+  });
+
+  describe('getReservationById', () => {
+    test('should return the reservation if found', () => {
+      const mockReservations = [
+        { id: '1', data: 'reservation1' },
+        { id: '2', data: 'reservation2' },
+      ];
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(mockReservations));
+      const reservation = getReservationById('1');
+      expect(reservation).toEqual({ id: '1', data: 'reservation1' });
+    });
+
+    test('should return null if reservation is not found', () => {
+      const mockReservations = [{ id: '1', data: 'reservation1' }];
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(mockReservations));
+      const reservation = getReservationById('3');
+      expect(reservation).toBeNull();
+    });
+
+    test('should return null if localStorage is empty', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([]));
+      const reservation = getReservationById('1');
+      expect(reservation).toBeNull();
+    });
+  });
+
+  describe('updateReservation', () => {
+    const reservationId = 'RES-UPDATE-123';
+    const initialReservation = {
+      id: reservationId,
+      date: '2024-02-01',
+      time: '18:00',
+      partySize: 2,
+      name: 'Original Name',
+      email: 'original@example.com',
+      phone: '111-222-3333',
+      status: 'confirmed',
+      createdAt: new Date('2024-01-01T10:00:00.000Z').toISOString()
+    };
+
+    test('should update the reservation and return the updated object', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation]));
+      const updates = {
+        time: '19:30',
+        partySize: 3,
+        name: 'Updated Name'
+      };
+      const updatedReservation = updateReservation(reservationId, updates);
+
+      expect(updatedReservation).not.toBeNull();
+      expect(updatedReservation.id).toBe(reservationId);
+      expect(updatedReservation.time).toBe('19:30');
+      expect(updatedReservation.partySize).toBe(3);
+      expect(updatedReservation.name).toBe('Updated Name');
+      expect(updatedReservation.email).toBe(initialReservation.email); // Unchanged
+      expect(updatedReservation.updatedAt).toBeDefined();
+      expect(new Date(updatedReservation.updatedAt).getTime()).toBeGreaterThan(new Date(initialReservation.createdAt).getTime());
+
+      expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
+      const storedReservations = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
+      expect(storedReservations).toHaveLength(1);
+      expect(storedReservations[0]).toEqual(updatedReservation);
+    });
+
+    test('should return null if reservation to update is not found', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation]));
+      const result = updateReservation('NON-EXISTENT-ID', { time: '20:00' });
+      expect(result).toBeNull();
+      expect(localStorageMock.setItem).not.toHaveBeenCalled();
+    });
+
+     test('should only update provided fields and add updatedAt timestamp', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation]));
+      const updates = { partySize: 5 }; // Only updating partySize
+      const updatedReservation = updateReservation(reservationId, updates);
+
+      expect(updatedReservation.partySize).toBe(5);
+      expect(updatedReservation.name).toBe(initialReservation.name); // Should remain original
+      expect(updatedReservation.time).toBe(initialReservation.time); // Should remain original
+      expect(updatedReservation.updatedAt).toBeDefined();
+      expect(updatedReservation.createdAt).toBe(initialReservation.createdAt); // createdAt should not change
+    });
+  });
+
+  describe('cancelReservation', () => {
+    const reservationId = 'RES-CANCEL-123';
+    const initialReservation = {
+      id: reservationId,
+      date: '2024-03-01',
+      time: '20:00',
+      partySize: 4,
+      name: 'To Be Cancelled',
+      status: 'confirmed',
+      createdAt: new Date('2024-02-15T12:00:00.000Z').toISOString()
+    };
+
+    test('should cancel the reservation, update status and add cancelledAt, then return true', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation]));
+      const result = cancelReservation(reservationId);
+
+      expect(result).toBe(true);
+      expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
+      const storedReservations = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
+      expect(storedReservations).toHaveLength(1);
+      const cancelledRes = storedReservations[0];
+      expect(cancelledRes.id).toBe(reservationId);
+      expect(cancelledRes.status).toBe('cancelled');
+      expect(cancelledRes.cancelledAt).toBeDefined();
+      expect(new Date(cancelledRes.cancelledAt).getTime()).toBeGreaterThan(new Date(initialReservation.createdAt).getTime());
+    });
+
+    test('should return false if reservation to cancel is not found', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation]));
+      const result = cancelReservation('NON-EXISTENT-ID');
+      expect(result).toBe(false);
+      expect(localStorageMock.setItem).not.toHaveBeenCalled();
+    });
+
+    test('should handle cancelling a reservation when multiple reservations exist', () => {
+      const otherReservation = { id: 'OTHER-RES', date: '2024-03-02', time: '19:00', status: 'confirmed' };
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify([initialReservation, otherReservation]));
+      
+      const result = cancelReservation(reservationId);
+      expect(result).toBe(true);
+
+      const storedReservations = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
+      expect(storedReservations).toHaveLength(2);
+      const cancelledRes = storedReservations.find(r => r.id === reservationId);
+      const untouchedRes = storedReservations.find(r => r.id === 'OTHER-RES');
+
+      expect(cancelledRes.status).toBe('cancelled');
+      expect(untouchedRes.status).toBe('confirmed');
+      expect(untouchedRes.cancelledAt).toBeUndefined();
     });
   });
 });
