@@ -1,3 +1,12 @@
+---
+Title: Playwright for Little Lemon: Main Principles & User Guide
+Author: Chien Escalera Duong
+Date Created: 2025-06-02
+Time Created: 17:29:00 PDT
+Last Updated: 2025-06-02 17:29:00 PDT
+Version: 1.0
+---
+
 # Playwright for Little Lemon: Main Principles & User Guide
 
 This document outlines the main principles and guidelines for using Playwright for end-to-end (E2E) testing in the Little Lemon project.

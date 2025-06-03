@@ -1,13 +1,23 @@
+---
+Title: End-to-End Testing Documentation
+Author: Chien Escalera Duong
+Date Created: 2025-06-02
+Time Created: 17:29:00 PDT
+Last Updated: 2025-06-02 17:35:00 PDT
+Version: 1.0
+---
+
 # End-to-End Testing Documentation
 
 ## Overview
 
-This section contains documentation related to end-to-end testing the Little Lemon application, including Playwright setup and test scenarios.
+This section contains documentation related to end-to-end (E2E) testing the Little Lemon application using Playwright.
 
 ## Contents
 
-- [Playwright Setup](./playwright-setup.md) - Configuration guide for Playwright testing
-- [Test Scenarios](./test-scenarios.md) - End-to-end test scenarios and user flows
+- [Playwright Main Principles & User Guide](./playwright-main-principles.md) - Core concepts and guidelines for using Playwright.
+- [Playwright Specific Configuration](./playwright-little-lemon-config.md) - Details on the `playwright.config.ts` for this project.
+- [Test Scenarios](./test-scenarios.md) - Defined E2E test scenarios and user flows to be automated.
 
 ## Mobile E2E Testing
 

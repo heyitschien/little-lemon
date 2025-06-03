@@ -1,3 +1,12 @@
+---
+Title: Playwright for Little Lemon: Specific Configuration
+Author: Chien Escalera Duong
+Date Created: 2025-06-02
+Time Created: 17:29:00 PDT
+Last Updated: 2025-06-02 17:29:00 PDT
+Version: 1.0
+---
+
 # Playwright for Little Lemon: Specific Configuration
 
 This document details the specific Playwright configuration for the Little Lemon project, primarily focusing on `playwright.config.ts`.

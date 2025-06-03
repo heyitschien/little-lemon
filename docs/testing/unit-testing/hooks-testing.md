@@ -1,3 +1,12 @@
+---
+Title: Testing Custom React Hooks
+Author: Chien Escalera Duong
+Date Created: 2025-06-02
+Time Created: 17:29:00 PDT
+Last Updated: 2025-06-02 17:29:00 PDT
+Version: 1.0
+---
+
 # Testing Custom React Hooks
 
 ## Overview
