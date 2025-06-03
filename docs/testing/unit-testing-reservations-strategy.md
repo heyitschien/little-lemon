@@ -3,8 +3,8 @@ Title: Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
 Author: Chien Escalera Duong
 Date Created: 2025-06-02
 Time Created: 11:44:23 PDT
-Last Updated: 2025-06-02 16:25:00 PDT
-Version: 1.5
+Last Updated: 2025-06-02 16:59 PDT
+Version: 1.6
 ---
 
 # Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
@@ -199,6 +199,54 @@ Here's how the directory structure will look for the `ReservationForm` component
 │   │   └── useReservation.js
 │   │   └── useReservation.test.js      <-- Test file for the hook
 │   ├── pages/
+```
+
+## 5. Advanced Topics & Lessons Learned
+
+During the development of unit tests for the reservation feature components (`DateTimeSelector`, `ReservationConfirmation`, `ReservationList`), several key learnings and advanced patterns emerged:
+
+### 5.1. Timezone Handling in Date Formatting
+
+-   **Issue:** JavaScript's `new Date('YYYY-MM-DD')` parsing treats the date string as UTC, which can lead to off-by-one day errors when displaying dates in the local timezone, especially if the local timezone is behind UTC.
+-   **Solution:** When formatting dates for display (e.g., in `ReservationConfirmation.jsx` and `ReservationList.jsx`), ensure date strings are parsed into their constituent parts (year, month, day) and then reconstructed using `new Date(year, monthIndex, day)` which correctly interprets them in the local timezone. Alternatively, use a robust date-fns/luxon library if more complex timezone management is needed. For simple display formatting, `toLocaleDateString()` with appropriate options was sufficient after correct local Date object creation.
+
+### 5.2. Vitest: Effective Mocking with `vi.mock()`
+
+-   **Hoisting Issues with `vi.mock`:** When mocking modules, especially services that are imported and used within components, Vitest's hoisting behavior can sometimes lead to `undefined` mock functions if not handled correctly.
+-   **Solution (`ReservationList.test.jsx`):**
+    -   Define mock functions (`vi.fn()`) *inside* the `vi.mock` factory function.
+    -   Ensure that the actual module import (e.g., `import { getReservationsFromStorage, cancelReservation } from '...'`) happens *after* the `vi.mock` call.
+    -   Use the imported functions directly in tests, as they will be the mocked versions.
+
+    ```javascript
+    // Example from ReservationList.test.jsx
+    import { getReservationsFromStorage, cancelReservation } from '../../../services/reservationService'; // Actual import
+
+    vi.mock('../../../services/reservationService', () => ({ // Mock definition
+      getReservationsFromStorage: vi.fn(),
+      cancelReservation: vi.fn(),
+    }));
+
+    // In tests:
+    // getReservationsFromStorage.mockReturnValue(...);
+    // expect(cancelReservation).toHaveBeenCalledWith(...);
+    ```
+    This pattern ensures that the mocks are properly initialized and hoisted before the component code (which imports the service) is evaluated.
+
+### 5.3. Asserting UI State During Error Conditions
+
+-   **Challenge:** When testing error states (e.g., a service call fails), the UI might change significantly. An error message might be displayed, and other elements (like a list of items) might be removed or hidden.
+-   **Solution (`ReservationList.test.jsx` - Cancellation Error Tests):**
+    -   Verify that the expected error message *is* present.
+    -   Crucially, verify that elements that *should no longer be visible* are indeed absent. Use `screen.queryByText(...)` (which returns `null` if not found) combined with `.not.toBeInTheDocument()` for these assertions.
+    -   Example: After a failed cancellation, the reservation item itself ("Cancel Candidate") should not be displayed if an error message takes over that part of the UI.
+
+### 5.4. Revisiting Loading State Tests
+
+-   **Context (`ReservationList.jsx`):** The initial test for the loading state in `ReservationList` was removed.
+-   **Rationale:** The `useEffect` hook in `ReservationList` fetches and processes reservations synchronously (e.g., `getReservationsFromStorage().sort().filter()`). If `getReservationsFromStorage` is mocked to return an unresolved Promise (to simulate loading), the subsequent synchronous operations (`.sort()`) on this Promise object will throw an error. This error is caught, and the component immediately transitions to an error state, bypassing any reliably observable loading state.
+-   **Recommendation:** For components with purely synchronous data fetching and processing within `useEffect` (without intermediate `await` points before `setLoading(false)`), testing a distinct "loading" message can be fragile or misleading. Focus on testing the states that occur *after* the synchronous processing: empty state, data-filled state, and error state. If true asynchronous operations are involved before the final data state is set, then a loading state test becomes more viable.
+
 │   │   └── ReservationPage/
 │   │       └── ReservationPage.jsx
 │   │       └── ReservationPage.test.jsx  <-- Test file for the page

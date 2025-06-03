@@ -44,7 +44,9 @@ const ReservationList = () => {
   // Format date for display
   const formatDate = (dateString) => {
     const options = { weekday: 'short', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const [year, month, day] = dateString.split('-').map(Number);
+    // Constructing date this way treats components as local time
+    return new Date(year, month - 1, day).toLocaleDateString(undefined, options);
   };
   
   // Format time for display

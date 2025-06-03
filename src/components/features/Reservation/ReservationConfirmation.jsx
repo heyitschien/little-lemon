@@ -17,7 +17,9 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify }) => {
     if (!dateString) return '';
     
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const [year, month, day] = dateString.split('-').map(Number);
+    // Constructing date this way treats components as local time
+    return new Date(year, month - 1, day).toLocaleDateString(undefined, options);
   };
   
   // Format time for display (e.g., "17:00" to "5:00 PM")

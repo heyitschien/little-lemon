@@ -53,14 +53,21 @@ const DateTimeSelector = ({
       
       setDateError('');
       
-      // Get available time slots for the selected date
-      const timeSlots = getAvailableTimeSlots(selectedDate);
-      setAvailableTimeSlots(timeSlots);
-      
-      // If the currently selected time is not available, reset it
-      if (selectedTime && !timeSlots.includes(selectedTime)) {
-        onTimeChange('');
-      }
+      const fetchAndSetTimes = async () => {
+        try {
+          const slots = await getAvailableTimeSlots(selectedDate);
+          setAvailableTimeSlots(slots);
+
+          if (selectedTime && !slots.includes(selectedTime)) {
+            onTimeChange('');
+          }
+        } catch (error) {
+          console.error("Error fetching time slots:", error);
+          setAvailableTimeSlots([]);
+        }
+      };
+
+      fetchAndSetTimes();
     } else {
       setAvailableTimeSlots([]);
     }
@@ -143,6 +150,7 @@ const DateTimeSelector = ({
             aria-label="Select a date for your reservation"
           />
         </div>
+        {dateError && <p className={styles.errorMessage}>{dateError}</p>}
       </div>
       
       <div className={styles.formGroup}>
