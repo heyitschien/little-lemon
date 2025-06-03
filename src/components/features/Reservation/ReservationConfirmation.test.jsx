@@ -121,4 +121,70 @@ describe('ReservationConfirmation Component', () => {
     expect(mockOnConfirm).not.toHaveBeenCalled();
   });
 
+  test('formats AM times correctly', () => {
+    const amData = { ...baseReservationData, time: '08:30' }; // 8:30 AM
+    render(
+      <ReservationConfirmation 
+        reservationData={amData} 
+        onConfirm={mockOnConfirm} 
+        onModify={mockOnModify} 
+      />
+    );
+    expect(screen.getByText('8:30 AM')).toBeInTheDocument();
+  });
+
+  test('formats 12 AM (midnight) times correctly', () => {
+    const midnightData = { ...baseReservationData, time: '00:15' }; // 12:15 AM
+    render(
+      <ReservationConfirmation 
+        reservationData={midnightData} 
+        onConfirm={mockOnConfirm} 
+        onModify={mockOnModify} 
+      />
+    );
+    expect(screen.getByText('12:15 AM')).toBeInTheDocument();
+  });
+
+  test('formats 12 PM (noon) times correctly', () => {
+    const noonData = { ...baseReservationData, time: '12:45' }; // 12:45 PM
+    render(
+      <ReservationConfirmation 
+        reservationData={noonData} 
+        onConfirm={mockOnConfirm} 
+        onModify={mockOnModify} 
+      />
+    );
+    expect(screen.getByText('12:45 PM')).toBeInTheDocument();
+  });
+
+  test('handles empty date string gracefully', () => {
+    const noDateData = { ...baseReservationData, date: '' };
+    render(
+      <ReservationConfirmation 
+        reservationData={noDateData} 
+        onConfirm={mockOnConfirm} 
+        onModify={mockOnModify} 
+      />
+    );
+    // Check that the date value is empty or not present in a way that breaks rendering
+    // Assuming the structure is <span class="summaryLabel">Date:</span><span class="summaryValue"></span>
+    const dateLabel = screen.getByText('Date:');
+    const dateValueSpan = dateLabel.nextElementSibling;
+    expect(dateValueSpan.textContent).toBe('');
+  });
+
+  test('handles empty time string gracefully', () => {
+    const noTimeData = { ...baseReservationData, time: '' };
+    render(
+      <ReservationConfirmation 
+        reservationData={noTimeData} 
+        onConfirm={mockOnConfirm} 
+        onModify={mockOnModify} 
+      />
+    );
+    const timeLabel = screen.getByText('Time:');
+    const timeValueSpan = timeLabel.nextElementSibling;
+    expect(timeValueSpan.textContent).toBe('');
+  });
+
 });

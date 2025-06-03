@@ -71,7 +71,7 @@ describe('ReservationList Component', () => {
       {
         id: 'res3',
         date: getFutureDateString(-1), // Past reservation, should be filtered out
-        time: '19:00',
+        time: '01:00', // Set to early in the day to ensure it's past
         partySize: 1,
         name: 'Past User',
         email: 'past@example.com',
@@ -89,9 +89,10 @@ describe('ReservationList Component', () => {
 
     // Check for res1 details (sooner reservation)
     // Formatted date for getFutureDateString(2)
-    const date1 = new Date();
-    date1.setDate(date1.getDate() + 2);
-    const formattedDate1 = date1.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    const dateString1 = getFutureDateString(2);
+    const [year1, month1, day1] = dateString1.split('-').map(Number);
+    const dateForFormatting1 = new Date(year1, month1 - 1, day1);
+    const formattedDate1 = dateForFormatting1.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
     
     expect(screen.getByText(formattedDate1)).toBeInTheDocument();
     expect(screen.getByText('6:00 PM')).toBeInTheDocument();
@@ -102,9 +103,10 @@ describe('ReservationList Component', () => {
     expect(screen.getByText('birthday')).toBeInTheDocument();
 
     // Check for res2 details (later reservation)
-    const date2 = new Date();
-    date2.setDate(date2.getDate() + 5);
-    const formattedDate2 = date2.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    const dateString2 = getFutureDateString(5);
+    const [year2, month2, day2] = dateString2.split('-').map(Number);
+    const dateForFormatting2 = new Date(year2, month2 - 1, day2);
+    const formattedDate2 = dateForFormatting2.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 
     expect(screen.getByText(formattedDate2)).toBeInTheDocument();
     expect(screen.getByText('8:00 PM')).toBeInTheDocument();
