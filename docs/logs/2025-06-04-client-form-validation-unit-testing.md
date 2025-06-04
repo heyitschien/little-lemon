@@ -3,8 +3,8 @@ Title: Client-Side Form Validation and Unit Testing
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 12:51:28 PDT
-Last Updated: 2025-06-04 16:10:00 PDT
-Version: 1.5
+Last Updated: 2025-06-04 16:20:00 PDT
+Version: 1.6
 ---
 
 ## Log for June 4, 2025: Client-Side Form Validation and Unit Testing
@@ -55,6 +55,17 @@ Version: 1.5
   - Providing availableTimes directly in tests rather than relying on getAvailableTimeSlots mock
   - Removing unnecessary waitFor calls that were causing test failures
   - Fixing test structure to match component behavior
+- **4:15 PM:** Analyzed ReservationForm component coverage and discovered low function coverage (~23%) despite high statement coverage (~98%).
+- **4:18 PM:** Created new test file ReservationFormEvents.test.jsx to specifically target untested event handlers:
+  - Added tests for onBlur and onTouchEnd events for all form input fields
+  - Created tests for phone number formatting with different input lengths
+  - Added tests for form submission validation calls
+  - Added tests for multiple input changes in sequence
+- **4:20 PM:** Fixed failing tests in ReservationFormEvents.test.jsx:
+  - Updated occasion field value to match lowercase values in component ("birthday" vs "Birthday")
+  - Fixed test structure to properly verify validateField calls
+  - Removed unused variables to fix linting issues
+- **4:22 PM:** Successfully improved function coverage for ReservationForm component from ~23% to ~81%
 
 ### Notes:
 - Discussed client-side vs. server-side email validation. Current Yup `.email()` is standard for client-side format checking. True email existence/deliverability requires server-side logic and confirmation loops.
