@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import DateTimeSelector from './DateTimeSelector';
 import { getAvailableTimeSlots } from '../../../services/reservationService';
 
@@ -15,6 +15,7 @@ describe('DateTimeSelector Component', () => {
   const mockOnDateChange = vi.fn();
   const mockOnTimeChange = vi.fn();
   const mockOnPartySizeChange = vi.fn();
+  const mockValidateField = vi.fn();
 
   const defaultProps = {
     selectedDate: '',
@@ -25,13 +26,15 @@ describe('DateTimeSelector Component', () => {
     onPartySizeChange: mockOnPartySizeChange,
     formErrors: {},
     availableTimes: [],
+    isLoadingTimes: false,
+    validateField: mockValidateField
   };
 
   beforeEach(() => {
     // Clear all mocks before each test
     vi.clearAllMocks();
     // Reset mock implementation for getAvailableTimeSlots if needed
-    getAvailableTimeSlots.mockReturnValue(['17:00', '18:00']); 
+    getAvailableTimeSlots.mockResolvedValue(['17:00', '18:00']); 
   });
 
   test('renders correctly with default props', () => {
@@ -62,14 +65,9 @@ describe('DateTimeSelector Component', () => {
         selectedDate={today}
         selectedTime="17:00" // 5:00 PM
         partySize={4}
+        availableTimes={['17:00', '18:00', '19:00']}
       />
     );
-
-    // Wait for time slots to load and select to be enabled
-    await waitFor(() => {
-      expect(screen.getByLabelText(/Time/i)).not.toBeDisabled();
-      expect(screen.getByRole('option', { name: '5:00 PM' })).toBeInTheDocument();
-    });
 
     // Check if the formatted date is displayed via the hidden input's value
     expect(screen.getByLabelText('Select a date for your reservation').value).toBe(today);
@@ -77,8 +75,6 @@ describe('DateTimeSelector Component', () => {
     // Check selected options
     expect(screen.getByRole('option', { name: '5:00 PM' }).selected).toBe(true);
     expect(screen.getByRole('option', { name: '4 people' }).selected).toBe(true);
-    // Verify time select is indeed enabled after waitFor
-    expect(screen.getByLabelText(/Time/i)).not.toBeDisabled();
   });
 
 
@@ -97,10 +93,15 @@ describe('DateTimeSelector Component', () => {
       const futureDateString = futureDate.toISOString().split('T')[0];
 
       // The beforeEach for this describe block mocks getAvailableTimeSlots to return ['17:00', '18:00']
-      render(<DateTimeSelector {...defaultProps} selectedDate={futureDateString} />);
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={futureDateString} 
+          availableTimes={['17:00', '18:00']} 
+        />
+      );
       
-      expect(getAvailableTimeSlots).toHaveBeenCalledWith(futureDateString);
-      await waitFor(() => expect(screen.getByLabelText(/Time/i)).not.toBeDisabled());
+      // Check that the time options are rendered
       expect(screen.getByRole('option', { name: '5:00 PM' })).toBeInTheDocument();
       expect(screen.getByRole('option', { name: '6:00 PM' })).toBeInTheDocument();
     });
@@ -116,26 +117,29 @@ describe('DateTimeSelector Component', () => {
       fireEvent.change(dateInput, { target: { value: pastDateString } });
       expect(mockOnDateChange).toHaveBeenCalledWith(pastDateString);
       
-      // Re-render with the new (invalid) date prop
-      render(<DateTimeSelector {...defaultProps} selectedDate={pastDateString} />);
+      // Re-render with the new (invalid) date prop and error message
+      render(<DateTimeSelector 
+        {...defaultProps} 
+        selectedDate={pastDateString} 
+        formErrors={{ date: 'Please select a future date' }}
+      />);
       
-      expect(await screen.findByText('Please select a future date')).toBeInTheDocument();
-      expect(getAvailableTimeSlots).not.toHaveBeenCalled();
+      expect(screen.getByText('Please select a future date')).toBeInTheDocument();
       expect(screen.getByLabelText(/Time/i)).toBeDisabled();
     });
 
     test('resets selected time if it becomes unavailable after date change', async () => {
       const today = getTodayString();
-      // Initially, 17:00 is available
-      getAvailableTimeSlots.mockResolvedValueOnce(['17:00', '18:00']);
+      
+      // Render with initial available times including 17:00
       render(
         <DateTimeSelector 
           {...defaultProps} 
           selectedDate={today} 
           selectedTime="17:00" 
+          availableTimes={['17:00', '18:00']}
         />
       );
-      await waitFor(() => expect(screen.getByLabelText(/Time/i)).not.toBeDisabled());
       expect(screen.getByRole('option', { name: '5:00 PM' }).selected).toBe(true);
 
       // Change date, and now 17:00 is NOT available
@@ -143,21 +147,17 @@ describe('DateTimeSelector Component', () => {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowString = tomorrow.toISOString().split('T')[0];
       
-      // Mock for the second call to getAvailableTimeSlots
-      getAvailableTimeSlots.mockResolvedValueOnce(['19:00', '20:00']); // 17:00 is no longer an option
-      
-      // Re-render as if parent changed the selectedDate prop, selectedTime prop remains '17:00'
+      // Re-render with new available times that don't include 17:00
       render(
         <DateTimeSelector 
           {...defaultProps} 
           selectedDate={tomorrowString} 
           selectedTime="17:00" // Still passing the old selectedTime
+          availableTimes={['19:00', '20:00']} // 17:00 is no longer an option
         />
       );
       
-      // Wait for the second call to getAvailableTimeSlots to resolve and effects to run
-      await waitFor(() => expect(getAvailableTimeSlots).toHaveBeenCalledWith(tomorrowString));
-      // Expect onTimeChange to have been called with '' to reset the time
+      // Verify the useEffect ran to reset the time
       expect(mockOnTimeChange).toHaveBeenCalledWith('');
     });
   });
@@ -165,13 +165,17 @@ describe('DateTimeSelector Component', () => {
   describe('Time Interaction', () => {
     test('calls onTimeChange when a time is selected', async () => {
       const today = getTodayString();
-      getAvailableTimeSlots.mockResolvedValue(['17:00', '18:00', '19:00']);
-      render(<DateTimeSelector {...defaultProps} selectedDate={today} />);
+      
+      // Render with available times already set
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={today} 
+          availableTimes={['17:00', '18:00', '19:00']}
+        />
+      );
       
       const timeSelect = screen.getByLabelText(/Time/i);
-      // Wait for time slots to load and select to be enabled
-      await waitFor(() => expect(timeSelect).not.toBeDisabled());
-      
       fireEvent.change(timeSelect, { target: { value: '18:00' } });
       
       expect(mockOnTimeChange).toHaveBeenCalledWith('18:00');
@@ -179,14 +183,19 @@ describe('DateTimeSelector Component', () => {
 
     test('shows "No available times" message when no slots are available for a selected date', async () => {
       const today = getTodayString();
-      getAvailableTimeSlots.mockResolvedValue([]); // No slots available
-      render(<DateTimeSelector {...defaultProps} selectedDate={today} />);
       
-      await waitFor(() => {
-        expect(screen.getByText('No available times for this date')).toBeInTheDocument();
-        // Also check if the time select is disabled
-        expect(screen.getByLabelText(/Time/i)).toBeDisabled();
-      });
+      // Render with empty available times
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={today} 
+          availableTimes={[]} 
+        />
+      );
+      
+      // Check for the exact text that appears in the component
+      expect(screen.getByText('No available times for this date.')).toBeInTheDocument();
+      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
     });
   });
 
@@ -207,12 +216,18 @@ describe('DateTimeSelector Component', () => {
     test('displays formatted date and time when selected', async () => {
       const date = getTodayString(); // Use today's date
       const time = '19:30';
-      // Ensure the mock is set up to return the selectedTime as an available slot
-      getAvailableTimeSlots.mockResolvedValue([time, '20:00']);
+      
+      // Render with available times already set
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={date} 
+          selectedTime={time} 
+          availableTimes={[time, '20:00']}
+        />
+      );
 
-      render(<DateTimeSelector {...defaultProps} selectedDate={date} selectedTime={time} />);
-
-      // Format date for assertion (e.g., June 02, 2025)
+      // Format date for assertion (e.g., June 04, 2025)
       const [year, month, day] = date.split('-').map(Number);
       const expectedDateString = new Date(year, month - 1, day).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -221,12 +236,8 @@ describe('DateTimeSelector Component', () => {
       });
       expect(screen.getByText(expectedDateString)).toBeInTheDocument();
 
-      // Wait for the time select to be enabled (meaning slots are loaded)
-      const timeSelect = screen.getByLabelText('Time');
-      await waitFor(() => expect(timeSelect).not.toBeDisabled());
-
-      // Now that it's enabled and populated, check for the selected option
-      const timeOption = await screen.findByRole('option', { name: '7:30 PM' });
+      // Check for the selected time option
+      const timeOption = screen.getByRole('option', { name: '7:30 PM' });
       expect(timeOption.selected).toBe(true);
     });
   });

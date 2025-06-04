@@ -3,8 +3,8 @@ Title: Client-Side Form Validation and Unit Testing
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 12:51:28 PDT
-Last Updated: 2025-06-04 15:55:30 PDT
-Version: 1.4
+Last Updated: 2025-06-04 16:10:00 PDT
+Version: 1.5
 ---
 
 ## Log for June 4, 2025: Client-Side Form Validation and Unit Testing
@@ -46,6 +46,15 @@ Version: 1.4
   - Fixed confirmedReservation name test by manually setting the value in the test
   - Wrapped state updates in act() to avoid React Testing Library warnings
 - **3:55 PM:** Committed all changes to the useReservation.test.js file. All 20 tests now pass successfully with 80.72% test coverage.
+- **4:00 PM:** Updated .gitignore to ensure coverage reports and logs are included in version control.
+- **4:03 PM:** Committed coverage reports and documentation logs to the repository.
+- **4:07 PM:** Successfully fixed all DateTimeSelector.test.jsx tests by:
+  - Providing proper mock for validateField function
+  - Fixing text content mismatch in "No available times" message
+  - Addressing timing issues with async operations
+  - Providing availableTimes directly in tests rather than relying on getAvailableTimeSlots mock
+  - Removing unnecessary waitFor calls that were causing test failures
+  - Fixing test structure to match component behavior
 
 ### Notes:
 - Discussed client-side vs. server-side email validation. Current Yup `.email()` is standard for client-side format checking. True email existence/deliverability requires server-side logic and confirmation loops.
