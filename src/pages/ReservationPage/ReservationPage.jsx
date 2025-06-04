@@ -19,6 +19,8 @@ const ReservationPage = () => {
   const {
     reservationData,
     currentStep,
+    availableTimes, // Added from useReservation
+    isLoadingTimes, // Added from useReservation
     confirmedReservation,
     errorMessage,
     handleDateTimeChange,
@@ -103,6 +105,8 @@ const ReservationPage = () => {
               selectedDate={reservationData.date}
               selectedTime={reservationData.time}
               partySize={reservationData.partySize}
+              availableTimes={availableTimes} // Pass down from useReservation
+              isLoadingTimes={isLoadingTimes} // Pass down from useReservation
               onDateChange={(date) => handleDateTimeChange('date', date)}
               onTimeChange={(time) => handleDateTimeChange('time', time)}
               onPartySizeChange={(size) => handleDateTimeChange('partySize', size)}
@@ -187,7 +191,18 @@ const ReservationPage = () => {
                 </div>
                 <div className={styles.successSummaryItem}>
                   <span className={styles.successSummaryLabel}>Date:</span>
-                  <span className={styles.successSummaryValue}>{new Date(confirmedReservation.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span className={styles.successSummaryValue}>
+                    {(() => {
+                      // Parse the date string consistently to avoid timezone issues
+                      const [year, month, day] = confirmedReservation.date.split('-').map(Number);
+                      return new Date(year, month - 1, day).toLocaleDateString(undefined, { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      });
+                    })()}
+                  </span>
                 </div>
                 <div className={styles.successSummaryItem}>
                   <span className={styles.successSummaryLabel}>Time:</span>
