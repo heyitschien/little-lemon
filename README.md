@@ -1,5 +1,7 @@
 # Little Lemon Restaurant Web Application
 
+[![Test Coverage](https://img.shields.io/badge/coverage-31.76%25-yellow.svg)](./coverage/README.md)
+
 ## Project Overview
 This is the capstone project for the Meta Front-End Developer Professional Certificate program. The Little Lemon web application is a responsive React-based solution for the fictional Mediterranean restaurant "Little Lemon", focusing on improving the user experience for table reservations.
 
@@ -187,6 +189,38 @@ This capstone project integrates skills from all previous courses in the Meta Fr
 - Form validation
 - Unit testing
 - Accessibility compliance
+
+## Testing and Coverage
+
+The project uses Vitest for unit testing with a focus on component testing and function coverage.
+
+### Available Test Commands
+
+```bash
+# Run tests without coverage
+npm run test
+
+# Run tests with UI
+npm run test:ui
+
+# Generate coverage report
+npm run coverage:report
+
+# Run tests with coverage in UI mode
+npm run coverage:ui
+```
+
+### Coverage Report
+
+The current test coverage is 31.76% overall, with higher coverage in critical components:
+- ReservationForm: 81% function coverage
+- DateTimeSelector: 90% function coverage
+
+To view the detailed coverage report:
+1. Run `npm run coverage:report`
+2. Open `coverage/index.html` in your browser
+
+For more information about the coverage workflow, see [coverage/README.md](./coverage/README.md).
 
 ## Expanding the ESLint configuration
 
