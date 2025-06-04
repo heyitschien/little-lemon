@@ -1,111 +1,65 @@
 /* ReservationList.module.css */
 
-.reservationListContainer {
+.reservationList {
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
-.sectionTitle {
-  font-family: 'Markazi Text', serif;
-  font-size: 2.5rem;
-  color: #495E57; /* Primary Green */
-  margin-top: 0;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.loadingMessage,
-.errorMessage,
-.noReservations {
-  text-align: center;
-  padding: 2rem;
-  font-family: 'Karla', sans-serif;
-  border-radius: 16px;
-  background-color: #EDEFEE; /* Highlight White */
-}
-
-.errorMessage {
-  color: #ed4956; /* Error red */
-  background-color: rgba(237, 73, 86, 0.1); /* Error red with opacity */
-}
-
-.noReservations {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.noReservations p {
-  font-size: 1.125rem;
-  margin: 0;
-}
-
-.reservationList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  padding: 20px;
 }
 
 .reservationCard {
-  background-color: #EDEFEE; /* Highlight White */
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #EDEFEE; /* Highlight White from confirmation */
+  border-radius: 16px; /* Consistent with confirmation card */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Consistent with confirmation card */
+  margin-bottom: 20px;
+  overflow: hidden; /* To contain child border-radius for header */
+  /* Direct padding and border-left removed, handled by inner sections or new design */
 }
 
-.reservationHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Old .reservationHeader and .confirmedDate styles removed as structure changed */
+
+.cardTitleHeader {
   background-color: #495E57; /* Primary Green */
   color: white;
-  padding: 1rem 1.5rem;
+  padding: 1.5rem;
+  /* border-top-left-radius: 16px; /* Handled by card's overflow:hidden */
+  /* border-top-right-radius: 16px; */
 }
 
-.dateTime {
-  display: flex;
-  flex-direction: column;
-}
-
-.date {
+.cardTitle {
   font-family: 'Markazi Text', serif;
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 2rem; /* Matches .summaryTitle */
+  margin: 0 0 0.5rem;
+  font-weight: 400; /* Matches .summaryTitle (often default for h3) */
 }
 
-.time {
+.cardSubTitle {
   font-family: 'Karla', sans-serif;
-  font-size: 1rem;
+  font-size: 1rem; /* Matches .reservationId */
+  margin: 0;
   opacity: 0.9;
 }
 
-.partySize {
-  font-family: 'Karla', sans-serif;
-  font-size: 1rem;
-  background-color: #F4CE14; /* Primary Yellow */
-  color: #333333; /* Highlight Black */
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 700;
-}
-
 .reservationDetails {
-  padding: 1.5rem;
+  padding: 1.5rem; /* Matches .summaryContent padding */
   font-family: 'Karla', sans-serif;
 }
 
 .detailItem {
   display: flex;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  /* font-family: 'Karla', sans-serif; /* Moved to parent .reservationDetails */
+}
+
+.detailItem:last-child {
+  margin-bottom: 0;
 }
 
 .detailLabel {
   font-weight: 700;
-  min-width: 100px;
+  min-width: 120px; /* Adjusted from 150px, can fine-tune */
   color: #333333; /* Highlight Black */
+  margin-right: 10px; /* Added for spacing */
 }
 
 .detailValue {
@@ -113,90 +67,33 @@
   color: #333333; /* Highlight Black */
 }
 
-.reservationActions {
+.cardActions {
+  padding: 0 1.5rem 1.5rem; /* Match horizontal padding of .reservationDetails, add bottom padding */
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  justify-content: flex-end; /* Align button to the right */
 }
 
-.actionButton {
+.button { /* General button style, can be shared if more buttons are added */
   font-family: 'Karla', sans-serif;
   font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
+  font-size: 1rem; /* Adjusted from 1.125rem for card context */
+  padding: 0.6rem 1.2rem; /* Adjusted padding */
   border: none;
-  border-radius: 8px;
+  border-radius: 16px; /* Consistent rounded corners */
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
-.modifyButton {
-  background-color: #EDEFEE; /* Highlight White */
-  color: #495E57; /* Primary Green */
-  border: 1px solid #495E57; /* Primary Green */
+.removeButton {
+  background-color: #EDEFEE; /* Light background like modify button */
+  color: #D32F2F; /* Red text for destructive action */
+  border: 2px solid #D32F2F; /* Red border */
 }
 
-.modifyButton:hover {
-  background-color: #dfe1e0;
-}
-
-.cancelButton {
-  background-color: rgba(237, 73, 86, 0.1); /* Error red with opacity */
-  color: #ed4956; /* Error red */
-  border: 1px solid #ed4956; /* Error red */
-}
-
-.cancelButton:hover {
-  background-color: rgba(237, 73, 86, 0.2);
-}
-
-.newReservationContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.newReservationButton {
-  font-family: 'Karla', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 16px;
-  background-color: #F4CE14; /* Primary Yellow */
-  color: #333333; /* Highlight Black */
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.newReservationButton:hover {
-  background-color: #e0b70f; /* Darker yellow */
-  transform: scale(1.02);
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .reservationHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .detailItem {
-    flex-direction: column;
-  }
-  
-  .detailLabel {
-    margin-bottom: 0.25rem;
-  }
-  
-  .reservationActions {
-    flex-direction: column;
-  }
-  
-  .actionButton {
-    width: 100%;
-  }
+.removeButton:hover {
+  background-color: #FFEBEE; /* Lighter red on hover */
+  color: #C62828; /* Darker red text on hover */
+  border-color: #C62828; /* Darker red border on hover */
+  transform: translateY(-1px);
 }

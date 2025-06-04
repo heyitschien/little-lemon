@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './DateTimeSelector.module.css';
-import { getAvailableTimeSlots } from '../../../services/reservationService';
+// getAvailableTimeSlots removed, will be passed as prop
 
 /**
  * DateTimeSelector Component
@@ -11,6 +11,8 @@ import { getAvailableTimeSlots } from '../../../services/reservationService';
  * @param {string} props.selectedDate - Currently selected date
  * @param {string} props.selectedTime - Currently selected time
  * @param {number} props.partySize - Number of people in the party
+ * @param {Array<string>} props.availableTimes - Array of available time slots for the selected date
+ * @param {boolean} props.isLoadingTimes - Boolean indicating if times are currently being loaded
  * @param {Function} props.onDateChange - Function to call when date changes
  * @param {Function} props.onTimeChange - Function to call when time changes
  * @param {Function} props.onPartySizeChange - Function to call when party size changes
@@ -19,11 +21,12 @@ const DateTimeSelector = ({
   selectedDate,
   selectedTime,
   partySize,
+  availableTimes, // Changed from availableTimeSlots to match useReservation
+  isLoadingTimes,
   onDateChange,
   onTimeChange,
   onPartySizeChange
 }) => {
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [dateError, setDateError] = useState('');
   
   // Get today's date in YYYY-MM-DD format for min date attribute
@@ -34,44 +37,31 @@ const DateTimeSelector = ({
   maxDate.setMonth(maxDate.getMonth() + 6);
   const maxDateString = maxDate.toISOString().split('T')[0];
   
-  // Update available time slots when the date changes
+  // Validate date and clear error when selectedDate changes or on mount
   useEffect(() => {
     if (selectedDate) {
-      // Validate that the selected date is not in the past
       const selectedDateObj = new Date(selectedDate);
       const todayObj = new Date(today);
-      
-      // Reset time part for accurate date comparison
       selectedDateObj.setHours(0, 0, 0, 0);
       todayObj.setHours(0, 0, 0, 0);
-      
+
       if (selectedDateObj < todayObj) {
         setDateError('Please select a future date');
-        setAvailableTimeSlots([]);
-        return;
+      } else {
+        setDateError('');
       }
-      
-      setDateError('');
-      
-      const fetchAndSetTimes = async () => {
-        try {
-          const slots = await getAvailableTimeSlots(selectedDate);
-          setAvailableTimeSlots(slots);
-
-          if (selectedTime && !slots.includes(selectedTime)) {
-            onTimeChange('');
-          }
-        } catch (error) {
-          console.error("Error fetching time slots:", error);
-          setAvailableTimeSlots([]);
-        }
-      };
-
-      fetchAndSetTimes();
     } else {
-      setAvailableTimeSlots([]);
+      setDateError(''); // Clear error if no date is selected
     }
-  }, [selectedDate, selectedTime, onTimeChange, today]);
+  }, [selectedDate, today]);
+
+  // Effect to reset selected time if it's no longer in the availableTimes prop
+  useEffect(() => {
+    if (selectedDate && selectedTime && availableTimes.length > 0 && !availableTimes.includes(selectedTime)) {
+      onTimeChange(''); // Reset time if the current selection is not in the new list
+    }
+    // This effect should run when availableTimes changes, or when selectedDate/Time changes, to re-validate.
+  }, [selectedDate, selectedTime, availableTimes, onTimeChange]);
   
   // Handle date change
   const handleDateChange = (e) => {
@@ -162,18 +152,22 @@ const DateTimeSelector = ({
           className={styles.timeSelect}
           value={selectedTime}
           onChange={handleTimeChange}
-          disabled={!selectedDate || availableTimeSlots.length === 0}
+          disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!dateError}
           required
         >
           <option value="">Select a time</option>
-          {availableTimeSlots.map((timeSlot) => (
+          {isLoadingTimes && <option value="" disabled>Loading times...</option>}
+          {!isLoadingTimes && availableTimes.map((timeSlot) => (
             <option key={timeSlot} value={timeSlot}>
               {formatTimeForDisplay(timeSlot)}
             </option>
           ))}
         </select>
-        {selectedDate && availableTimeSlots.length === 0 && !dateError && (
-          <p className={styles.noTimesText}>No available times for this date</p>
+        {selectedDate && !isLoadingTimes && availableTimes.length === 0 && !dateError && (
+          <p className={styles.noTimesText}>No available times for this date.</p>
+        )}
+        {isLoadingTimes && !dateError && (
+          <p className={styles.loadingText}>Loading available times...</p>
         )}
       </div>
       

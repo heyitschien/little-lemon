@@ -3,8 +3,8 @@ Title: Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
 Author: Chien Escalera Duong
 Date Created: 2025-06-02
 Time Created: 11:44:23 PDT
-Last Updated: 2025-06-02 17:17:41 PDT
-Version: 1.7
+Last Updated: 2025-06-03 16:30:00 PDT
+Version: 1.8
 ---
 
 # Unit Testing Strategy for Little Lemon Reservation Flow (Vite + Vitest)
@@ -218,9 +218,127 @@ vi.mock('../services/reservationService', () => ({
 }));
 ```
 
+### 5.3. Testing Custom React Hooks (e.g., `useReservation.js`)
+
+Custom React hooks encapsulate logic that can be shared across components. Testing them thoroughly is crucial.
+
+-   **Tooling:** Use the `renderHook` function from `@testing-library/react`.
+-   **Core Concepts:**
+    -   `renderHook(() => useCustomHook(props))` initializes your hook.
+    -   The `result.current` property provides access to the hook's return values (state, functions, etc.).
+    -   Use `act()` from `@testing-library/react` to wrap any code that causes state updates within the hook.
+    -   Use `waitFor()` for asynchronous operations to wait for expectations to pass.
+
+**Example (Conceptual, based on `useReservation.test.js`):**
+
+```javascript
+// src/hooks/useReservation.test.js
+import { renderHook, act, waitFor } from '@testing-library/react';
+import useReservation from './useReservation'; // Your custom hook
+
+// Mock global API functions (see section 5.4)
+const mockFetchAPI = vi.fn();
+const mockSubmitAPI = vi.fn();
+
+beforeEach(() => {
+  vi.spyOn(window, 'fetchAPI').mockImplementation(mockFetchAPI);
+  vi.spyOn(window, 'submitAPI').mockImplementation(mockSubmitAPI);
+  mockFetchAPI.mockResolvedValue(['17:00', '18:00']); // Default success
+  mockSubmitAPI.mockResolvedValue(true); // Default success
+});
+
+afterEach(() => {
+  vi.restoreAllMocks(); // Clean up spies
+});
+
+describe('useReservation Hook', () => {
+  it('should initialize with default state', () => {
+    const { result } = renderHook(() => useReservation());
+    expect(result.current.currentStep).toBe(1);
+    expect(result.current.reservationData.date).toBe('');
+    // ... other initial state checks
+  });
+
+  it('should fetch available times on date change', async () => {
+    const { result } = renderHook(() => useReservation());
+    mockFetchAPI.mockResolvedValueOnce(['19:00', '20:00']);
+
+    act(() => {
+      result.current.handleDateTimeChange('date', '2025-12-25');
+    });
+
+    expect(result.current.isLoadingTimes).toBe(true);
+    await waitFor(() => {
+      expect(mockFetchAPI).toHaveBeenCalledWith(new Date('2025-12-25'));
+      expect(result.current.availableTimes).toEqual(['19:00', '20:00']);
+      expect(result.current.isLoadingTimes).toBe(false);
+    });
+  });
+
+  it('should handle reservation submission', async () => {
+    const { result } = renderHook(() => useReservation());
+    // ... set up reservationData and currentStep via act(...)
+    act(() => {
+      result.current.handleDateTimeChange('date', '2025-12-25');
+      result.current.handleDateTimeChange('time', '19:00');
+      // ... other data setup ...
+      result.current.handleNextStep(); // to step 2
+      result.current.handleNextStep(); // to step 3
+    });
+
+    let submissionSuccessful;
+    await act(async () => {
+      submissionSuccessful = await result.current.handleConfirmReservation();
+    });
+
+    expect(submissionSuccessful).toBe(true);
+    expect(mockSubmitAPI).toHaveBeenCalledWith(result.current.reservationData);
+    expect(result.current.currentStep).toBe(4);
+    expect(result.current.confirmedReservation).not.toBeNull();
+  });
+});
+```
+
+### 5.4. Mocking Global API Functions (e.g., `window.fetchAPI`)
+
+Sometimes, APIs are not imported as modules but are available globally (e.g., attached to the `window` object), as is the case with `fetchAPI` and `submitAPI` from the Coursera-provided script (or our `mockApi.js` workaround).
+
+-   **Method:** Use `vi.spyOn(window, 'functionName')` to mock these global functions.
+    -   `vi.spyOn(window, 'fetchAPI').mockImplementation(mockFetchAPIFunction)`
+    -   `vi.spyOn(window, 'submitAPI').mockImplementation(mockSubmitAPIFunction)`
+-   **Setup:** This is typically done in a `beforeEach` block in your test file to ensure a fresh mock for each test and cleaned up in `afterEach` using `vi.restoreAllMocks()` or by individually calling `mockRestore()` on each spy.
+
+**Example (from `useReservation.test.js` setup):**
+
+```javascript
+// In your test file (e.g., src/hooks/useReservation.test.js)
+
+const mockFetchAPI = vi.fn();
+const mockSubmitAPI = vi.fn();
+
+beforeEach(() => {
+  // Spy on the global functions and provide mock implementations
+  vi.spyOn(window, 'fetchAPI').mockImplementation(mockFetchAPI);
+  vi.spyOn(window, 'submitAPI').mockImplementation(mockSubmitAPI);
+
+  // Set default behaviors for the mocks for most test cases
+  mockFetchAPI.mockResolvedValue(['17:00', '17:30', '18:00']); // Default successful fetch
+  mockSubmitAPI.mockResolvedValue(true); // Default successful submission
+});
+
+afterEach(() => {
+  // Restore original implementations and clear spies after each test
+  vi.restoreAllMocks();
+});
+
+// ... your test cases ...
+```
+
+This approach allows you to control the behavior of these global APIs (e.g., simulate successful calls, failures, or specific return data) for different test scenarios.
+
 ## 6. Detailed Testing Plans
 
-### 5.1. `ReservationForm.jsx` (Initial Focus)
+### 6.1. `ReservationForm.jsx` (Initial Focus)
 
 **Focus:** Rendering, controlled inputs, validation logic, and callback invocation. This will be our first component to test.
 
@@ -245,7 +363,7 @@ vi.mock('../services/reservationService', () => ({
 
 *(The following sections outline tests for other parts of the reservation flow, which can be implemented after `ReservationForm.jsx` is successfully tested. For now, our practical focus is solely on `ReservationForm.jsx`.)*
 
-### 5.2. `reservationService.js`
+### 6.2. `reservationService.js`
 
 **Focus:** Test data manipulation, `localStorage` interaction, and business logic in isolation. Mock `localStorage`.
 
@@ -269,7 +387,7 @@ vi.mock('../services/reservationService', () => ({
     - Correctly modifies the reservation status/data in `localStorage`.
     - Returns appropriate success/failure indicators or updated objects.
 
-### 5.3. `DateTimeSelector.jsx`
+### 6.3. `DateTimeSelector.jsx`
 
 **Focus:** Rendering, user interactions, callback invocations, and interaction with mocked `getAvailableTimeSlots`.
 
@@ -320,7 +438,7 @@ vi.mock('../services/reservationService', () => ({
     - Clicking "Confirm Reservation" button calls `onConfirm` prop.
     - Clicking "Modify" button calls `onModify` prop.
 
-### 5.5. `useReservation.js` (Custom Hook)
+### 6.5. `useReservation.js` (Custom Hook)
 
 **Focus:** Test the hook's logic in isolation using `@testing-library/react-hooks` (or `@testing-library/react`'s `renderHook` for newer versions). Mock `reservationService.js` functions.
 
@@ -352,7 +470,7 @@ vi.mock('../services/reservationService', () => ({
 - **`resetReservation()`:**
     - Resets `reservationData`, `currentStep`, `confirmedReservation`, and `errorMessage` to initial values.
 
-### 5.6. `ReservationPage.jsx`
+### 6.6. `ReservationPage.jsx`
 
 **Focus:** Integration of child components and the `useReservation` hook. Test step rendering and navigation. Mock `useReservation` to control its state/behavior for more isolated tests of `ReservationPage`, or test it more integratedly.
 
