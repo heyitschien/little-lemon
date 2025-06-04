@@ -39,6 +39,7 @@ export function useReservation() {
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [pastReservations, setPastReservations] = useState([]);
   const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // --- Validation Schemas with Yup ---
   const step1Schema = Yup.object().shape({
@@ -70,7 +71,7 @@ export function useReservation() {
     email: Yup.string().email('Please enter a valid email address.').required('Email is required.'),
     phone: Yup.string()
       .required('Phone number is required.')
-      .matches(/^(\([0-9]{3}\)|[0-9]{3}-)?[0-9]{3}-[0-9]{4}$|^[0-9]{10}$/, 'Invalid phone number. Use format like 123-456-7890 or (123)456-7890.'),
+      .matches(/^\d{3}-\d{3}-\d{4}$/, 'Invalid phone number. Please use XXX-XXX-XXXX format.'),
     occasion: Yup.string().nullable(), // Optional
     specialRequests: Yup.string().max(250, 'Special requests cannot exceed 250 characters.').nullable(), // Optional
   });
@@ -267,6 +268,7 @@ export function useReservation() {
   // Handle reservation confirmation
   const handleConfirmReservation = async () => {
     setErrorMessage(''); // Clear previous errors
+    setIsSubmitting(true);
     try {
       const apiSubmitFunction = window.submitAPI || (typeof submitAPI === 'function' ? submitAPI : undefined);
       if (typeof apiSubmitFunction !== 'function') {
@@ -311,6 +313,8 @@ export function useReservation() {
       console.error('Error submitting reservation via API:', error);
       setErrorMessage(`An unexpected error occurred while submitting your reservation: ${error.message}. Please try again.`);
       return false; // Indicate failure
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -339,6 +343,7 @@ export function useReservation() {
     confirmedReservation,
     errorMessage,
     isLoadingTimes,
+    isSubmitting, // Expose isSubmitting state
     pastReservations,
     formErrors, // Expose form errors
     

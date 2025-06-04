@@ -30,7 +30,8 @@ const ReservationPage = () => {
     handleConfirmReservation: baseHandleConfirmReservation,
     canProceedToNextStep,
     formErrors, // Added for validation
-    validateField // Added for on-blur validation
+    validateField, // Added for on-blur validation
+    isSubmitting // Added for submission loading state
   } = useReservation();
 
   // Wrap the step navigation functions to include scroll behavior
@@ -173,6 +174,7 @@ const ReservationPage = () => {
               reservationData={reservationData}
               onConfirm={handleConfirmReservation}
               onModify={handlePreviousStep}
+              isSubmitting={isSubmitting} // Pass isSubmitting prop
             />
           </div>
         );

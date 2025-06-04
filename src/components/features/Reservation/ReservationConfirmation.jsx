@@ -11,7 +11,7 @@ import styles from './ReservationConfirmation.module.css';
  * @param {Function} props.onConfirm - Function to call when the reservation is confirmed
  * @param {Function} props.onModify - Function to call when the user wants to modify the reservation
  */
-const ReservationConfirmation = ({ reservationData, onConfirm, onModify }) => {
+const ReservationConfirmation = ({ reservationData, onConfirm, onModify, isSubmitting }) => {
   // Format date for display (e.g., "2023-05-20" to "Saturday, May 20, 2023")
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
@@ -125,8 +125,9 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify }) => {
           className={`${styles.button} ${styles.confirmButton}`}
           onClick={handleConfirm}
           aria-label="Confirm reservation"
+          disabled={isSubmitting} // Disable button when submitting
         >
-          Confirm Reservation
+          {isSubmitting ? 'Submitting...' : 'Confirm Reservation'} {/* Change text based on isSubmitting */}
         </button>
       </div>
     </div>

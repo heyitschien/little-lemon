@@ -16,11 +16,25 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let processedValue = value;
+
+    if (name === 'phone') {
+      // Remove all non-digit characters
+      const digits = value.replace(/\D/g, '');
+      // Apply formatting XXX-XXX-XXXX
+      if (digits.length <= 3) {
+        processedValue = digits;
+      } else if (digits.length <= 6) {
+        processedValue = `${digits.slice(0, 3)}-${digits.slice(3)}`;
+      } else {
+        processedValue = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+      }
+    }
     
     // Update form data
     onFormChange({
       ...formData,
-      [name]: value
+      [name]: processedValue
     });
     
     // On-blur validation will be handled by input's onBlur prop
