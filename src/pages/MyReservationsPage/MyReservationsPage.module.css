@@ -1,14 +1,70 @@
-/* MyReservationsPage.module.css */
-
+/* src/pages/MyReservationsPage/MyReservationsPage.module.css */
 .myReservationsPage {
-  max-width: 1200px;
+  padding: 3rem 0; /* Consistent with confirmation page desktop */
+  width: 100%; /* Consistent with confirmation page container */
   margin: 0 auto;
-  padding: 2rem 1rem; /* This padding will apply to the content below the hero */
+  background-color: #EDEFEE;
 }
 
-/* Responsive styles */
+.myReservationsPage h1 {
+  color: #495E57; /* Little Lemon Green */
+  margin-bottom: 30px;
+  text-align: center;
+  font-family: 'Markazi Text', serif; /* Added for consistency if not globally set */
+  font-size: 2.5rem; /* Example size, adjust as needed */
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.newReservationButton,
+.homeButton {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #F4CE14; /* Little Lemon Yellow */
+  color: #333; /* Dark text for yellow background */
+  text-decoration: none;
+  border-radius: 16px; /* Consistent with confirmation page buttons */
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: 'Karla', sans-serif; /* Added for consistency */
+}
+
+.homeButton {
+  background-color: #EDEFEE; /* Little Lemon Light Gray */
+  color: #495E57; /* Little Lemon Green text */
+}
+
+.newReservationButton:hover {
+  background-color: #E1C414; /* Darker Yellow */
+  transform: translateY(-2px);
+}
+
+.homeButton:hover {
+  background-color: #D9DBDA; /* Darker Light Gray */
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .myReservationsPage {
-    padding: 1rem;
+    padding: 1rem 0; /* Mobile padding adjustment */
+  }
+  .myReservationsPage h1 {
+    font-size: 2rem;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .newReservationButton,
+  .homeButton {
+    width: 100%;
+    max-width: 300px; /* Prevent buttons from becoming too wide */
+    text-align: center;
   }
 }

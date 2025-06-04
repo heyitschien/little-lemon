@@ -36,9 +36,36 @@ export function useReservation() {
   // State for error message
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
+  const [pastReservations, setPastReservations] = useState([]);
+
+  // Function to remove a reservation by its ID
+  const removeReservationById = (idToRemove) => {
+    try {
+      const updatedReservations = pastReservations.filter(reservation => reservation.id !== idToRemove);
+      localStorage.setItem('littleLemonReservations', JSON.stringify(updatedReservations));
+      setPastReservations(updatedReservations);
+    } catch (error) {
+      console.error('Error removing reservation from localStorage:', error);
+      // Optionally, set an error message to inform the user
+      setErrorMessage('Failed to remove reservation from local history.');
+    }
+  };
   
-  // Fetch initial times for today's date on mount
+  // Fetch initial times and load past reservations on mount
   useEffect(() => {
+    const loadPastReservations = () => {
+      try {
+        const storedReservations = localStorage.getItem('littleLemonReservations');
+        if (storedReservations) {
+          setPastReservations(JSON.parse(storedReservations));
+        }
+      } catch (error) {
+        console.error('Error loading past reservations:', error);
+        // Optionally, set an error message or handle this state if needed
+      }
+    };
+
+    loadPastReservations(); // Load reservations first
     const fetchInitialTimes = async () => {
       setIsLoadingTimes(true);
       setErrorMessage('');
@@ -102,6 +129,7 @@ export function useReservation() {
     }
     // Adding reservationData.time to dependencies is removed as per original logic, 
     // time reset is handled internally after fetching new slots.
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [reservationData.date]);
   
   // Handle date, time, and party size changes
@@ -170,7 +198,23 @@ export function useReservation() {
         // The external API (api.js) doesn't return a full reservation object with an ID.
         // If it did, we would use that here.
         // For now, we'll create a mock ID for display purposes if needed or just use submitted data.
-        setConfirmedReservation({ ...reservationData, id: `LL-${Date.now()}` }); // Mock ID for display
+        const newReservation = { 
+          ...reservationData, 
+          id: `LL-${Date.now()}`,
+          confirmedAt: new Date().toISOString() 
+        };
+        setConfirmedReservation(newReservation);
+        
+        // Update localStorage with the new reservation
+        try {
+          const updatedReservations = [...pastReservations, newReservation];
+          localStorage.setItem('littleLemonReservations', JSON.stringify(updatedReservations));
+          setPastReservations(updatedReservations);
+        } catch (error) {
+          console.error('Error saving reservation to localStorage:', error);
+          // Optionally, inform the user that saving to local history failed but reservation is confirmed
+        }
+
         setCurrentStep(4); // Move to the success step
         return true; // Indicate success
       } else {
@@ -210,6 +254,7 @@ export function useReservation() {
     confirmedReservation,
     errorMessage,
     isLoadingTimes,
+    pastReservations,
     
     // Actions
     handleDateTimeChange,
@@ -222,6 +267,8 @@ export function useReservation() {
     
     // Utilities
     setCurrentStep,
-    setErrorMessage
+    setErrorMessage,
+    getPastReservations: () => pastReservations, // As per plan, though returning pastReservations directly is also an option
+    removeReservationById // Expose the new function
   };
 }

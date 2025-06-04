@@ -8,6 +8,7 @@ import MenuPage from './pages/MenuPage/MenuPage';
 import CartPage from './pages/CartPage/CartPage';
 import ReservationPage from './pages/ReservationPage/ReservationPage';
 import AboutPage from './pages/AboutPage/AboutPage';
+import MyReservationsPage from './pages/MyReservationsPage/MyReservationsPage';
 import ChatFeatureContainer from './components/features/ChatAssistant/ChatFeatureContainer';
 import { CartProvider } from './context/CartContext';
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/reservations" element={<ReservationPage />} />
+              <Route path="/my-reservations" element={<MyReservationsPage />} />
               {/* Add other routes here as needed */}
             </Routes>
           </div>
