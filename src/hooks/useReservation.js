@@ -211,6 +211,11 @@ export function useReservation() {
       ...prev,
       [field]: value
     }));
+    
+    // Clear available times if date is cleared
+    if (field === 'date' && value === '') {
+      setAvailableTimes([]);
+    }
   };
   
   // Handle form data changes
@@ -252,7 +257,7 @@ export function useReservation() {
       } else {
         // This case might occur if validateStep passes but canProceedToNextStep (due to empty string checks) fails
         // This primarily serves as a fallback, Yup should catch empty required fields.
-        setErrorMessage('Please ensure all required fields are filled correctly.');
+        setErrorMessage('Please fill in all required fields before proceeding.');
       }
     } else {
       setErrorMessage('Please correct the errors highlighted below.');
@@ -268,6 +273,7 @@ export function useReservation() {
   // Handle reservation confirmation
   const handleConfirmReservation = async () => {
     setErrorMessage(''); // Clear previous errors
+    setFormErrors({}); // Also clear form errors
     setIsSubmitting(true);
     try {
       const apiSubmitFunction = window.submitAPI || (typeof submitAPI === 'function' ? submitAPI : undefined);
