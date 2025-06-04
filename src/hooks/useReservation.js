@@ -67,11 +67,11 @@ export function useReservation() {
   });
 
   const step2Schema = Yup.object().shape({
-    name: Yup.string().required('Full name is required.').min(2, 'Full name must be at least 2 characters long.'),
-    email: Yup.string().email('Please enter a valid email address.').required('Email is required.'),
+    name: Yup.string().required('Name is required').min(2, 'Full name must be at least 2 characters long.'),
+    email: Yup.string().email('Valid email is required').required('Valid email is required'),
     phone: Yup.string()
-      .required('Phone number is required.')
-      .matches(/^\d{3}-\d{3}-\d{4}$/, 'Invalid phone number. Please use XXX-XXX-XXXX format.'),
+      .required('Valid phone number is required (e.g., 123-456-7890)')
+      .matches(/^\d{3}-\d{3}-\d{4}$/, 'Valid phone number is required (e.g., 123-456-7890)'),
     occasion: Yup.string().nullable(), // Optional
     specialRequests: Yup.string().max(250, 'Special requests cannot exceed 250 characters.').nullable(), // Optional
   });

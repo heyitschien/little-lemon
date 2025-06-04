@@ -45,9 +45,14 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validation is now handled by the parent component (ReservationPage) via useReservation's handleNextStep
-    // This form's submit button is effectively a 'continue' action if part of a multi-step flow,
-    // or the final submit if it's the last step (which is handled by ReservationPage's buttons).
+    
+    // Validate all required fields on form submission
+    validateField('name', formData.name);
+    validateField('email', formData.email);
+    validateField('phone', formData.phone);
+    
+    // Form submission is still handled by the parent component
+    // This validation ensures errors are displayed immediately in tests
   };
 
   return (
@@ -69,6 +74,7 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             placeholder="John Doe"
             required
             onBlur={(e) => validateField(e.target.name, e.target.value)}
+            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
           />
           {formErrors.name && <p className={styles.errorText}>{formErrors.name}</p>}
         </div>
@@ -87,6 +93,7 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             placeholder="john.doe@example.com"
             required
             onBlur={(e) => validateField(e.target.name, e.target.value)}
+            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
           />
           {formErrors.email && <p className={styles.errorText}>{formErrors.email}</p>}
         </div>
@@ -105,6 +112,7 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             placeholder="(123) 456-7890"
             required
             onBlur={(e) => validateField(e.target.name, e.target.value)}
+            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
           />
           {formErrors.phone && <p className={styles.errorText}>{formErrors.phone}</p>}
         </div>
@@ -120,6 +128,7 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             value={formData.occasion || ''}
             onChange={handleInputChange}
             onBlur={(e) => validateField(e.target.name, e.target.value)}
+            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
           >
             <option value="">Select an occasion</option>
             <option value="birthday">Birthday</option>
@@ -143,6 +152,7 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             placeholder="Any allergies, dietary restrictions, or special requests?"
             rows={4}
             onBlur={(e) => validateField(e.target.name, e.target.value)}
+            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
           />
           {formErrors.specialRequests && <p className={styles.errorText}>{formErrors.specialRequests}</p>}
         </div>

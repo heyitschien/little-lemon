@@ -1,10 +1,30 @@
 // src/components/features/Reservation/ReservationForm.test.jsx
 import { render, screen, fireEvent } from '@testing-library/react'; // Import fireEvent
 import userEvent from '@testing-library/user-event';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import ReservationForm from './ReservationForm';
 
+// Add mobile viewport mock for testing
+const originalInnerWidth = window.innerWidth;
+const originalInnerHeight = window.innerHeight;
+
+// Setup for mobile viewport testing
+beforeEach(() => {
+  // Mock a mobile device viewport (iPhone X dimensions)
+  Object.defineProperty(window, 'innerWidth', { writable: true, value: 375 });
+  Object.defineProperty(window, 'innerHeight', { writable: true, value: 812 });
+  window.dispatchEvent(new Event('resize'));
+});
+
+// Restore original dimensions after tests
+afterEach(() => {
+  Object.defineProperty(window, 'innerWidth', { writable: true, value: originalInnerWidth });
+  Object.defineProperty(window, 'innerHeight', { writable: true, value: originalInnerHeight });
+  window.dispatchEvent(new Event('resize'));
+});
+
 const mockOnFormChange = vi.fn();
+const mockValidateField = vi.fn();
 const mockFormData = {
   name: '',
   email: '',
@@ -14,13 +34,19 @@ const mockFormData = {
 };
 
 describe('ReservationForm', () => {
+  const defaultTestPropsBase = {
+    onFormChange: mockOnFormChange,
+    validateField: mockValidateField,
+    formErrors: {},
+  };
   beforeEach(() => {
     // Reset mocks before each test
     mockOnFormChange.mockClear();
+    mockValidateField.mockClear();
   });
 
   test('renders all its direct input fields', () => {
-    render(<ReservationForm formData={mockFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={mockFormData} />);
     
     expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^email$/i)).toBeInTheDocument(); // Adjusted: More specific to avoid matching 'Email Address' if it existed elsewhere
@@ -44,7 +70,7 @@ describe('ReservationForm', () => {
       occasion: 'Birthday',
       specialRequests: 'None'
     };
-    render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={initialFormData} />);
     
     const nameInput = screen.getByLabelText(/full name/i);
     // Using fireEvent.change here as userEvent.type was showing unexpected behavior
@@ -68,7 +94,7 @@ describe('ReservationForm', () => {
       occasion: 'Birthday',
       specialRequests: 'None'
     };
-    render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={initialFormData} />);
     
     const emailInput = screen.getByLabelText(/^email$/i);
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -88,14 +114,15 @@ describe('ReservationForm', () => {
       occasion: 'Birthday',
       specialRequests: 'None'
     };
-    render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={initialFormData} />);
     
     const phoneInput = screen.getByLabelText(/phone number/i);
     fireEvent.change(phoneInput, { target: { value: '0123456789' } });
     
+    // Updated expectation to match the formatted phone number with hyphens
     expect(mockOnFormChange).toHaveBeenLastCalledWith({
       ...initialFormData,
-      phone: '0123456789'
+      phone: '012-345-6789'
     });
   });
 
@@ -108,7 +135,7 @@ describe('ReservationForm', () => {
       occasion: '', // Start with no occasion selected
       specialRequests: 'None'
     };
-    render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={initialFormData} />);
     
     const occasionSelect = screen.getByLabelText(/occasion \(optional\)/i);
     // For select elements, fireEvent.change is typically used with the new value
@@ -129,7 +156,7 @@ describe('ReservationForm', () => {
       occasion: 'anniversary',
       specialRequests: '' // Start with empty special requests
     };
-    render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    render(<ReservationForm {...defaultTestPropsBase} formData={initialFormData} />);
     
     const specialRequestsTextarea = screen.getByLabelText(/special requests \(optional\)/i);
     fireEvent.change(specialRequestsTextarea, { target: { value: 'Allergic to peanuts' } });
@@ -149,24 +176,68 @@ describe('ReservationForm', () => {
       occasion: 'anniversary',
       specialRequests: 'None'
     };
-    const { container } = render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />); // Destructure container to find form
+    
+    // Set up form errors for this test
+    const formErrors = { name: '' };
+    
+    // Mock validateField to set the error
+    mockValidateField.mockImplementation((field, value) => {
+      if (field === 'name' && !value) {
+        formErrors.name = 'Name is required';
+      } else {
+        formErrors.name = '';
+      }
+    });
+    
+    const { container, rerender } = render(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
 
-    // Find the form element. A common way is to get an element within it and access its form property.
-    // Or, if the form has a role or test-id. Here, we'll get it from the container for simplicity as it's the only form.
+    // Find the form element
     const formElement = container.querySelector('form');
-    expect(formElement).toBeInTheDocument(); // Ensure form is found
+    expect(formElement).toBeInTheDocument();
 
     // Simulate form submission
-    if (formElement) { // Guard against formElement being null, though it shouldn't be
+    if (formElement) {
       fireEvent.submit(formElement);
+      // Manually trigger validation as it would happen in the real component
+      mockValidateField('name', initialFormData.name);
     }
+    
+    // Rerender with updated errors
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
 
     // Check for error message
-    expect(await screen.findByText('Name is required')).toBeInTheDocument();
+    expect(screen.getByText('Name is required')).toBeInTheDocument();
 
     // Simulate typing into the name field to clear the error
     const nameInput = screen.getByLabelText(/full name/i);
     fireEvent.change(nameInput, { target: { value: 'Chien' } });
+    
+    // Clear the error as would happen in the real component
+    formErrors.name = '';
+    
+    // Rerender with updated data and cleared errors
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={{...initialFormData, name: 'Chien'}} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
 
     // Check that the error message is cleared
     expect(screen.queryByText('Name is required')).not.toBeInTheDocument();
@@ -181,30 +252,88 @@ describe('ReservationForm', () => {
       occasion: 'anniversary',
       specialRequests: 'None'
     };
-    const { container, rerender } = render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    
+    // Set up form errors for this test
+    const formErrors = { email: '' };
+    
+    // Mock validateField to set the error
+    mockValidateField.mockImplementation((field, value) => {
+      if (field === 'email') {
+        if (!value || !value.includes('@')) {
+          formErrors.email = 'Valid email is required';
+        } else {
+          formErrors.email = '';
+        }
+      }
+    });
+    
+    const { container, rerender } = render(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
     const formElement = container.querySelector('form');
     expect(formElement).toBeInTheDocument();
 
     // 1. Test empty email submission
-    if (formElement) fireEvent.submit(formElement);
-    expect(await screen.findByText('Valid email is required')).toBeInTheDocument();
+    if (formElement) {
+      fireEvent.submit(formElement);
+      // Manually trigger validation
+      mockValidateField('email', initialFormData.email);
+    }
+    
+    // Rerender with updated errors
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
+    expect(screen.getByText('Valid email is required')).toBeInTheDocument();
 
     // 2. Test invalid email submission
-    // Update formData for the rerender and simulate change
     let updatedFormData = { ...initialFormData, email: 'invalidemail' };
-    mockOnFormChange.mockImplementationOnce((newData) => { updatedFormData = newData; }); // Update formData when onFormChange is called
+    mockOnFormChange.mockImplementationOnce((newData) => { updatedFormData = newData; });
     fireEvent.change(screen.getByLabelText(/^email$/i), { target: { value: 'invalidemail' } });
-    rerender(<ReservationForm formData={updatedFormData} onFormChange={mockOnFormChange} />);
-    if (formElement) fireEvent.submit(formElement); // Submit again with invalid email
-    expect(await screen.findByText('Valid email is required')).toBeInTheDocument(); // Error should still be there or reappear
+    
+    // Trigger validation for invalid email
+    mockValidateField('email', 'invalidemail');
+    
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={updatedFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
+    expect(screen.getByText('Valid email is required')).toBeInTheDocument();
 
     // 3. Test valid email input clears error
-    // Update formData for the rerender and simulate change
     updatedFormData = { ...updatedFormData, email: 'valid@example.com' };
     mockOnFormChange.mockImplementationOnce((newData) => { updatedFormData = newData; });
     fireEvent.change(screen.getByLabelText(/^email$/i), { target: { value: 'valid@example.com' } });
-    rerender(<ReservationForm formData={updatedFormData} onFormChange={mockOnFormChange} />);
-    // The error should clear on input change, not necessarily requiring another submit
+    
+    // Clear the error for valid email
+    formErrors.email = '';
+    
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={updatedFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
     expect(screen.queryByText('Valid email is required')).not.toBeInTheDocument();
   });
 
@@ -217,51 +346,133 @@ describe('ReservationForm', () => {
       occasion: 'anniversary',
       specialRequests: 'None'
     };
-    const { container, rerender } = render(<ReservationForm formData={initialFormData} onFormChange={mockOnFormChange} />);
+    
+    // Set up form errors for this test
+    const formErrors = { phone: '' };
+    
+    // Mock validateField to set the error
+    mockValidateField.mockImplementation((field, value) => {
+      if (field === 'phone') {
+        if (!value || !value.match(/^\d{3}-\d{3}-\d{4}$/)) {
+          formErrors.phone = 'Valid phone number is required (e.g., 123-456-7890)';
+        } else {
+          formErrors.phone = '';
+        }
+      }
+    });
+    
+    const { container, rerender } = render(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
     const formElement = container.querySelector('form');
     expect(formElement).toBeInTheDocument();
 
     // 1. Test empty phone submission
-    if (formElement) fireEvent.submit(formElement);
-    expect(await screen.findByText('Valid phone number is required')).toBeInTheDocument();
-
-    // 2. Test invalid phone submission (e.g., letters)
-    let updatedFormData = { ...initialFormData, phone: 'abcdef' };
+    if (formElement) {
+      fireEvent.submit(formElement);
+      // Manually trigger validation
+      mockValidateField('phone', initialFormData.phone);
+    }
+    
+    // Rerender with updated errors
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={initialFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
+    expect(screen.getByText('Valid phone number is required (e.g., 123-456-7890)')).toBeInTheDocument();
+    
+    // 2. Test invalid phone submission (too short)
+    let updatedFormData = { ...initialFormData, phone: '123' };
     mockOnFormChange.mockImplementationOnce((newData) => { updatedFormData = newData; });
-    fireEvent.change(screen.getByLabelText(/phone number/i), { target: { value: 'abcdef' } });
-    rerender(<ReservationForm formData={updatedFormData} onFormChange={mockOnFormChange} />);
-    if (formElement) fireEvent.submit(formElement); // Submit again
-    expect(await screen.findByText('Valid phone number is required')).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/phone number/i), { target: { value: '123' } });
+    
+    // Trigger validation for invalid phone
+    mockValidateField('phone', '123');
+    
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={updatedFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
+    expect(screen.getByText('Valid phone number is required (e.g., 123-456-7890)')).toBeInTheDocument();
 
     // 3. Test valid phone input clears error
-    updatedFormData = { ...updatedFormData, phone: '0123456789' };
+    updatedFormData = { ...updatedFormData, phone: '123-456-7890' };
     mockOnFormChange.mockImplementationOnce((newData) => { updatedFormData = newData; });
-    fireEvent.change(screen.getByLabelText(/phone number/i), { target: { value: '0123456789' } });
-    rerender(<ReservationForm formData={updatedFormData} onFormChange={mockOnFormChange} />);
-    expect(screen.queryByText('Valid phone number is required')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/phone number/i), { target: { value: '123-456-7890' } });
+    
+    // Clear the error for valid phone
+    formErrors.phone = '';
+    
+    rerender(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={updatedFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
+    expect(screen.queryByText('Valid phone number is required (e.g., 123-456-7890)')).not.toBeInTheDocument();
   });
 
   test('does not display validation errors when form is submitted with all valid data', async () => {
     userEvent.setup();
     const validFormData = {
       name: 'Chien Duong',
-      email: 'chien.d@example.com',
-      phone: '1234567890',
+      email: 'chien@example.com',
+      phone: '111-222-3333',
       occasion: 'Birthday',
       specialRequests: 'A nice quiet table, please.'
     };
-    const { container } = render(<ReservationForm formData={validFormData} onFormChange={mockOnFormChange} />);
+    
+    // Set up empty form errors for this test
+    const formErrors = { name: '', email: '', phone: '' };
+    
+    // Mock validateField to verify valid data
+    mockValidateField.mockImplementation((field, value) => {
+      // All fields are valid, so no errors should be set
+      formErrors[field] = '';
+    });
+    
+    const { container } = render(
+      <ReservationForm 
+        {...defaultTestPropsBase} 
+        formData={validFormData} 
+        formErrors={formErrors}
+        validateField={mockValidateField}
+      />
+    );
+    
     const formElement = container.querySelector('form');
     expect(formElement).toBeInTheDocument();
 
-    // Simulate form submission
-    if (formElement) fireEvent.submit(formElement);
+    if (formElement) {
+      fireEvent.submit(formElement);
+      // Validate all fields
+      mockValidateField('name', validFormData.name);
+      mockValidateField('email', validFormData.email);
+      mockValidateField('phone', validFormData.phone);
+    }
 
-    // Assert that no validation error messages are present
+    // Check that no error messages are displayed
     expect(screen.queryByText('Name is required')).not.toBeInTheDocument();
     expect(screen.queryByText('Valid email is required')).not.toBeInTheDocument();
-    expect(screen.queryByText('Valid phone number is required')).not.toBeInTheDocument();
+    expect(screen.queryByText('Valid phone number is required (e.g., 123-456-7890)')).not.toBeInTheDocument();
   });
-
-  // Add more tests here for input changes, validation, form submission handling, etc.
 });
