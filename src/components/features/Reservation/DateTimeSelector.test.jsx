@@ -23,6 +23,8 @@ describe('DateTimeSelector Component', () => {
     onDateChange: mockOnDateChange,
     onTimeChange: mockOnTimeChange,
     onPartySizeChange: mockOnPartySizeChange,
+    formErrors: {},
+    availableTimes: [],
   };
 
   beforeEach(() => {
