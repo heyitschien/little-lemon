@@ -1,5 +1,6 @@
 /* global fetchAPI, submitAPI */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import * as Yup from 'yup';
 // createReservation and getAvailableTimeSlots removed, will use window.fetchAPI and window.submitAPI
 
 /**
@@ -37,6 +38,43 @@ export function useReservation() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [pastReservations, setPastReservations] = useState([]);
+  const [formErrors, setFormErrors] = useState({});
+
+  // --- Validation Schemas with Yup ---
+  const step1Schema = Yup.object().shape({
+    date: Yup.string().required('Date is required.')
+      .test('is-future-date', 'Date must be today or a future date.', function (value) {
+        if (!value) return true; // Allow empty value to be caught by 'required'
+        // const selectedDate = new Date(value); // Removed unused variable
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize today to the start of the day
+        // Adjust selectedDate to account for potential timezone differences by ensuring it's compared at UTC midnight
+        const [year, month, day] = value.split('-').map(Number);
+        const selectedDateUTC = new Date(Date.UTC(year, month - 1, day));
+        return selectedDateUTC >= today;
+      }),
+    time: Yup.string().when('date', (dateArray, schema) => {
+      // Yup passes the value of 'date' field as the first argument. It might be an array if 'date' is an array field, but here it's a string.
+      const date = Array.isArray(dateArray) ? dateArray[0] : dateArray; 
+      return date && availableTimes && availableTimes.length > 0 ? schema.required('Time is required.') : schema.nullable();
+    }),
+    partySize: Yup.number()
+      .typeError('Party size must be a number.')
+      .required('Party size is required.')
+      .min(1, 'Party size must be at least 1 person.')
+      .max(10, 'For parties larger than 10, please call us directly.'),
+  });
+
+  const step2Schema = Yup.object().shape({
+    name: Yup.string().required('Full name is required.').min(2, 'Full name must be at least 2 characters long.'),
+    email: Yup.string().email('Please enter a valid email address.').required('Email is required.'),
+    phone: Yup.string()
+      .required('Phone number is required.')
+      .matches(/^(\([0-9]{3}\)|[0-9]{3}-)?[0-9]{3}-[0-9]{4}$|^[0-9]{10}$/, 'Invalid phone number. Use format like 123-456-7890 or (123)456-7890.'),
+    occasion: Yup.string().nullable(), // Optional
+    specialRequests: Yup.string().max(250, 'Special requests cannot exceed 250 characters.').nullable(), // Optional
+  });
+  // --- End Validation Schemas ---
 
   // Function to remove a reservation by its ID
   const removeReservationById = (idToRemove) => {
@@ -133,6 +171,40 @@ export function useReservation() {
   }, [reservationData.date]);
   
   // Handle date, time, and party size changes
+  // --- Validation Functions ---
+  const validateField = useCallback(async (field, value) => {
+    try {
+      const schema = currentStep === 1 ? step1Schema : step2Schema;
+      await schema.validateAt(field, { [field]: value });
+      setFormErrors(prevErrors => ({ ...prevErrors, [field]: '' }));
+    } catch (err) {
+      setFormErrors(prevErrors => ({ ...prevErrors, [field]: err.message }));
+    }
+  }, [currentStep, step1Schema, step2Schema]);
+
+  const validateStep = useCallback(async (step) => {
+    const schema = step === 1 ? step1Schema : step2Schema;
+    const dataToValidate = step === 1 
+      ? { date: reservationData.date, time: reservationData.time, partySize: reservationData.partySize }
+      : { name: reservationData.name, email: reservationData.email, phone: reservationData.phone, specialRequests: reservationData.specialRequests };
+    
+    try {
+      await schema.validate(dataToValidate, { abortEarly: false });
+      setFormErrors({}); // Clear all errors for the step
+      return true;
+    } catch (err) {
+      const errors = {};
+      err.inner.forEach(error => {
+        if (error.path && !errors[error.path]) { // Check if error.path is defined
+          errors[error.path] = error.message;
+        }
+      });
+      setFormErrors(errors);
+      return false;
+    }
+  }, [reservationData, step1Schema, step2Schema]);
+  // --- End Validation Functions ---
+
   const handleDateTimeChange = (field, value) => {
     setReservationData(prev => ({
       ...prev,
@@ -150,26 +222,39 @@ export function useReservation() {
   
   // Check if the current step is complete and can proceed to the next step
   const canProceedToNextStep = () => {
+    // This function will now primarily rely on the formErrors state
+    // For a field to be valid, its corresponding entry in formErrors should be empty or undefined.
+    const fieldsToValidate = currentStep === 1 
+      ? ['date', 'time', 'partySize'] 
+      : ['name', 'email', 'phone']; // specialRequests is optional
+
+    // Check if all relevant fields for the current step have no errors
+    const stepIsValid = fieldsToValidate.every(field => !formErrors[field]);
+    
+    // Additionally, ensure required fields are not just empty (Yup handles this, but good for initial check)
     if (currentStep === 1) {
-      // Check if date, time, and party size are selected
-      return reservationData.date && reservationData.time && reservationData.partySize;
+      return stepIsValid && reservationData.date && reservationData.time && reservationData.partySize;
     }
-    
     if (currentStep === 2) {
-      // Check if required form fields are filled
-      return reservationData.name && reservationData.email && reservationData.phone;
+      return stepIsValid && reservationData.name && reservationData.email && reservationData.phone;
     }
-    
-    return true;
+    return true; // Should not be reached if steps are 1 or 2
   };
   
   // Handle proceeding to the next step
-  const handleNextStep = () => {
-    if (canProceedToNextStep()) {
-      setCurrentStep(currentStep + 1);
-      setErrorMessage('');
+  const handleNextStep = async () => {
+    const isValid = await validateStep(currentStep);
+    if (isValid) {
+      if (canProceedToNextStep()) { // Double check with canProceedToNextStep which also checks for empty required fields
+        setCurrentStep(currentStep + 1);
+        setErrorMessage(''); // Clear general error message
+      } else {
+        // This case might occur if validateStep passes but canProceedToNextStep (due to empty string checks) fails
+        // This primarily serves as a fallback, Yup should catch empty required fields.
+        setErrorMessage('Please ensure all required fields are filled correctly.');
+      }
     } else {
-      setErrorMessage('Please fill in all required fields before proceeding.');
+      setErrorMessage('Please correct the errors highlighted below.');
     }
   };
   
@@ -255,6 +340,7 @@ export function useReservation() {
     errorMessage,
     isLoadingTimes,
     pastReservations,
+    formErrors, // Expose form errors
     
     // Actions
     handleDateTimeChange,
@@ -264,6 +350,7 @@ export function useReservation() {
     handleConfirmReservation,
     resetReservation,
     canProceedToNextStep,
+    validateField, // Expose for onBlur validation in components
     
     // Utilities
     setCurrentStep,

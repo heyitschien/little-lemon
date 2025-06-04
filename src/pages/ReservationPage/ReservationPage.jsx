@@ -28,7 +28,9 @@ const ReservationPage = () => {
     handleNextStep: baseHandleNextStep,
     handlePreviousStep: baseHandlePreviousStep,
     handleConfirmReservation: baseHandleConfirmReservation,
-    canProceedToNextStep
+    canProceedToNextStep,
+    formErrors, // Added for validation
+    validateField // Added for on-blur validation
   } = useReservation();
 
   // Wrap the step navigation functions to include scroll behavior
@@ -110,6 +112,8 @@ const ReservationPage = () => {
               onDateChange={(date) => handleDateTimeChange('date', date)}
               onTimeChange={(time) => handleDateTimeChange('time', time)}
               onPartySizeChange={(size) => handleDateTimeChange('partySize', size)}
+              formErrors={formErrors} // Pass down form errors
+              validateField={validateField} // Pass down validateField for on-blur
             />
             
             <div className={styles.navigationButtons}>
@@ -135,9 +139,11 @@ const ReservationPage = () => {
         return (
           <div className={styles.stepContainer}>
             {progressIndicator}
-            <ReservationForm
-              formData={reservationData}
+            <ReservationForm 
+              formData={reservationData} 
               onFormChange={handleFormChange}
+              formErrors={formErrors} // Pass down form errors
+              validateField={validateField} // Pass down validateField for on-blur
             />
             
             <div className={styles.navigationButtons}>

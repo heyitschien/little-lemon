@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styles from './DateTimeSelector.module.css';
 // getAvailableTimeSlots removed, will be passed as prop
 
@@ -17,17 +17,19 @@ import styles from './DateTimeSelector.module.css';
  * @param {Function} props.onTimeChange - Function to call when time changes
  * @param {Function} props.onPartySizeChange - Function to call when party size changes
  */
-const DateTimeSelector = ({
+const DateTimeSelectorComponent = React.memo(({
   selectedDate,
   selectedTime,
   partySize,
-  availableTimes, // Changed from availableTimeSlots to match useReservation
+  availableTimes,
   isLoadingTimes,
   onDateChange,
   onTimeChange,
-  onPartySizeChange
+  onPartySizeChange,
+  formErrors,
+  validateField
 }) => {
-  const [dateError, setDateError] = useState('');
+  // const [dateError, setDateError] = useState(''); // Removed, using formErrors from props
   
   // Get today's date in YYYY-MM-DD format for min date attribute
   const today = new Date().toISOString().split('T')[0];
@@ -37,23 +39,7 @@ const DateTimeSelector = ({
   maxDate.setMonth(maxDate.getMonth() + 6);
   const maxDateString = maxDate.toISOString().split('T')[0];
   
-  // Validate date and clear error when selectedDate changes or on mount
-  useEffect(() => {
-    if (selectedDate) {
-      const selectedDateObj = new Date(selectedDate);
-      const todayObj = new Date(today);
-      selectedDateObj.setHours(0, 0, 0, 0);
-      todayObj.setHours(0, 0, 0, 0);
-
-      if (selectedDateObj < todayObj) {
-        setDateError('Please select a future date');
-      } else {
-        setDateError('');
-      }
-    } else {
-      setDateError(''); // Clear error if no date is selected
-    }
-  }, [selectedDate, today]);
+  // Internal date validation useEffect removed, will rely on formErrors from useReservation hook
 
   // Effect to reset selected time if it's no longer in the availableTimes prop
   useEffect(() => {
@@ -134,13 +120,14 @@ const DateTimeSelector = ({
             className={styles.hiddenDateInput}
             value={selectedDate}
             onChange={handleDateChange}
+            onBlur={() => validateField('date', selectedDate)}
             min={today}
             max={maxDateString}
             required
             aria-label="Select a date for your reservation"
           />
         </div>
-        {dateError && <p className={styles.errorMessage}>{dateError}</p>}
+        {formErrors.date && <p className={styles.errorMessage}>{formErrors.date}</p>}
       </div>
       
       <div className={styles.formGroup}>
@@ -152,7 +139,8 @@ const DateTimeSelector = ({
           className={styles.timeSelect}
           value={selectedTime}
           onChange={handleTimeChange}
-          disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!dateError}
+          onBlur={() => validateField('time', selectedTime)}
+          disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!formErrors.date}
           required
         >
           <option value="">Select a time</option>
@@ -163,12 +151,13 @@ const DateTimeSelector = ({
             </option>
           ))}
         </select>
-        {selectedDate && !isLoadingTimes && availableTimes.length === 0 && !dateError && (
+        {selectedDate && !isLoadingTimes && availableTimes.length === 0 && !formErrors.date && (
           <p className={styles.noTimesText}>No available times for this date.</p>
         )}
-        {isLoadingTimes && !dateError && (
+        {isLoadingTimes && !formErrors.date && (
           <p className={styles.loadingText}>Loading available times...</p>
         )}
+        {formErrors.time && <p className={styles.errorMessage}>{formErrors.time}</p>}
       </div>
       
       <div className={styles.formGroup}>
@@ -180,6 +169,7 @@ const DateTimeSelector = ({
           className={styles.partySizeSelect}
           value={partySize}
           onChange={handlePartySizeChange}
+          onBlur={() => validateField('partySize', partySize)}
           required
         >
           <option value="">Select party size</option>
@@ -190,9 +180,12 @@ const DateTimeSelector = ({
           ))}
           <option value="11">11+ people (large party)</option>
         </select>
+        {formErrors.partySize && <p className={styles.errorMessage}>{formErrors.partySize}</p>}
       </div>
     </div>
   );
-};
+});
 
-export default DateTimeSelector;
+DateTimeSelectorComponent.displayName = 'DateTimeSelector';
+
+export default DateTimeSelectorComponent;
