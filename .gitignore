@@ -13,8 +13,10 @@ dist
 dist-ssr
 *.local
 
-# Do not ignore coverage reports
-!coverage/
+# Ignore coverage reports
+coverage/
+# But keep the directory structure with a placeholder
+!coverage/.gitkeep
 
 # Editor directories and files
 .vscode/*

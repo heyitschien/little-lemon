@@ -19,10 +19,17 @@ export default defineConfig({
     ],
     // Optional: enable CSS processing in tests if needed
     // css: true,
-    // Optional: configure coverage
+    // Configure coverage to be more controlled
     coverage: {
-      provider: 'v8', // or 'istanbul'
+      provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
+      // Only generate reports when explicitly requested
+      enabled: process.env.VITEST_COVERAGE === 'true' || process.argv.includes('--coverage'),
+      // Don't clean the directory between runs
+      clean: false,
+      // Include all source files for more accurate reporting
+      all: true,
     },
   },
 })

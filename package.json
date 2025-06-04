@@ -9,8 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "test": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage",
+    "coverage:ui": "vitest --coverage --ui",
+    "coverage:report": "node scripts/generate-coverage-report.js"
   },
   "dependencies": {
     "react": "^19.1.0",
