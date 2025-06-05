@@ -430,6 +430,70 @@ describe('DateTimeSelector Component', () => {
     });
   });
 
+  describe('Time and Date Formatting', () => {
+    test('displays correctly formatted date or placeholder in the custom button', () => {
+      const testCases = [
+        { input: '2024-07-15', expected: 'July 15, 2024' },
+        { input: '2025-01-05', expected: 'January 5, 2025' },
+        { input: '2023-12-31', expected: 'December 31, 2023' },
+        { input: '', expected: 'Select a date' }, // Test for empty date
+      ];
+
+      testCases.forEach(({ input, expected }) => {
+        const { unmount } = render(
+          <DateTimeSelector {...defaultProps} selectedDate={input} availableTimes={input ? ['10:00'] : []} />
+        );
+        expect(screen.getByText(expected)).toBeInTheDocument();
+        unmount(); 
+      });
+    });
+
+    test('displays correctly formatted time options in the select dropdown', () => {
+      const times = ['09:00', '12:30', '15:45', '00:15', '23:00'];
+      const expectedDisplayTimes = ['9:00 AM', '12:30 PM', '3:45 PM', '12:15 AM', '11:00 PM'];
+      
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={getTodayString()} 
+          availableTimes={times} 
+        />
+      );
+
+      const timeSelect = screen.getByLabelText(/Time \*/i, { selector: 'select' });
+      expectedDisplayTimes.forEach(displayTime => {
+        expect(within(timeSelect).getByRole('option', { name: displayTime })).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Field Validation on Blur', () => {
+    beforeEach(() => {
+      mockValidateField.mockClear();
+    });
+
+    test('calls validateField on blur for date input', () => {
+      render(<DateTimeSelector {...defaultProps} />);
+      const dateInput = screen.getByLabelText(/Select a date for your reservation/i, { selector: 'input' });
+      fireEvent.blur(dateInput);
+      expect(mockValidateField).toHaveBeenCalledWith('date', defaultProps.selectedDate);
+    });
+
+    test('calls validateField on blur for time select', () => {
+      render(<DateTimeSelector {...defaultProps} selectedDate={getTodayString()} availableTimes={['10:00', '11:00']} selectedTime={'10:00'} />);
+      const timeSelect = screen.getByLabelText(/Time \*/i, { selector: 'select' });
+      fireEvent.blur(timeSelect);
+      expect(mockValidateField).toHaveBeenCalledWith('time', '10:00');
+    });
+
+    test('calls validateField on blur for party size select', () => {
+      render(<DateTimeSelector {...defaultProps} partySize={3} />);
+      const partySizeSelect = screen.getByLabelText(/Party Size/i, { selector: 'select' });
+      fireEvent.blur(partySizeSelect);
+      expect(mockValidateField).toHaveBeenCalledWith('partySize', 3);
+    });
+  });
+
   // Accessibility Tests
   describe('Accessibility', () => {
     test('should have no accessibility violations', async () => {
