@@ -3,7 +3,7 @@ Title: Accessibility Implementation Log - DateTimeSelector Component
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 18:00:00 PDT
-Last Updated: 2025-06-04 18:17:11 PDT
+Last Updated: 2025-06-04 18:24:37 PDT
 Version: 1.0
 ---
 
@@ -34,20 +34,25 @@ Today's work focused on implementing accessibility improvements for the DateTime
    - Added helper text for better user guidance
 
 4. **Created accessibility tests**
+   - Implemented jest-axe for automated accessibility testing.
+   - Added specific tests for ARIA attributes and semantic structure.
+   - Verified screen reader announcements for dynamic content.
 
-5. **Debugged and fixed `DateTimeSelector.test.jsx`**
+5. **Debugged and fixed `DateTimeSelector.test.jsx` (Initial Pass)**
    - Resolved multiple "TestingLibraryElementError: Found multiple elements" errors by refining selectors for time and date inputs (using `getByLabelText` with `{ selector: 'select' }` or `{ selector: 'input' }`).
    - Corrected test logic to use `rerender` instead of multiple `render` calls within a single test to prevent duplicate component instances.
-   - Ensured all 19 tests, including accessibility checks via `axe-core`, are passing.
+   - Ensured all 19 tests, including accessibility checks via `axe-core`, were passing.
 
-6. **Updated documentation**
-   - Implemented jest-axe for automated accessibility testing
-   - Added specific tests for ARIA attributes and semantic structure
-   - Verified screen reader announcements for dynamic content
+6. **Improved Test Coverage for `DateTimeSelector.jsx`**
+   - Added new test suites for "Time and Date Formatting" and "Field Validation on Blur".
+   - Verified correct display of formatted dates and times.
+   - Ensured `validateField` prop is called correctly on input blur.
+   - Achieved 100% function coverage and near 100% line/branch coverage for the component.
+   - Corrected selectors in existing tests for robustness.
 
-5. **Updated documentation**
-   - Created implementation summary document
-   - Updated this implementation log
+7. **Updated Documentation**
+   - Created implementation summary document (`/docs/accessibility/accessibility-implementation-summary.md`).
+   - Updated this implementation log with all changes.
 
 ## Code Changes
 
@@ -79,8 +84,7 @@ The following files were modified or created:
 6. `/src/components/features/Reservation/DateTimeSelector.test.jsx`
    - Updated selectors for date and time inputs to be more specific (e.g., `getByLabelText(/Time \*/i, { selector: 'select' })`, `getByLabelText(/Select a date for your reservation/i, { selector: 'input' })`).
    - Refactored a test to use `rerender` for updating component props, resolving issues with multiple component instances.
-   - Summarized implemented improvements
-   - Outlined next steps for continued accessibility work
+   - Added new test suites for "Time and Date Formatting" and "Field Validation on Blur" to increase function coverage to 100%.
 
 ## Next Steps
 
