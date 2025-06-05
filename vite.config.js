@@ -23,11 +23,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      reportsDirectory: './coverage',
+      // Determine if this is a master coverage report or an individual test run
+      reportsDirectory: process.env.MASTER_COVERAGE === 'true' ? './coverage' : './coverage-temp',
       // Only generate reports when explicitly requested
       enabled: process.env.VITEST_COVERAGE === 'true' || process.argv.includes('--coverage'),
-      // Don't clean the directory between runs
-      clean: false,
+      // Clean the temp directory between runs, but preserve the master coverage
+      clean: process.env.MASTER_COVERAGE !== 'true',
       // Include all source files for more accurate reporting
       all: true,
     },

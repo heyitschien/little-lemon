@@ -11,9 +11,11 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage",
-    "coverage:ui": "vitest --coverage --ui",
-    "coverage:report": "node scripts/generate-coverage-report.js"
+    "test:coverage": "vitest run --coverage",
+    "test:ui:coverage": "vitest --coverage --ui",
+    "coverage": "cross-env MASTER_COVERAGE=true VITEST_COVERAGE=true vitest run",
+    "coverage:ui": "cross-env MASTER_COVERAGE=true VITEST_COVERAGE=true vitest --ui",
+    "coverage:report": "cross-env MASTER_COVERAGE=true node scripts/generate-coverage-report.js"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -34,6 +36,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^3.2.0",
     "@vitest/ui": "^3.2.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9.25.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",

@@ -13,10 +13,16 @@ dist
 dist-ssr
 *.local
 
-# Ignore coverage reports
+# Test coverage reports
 coverage/
-# But keep the directory structure with a placeholder
+# Only include documentation and placeholder
+!coverage/README.md
 !coverage/.gitkeep
+
+# Jest coverage
+.nyc_output/
+.coverage/
+jest-coverage/
 
 # Editor directories and files
 .vscode/*

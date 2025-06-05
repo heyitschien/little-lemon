@@ -184,6 +184,187 @@ describe('ReservationList Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/reservations');
   });
 
+  describe('Formatting Functions', () => {
+    test('formatTime handles different time formats correctly', () => {
+      // Test various time formats including edge cases
+      const reservations = [
+        {
+          id: 'time-test-1',
+          date: getFutureDateString(1),
+          time: '00:00', // Midnight
+          partySize: 2,
+          name: 'Midnight Test',
+        },
+        {
+          id: 'time-test-2',
+          date: getFutureDateString(1),
+          time: '12:00', // Noon
+          partySize: 2,
+          name: 'Noon Test',
+        },
+        {
+          id: 'time-test-3',
+          date: getFutureDateString(1),
+          time: '23:59', // Just before midnight
+          partySize: 2,
+          name: 'Late Night Test',
+        },
+      ];
+      
+      const mockRemoveReservationById = vi.fn();
+      render(<ReservationList reservations={reservations} removeReservationById={mockRemoveReservationById} />);
+      
+      // Check that times are formatted correctly
+      expect(screen.getByText('12:00 AM')).toBeInTheDocument(); // 00:00 -> 12:00 AM
+      expect(screen.getByText('12:00 PM')).toBeInTheDocument(); // 12:00 -> 12:00 PM
+      expect(screen.getByText('11:59 PM')).toBeInTheDocument(); // 23:59 -> 11:59 PM
+    });
+    
+    test('formatConfirmedAt handles different date formats correctly', () => {
+      const now = new Date();
+      const reservations = [
+        {
+          id: 'date-test-1',
+          date: getFutureDateString(1),
+          time: '12:00',
+          partySize: 2,
+          name: 'With Confirmation',
+          confirmedAt: now.toISOString(), // Current time
+        },
+        {
+          id: 'date-test-2',
+          date: getFutureDateString(1),
+          time: '12:00',
+          partySize: 2,
+          name: 'No Confirmation',
+          // No confirmedAt property
+        },
+        {
+          id: 'date-test-3',
+          date: getFutureDateString(1),
+          time: '12:00',
+          partySize: 2,
+          name: 'Empty Confirmation',
+          confirmedAt: '', // Empty string
+        },
+      ];
+      
+      const mockRemoveReservationById = vi.fn();
+      render(<ReservationList reservations={reservations} removeReservationById={mockRemoveReservationById} />);
+      
+      // Format the expected date string for comparison
+      const expectedDateString = now.toLocaleString(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+      
+      // Check that confirmation dates are formatted correctly
+      expect(screen.getByText(`Confirmed: ${expectedDateString}`)).toBeInTheDocument();
+      // There should be at least one 'Confirmed: N/A' for reservations without confirmation
+      const naConfirmations = screen.getAllByText('Confirmed: N/A');
+      expect(naConfirmations.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+  
+  describe('Conditional Rendering', () => {
+    test('renders optional fields only when they exist', () => {
+      // Create a reservation with all optional fields
+      const fullReservation = {
+        id: 'full-res',
+        date: getFutureDateString(1),
+        time: '18:00',
+        partySize: 2,
+        name: 'Full Details',
+        email: 'full@example.com',
+        phone: '123-456-7890',
+        occasion: 'birthday',
+        specialRequests: 'Window seat please',
+      };
+      
+      // Create a reservation with minimal fields
+      const minimalReservation = {
+        id: 'min-res',
+        date: getFutureDateString(1),
+        time: '19:00',
+        partySize: 2,
+        name: 'Minimal Details',
+        // No optional fields
+      };
+      
+      const mockRemoveReservationById = vi.fn();
+      render(<ReservationList 
+        reservations={[fullReservation, minimalReservation]} 
+        removeReservationById={mockRemoveReservationById} 
+      />);
+      
+      // Check that optional fields are rendered for fullReservation
+      expect(screen.getByText('full@example.com')).toBeInTheDocument();
+      expect(screen.getByText('123-456-7890')).toBeInTheDocument();
+      expect(screen.getByText('birthday')).toBeInTheDocument();
+      expect(screen.getByText('Window seat please')).toBeInTheDocument();
+      
+      // Check that optional fields are not rendered for minimalReservation
+      expect(screen.getByText('Minimal Details')).toBeInTheDocument();
+      expect(screen.queryByText('Email:')).not.toBeNull(); // The label exists somewhere (for fullReservation)
+      
+      // Count occurrences to ensure they appear only once (for fullReservation)
+      const emailLabels = screen.getAllByText('Email:');
+      const phoneLabels = screen.getAllByText('Phone:');
+      const occasionLabels = screen.getAllByText('Occasion:');
+      const requestsLabels = screen.getAllByText('Requests:');
+      
+      expect(emailLabels.length).toBe(1);
+      expect(phoneLabels.length).toBe(1);
+      expect(occasionLabels.length).toBe(1);
+      expect(requestsLabels.length).toBe(1);
+    });
+  });
+  
+  describe('Party Size Formatting', () => {
+    test('correctly formats party size with singular/plural form', () => {
+      const reservations = [
+        {
+          id: 'party-1',
+          date: getFutureDateString(1),
+          time: '18:00',
+          partySize: 1,
+          name: 'Solo Diner',
+        },
+        {
+          id: 'party-2',
+          date: getFutureDateString(1),
+          time: '19:00',
+          partySize: 2,
+          name: 'Couple',
+        },
+        {
+          id: 'party-string',
+          date: getFutureDateString(1),
+          time: '20:00',
+          partySize: '1', // String instead of number
+          name: 'String Party Size',
+        },
+      ];
+      
+      const mockRemoveReservationById = vi.fn();
+      render(<ReservationList 
+        reservations={reservations} 
+        removeReservationById={mockRemoveReservationById} 
+      />);
+      
+      // Check singular form (using getAllByText since we have multiple elements with the same text)
+      const singularParties = screen.getAllByText('1 person');
+      expect(singularParties.length).toBe(2); // One for numeric 1 and one for string '1'
+      
+      // Check plural form
+      expect(screen.getByText('2 people')).toBeInTheDocument();
+      
+      // Verify we have the right number of each type
+      const pluralParties = screen.getAllByText('2 people');
+      expect(pluralParties.length).toBe(1);
+    });
+  });
+  
   describe('Cancellation Logic', () => {
     const reservationToCancel = {
       id: 'res-to-cancel',

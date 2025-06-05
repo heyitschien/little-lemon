@@ -3,8 +3,8 @@ Title: Client-Side Form Validation and Unit Testing
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 12:51:28 PDT
-Last Updated: 2025-06-04 16:20:00 PDT
-Version: 1.6
+Last Updated: 2025-06-04 17:00:00 PDT
+Version: 1.7
 ---
 
 ## Log for June 4, 2025: Client-Side Form Validation and Unit Testing
@@ -66,8 +66,20 @@ Version: 1.6
   - Fixed test structure to properly verify validateField calls
   - Removed unused variables to fix linting issues
 - **4:22 PM:** Successfully improved function coverage for ReservationForm component from ~23% to ~81%
+- **4:30 PM:** Started improving ReservationList component tests to increase branch coverage from ~70% to over 95%:
+  - Added tests for edge cases in formatting functions (`formatTime` and `formatConfirmedAt`), including midnight, noon, missing, and empty confirmation dates
+  - Added tests for conditional rendering of optional reservation fields (email, phone, occasion, special requests)
+  - Added tests for correct singular/plural display of party size, including handling numeric and string inputs
+  - Fixed test failures related to querying multiple DOM elements by switching to `getAllByText` where appropriate
+- **4:55 PM:** Modified test configuration to prevent individual test runs from overwriting the master coverage report:
+  - Updated vite.config.js to use separate directories for master and temporary coverage reports
+  - Added environment variables to control coverage report generation
+  - Created new npm scripts to distinguish between individual test coverage and master coverage report
+  - Installed cross-env package to ensure environment variables work across platforms
+- **5:00 PM:** Verified the new coverage configuration by running individual component tests and confirming they don't affect the master coverage report
 
 ### Notes:
 - Discussed client-side vs. server-side email validation. Current Yup `.email()` is standard for client-side format checking. True email existence/deliverability requires server-side logic and confirmation loops.
 - Mobile testing is essential as we're focusing on the mobile version of the app.
 - To fix validation error tests, we need to ensure the error messages in validation schemas match exactly with what the tests expect.
+- Coverage configuration now allows for running individual tests with coverage without affecting the master report, giving full control over when to generate the comprehensive project coverage report.

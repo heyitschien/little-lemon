@@ -57,10 +57,11 @@ if (fs.existsSync(coverageDir)) {
 }
 
 // Run the tests with coverage
-console.log(`${colors.yellow}Running tests and generating coverage report...${colors.reset}`);
+console.log(`${colors.yellow}Running tests and generating master coverage report...${colors.reset}`);
 try {
-  execSync('npm run coverage', { stdio: 'inherit' });
-  console.log(`\n${colors.green}Coverage report generated successfully!${colors.reset}`);
+  // The MASTER_COVERAGE env var is already set in package.json
+  execSync('cross-env MASTER_COVERAGE=true VITEST_COVERAGE=true vitest run', { stdio: 'inherit' });
+  console.log(`\n${colors.green}Master coverage report generated successfully!${colors.reset}`);
   console.log(`${colors.bright}Report is available at: ${colors.cyan}${path.join(coverageDir, 'index.html')}${colors.reset}`);
 } catch (error) {
   console.error(`${colors.red}Error generating coverage report:${colors.reset}`, error.message);
