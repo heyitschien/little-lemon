@@ -1,5 +1,39 @@
 /* DateTimeSelector.module.css */
 
+/* Accessibility-focused styles */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.formFieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.requiredIndicator {
+  color: #EE5253;
+  margin-left: 0.25rem;
+}
+
+.helperText {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.inputError {
+  border-color: #EE5253 !important;
+  box-shadow: 0 0 0 1px #EE5253 !important;
+}
+
 .dateTimeSelector {
   padding: 0.75rem; /* Reduced padding for mobile */
 }
@@ -88,6 +122,11 @@
   border-color: #495E57;
 }
 
+.customDateButton:focus-visible {
+  outline: 2px solid #495E57;
+  outline-offset: 2px;
+}
+
 .customDateButton:focus {
   outline: none;
   border-color: #495E57;
@@ -112,6 +151,12 @@
   padding-right: 2.5rem;
 }
 
+.timeSelect:focus-visible,
+.partySizeSelect:focus-visible {
+  outline: 2px solid #495E57;
+  outline-offset: 2px;
+}
+
 .timeSelect:focus,
 .partySizeSelect:focus {
   outline: none;
@@ -124,6 +169,15 @@
   background-color: #f0f0f0;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.errorMessage {
+  color: #D73D36; /* Darker red for better contrast */
+  font-family: 'Karla', sans-serif;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  font-weight: 500;
 }
 
 .errorText {

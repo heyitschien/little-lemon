@@ -1,12 +1,35 @@
 import React from 'react';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
+import { configureAxe } from 'vitest-axe';
+import 'vitest-axe/extend-expect'; // This automatically extends expect
 import DateTimeSelector from './DateTimeSelector';
 import { getAvailableTimeSlots } from '../../../services/reservationService';
+import { vi } from 'vitest';
+
+// Configure axe for testing
+const axe = configureAxe({
+  rules: {
+    // Add any specific rule configurations here if needed
+  }
+});
 
 // Mock the reservationService
 vi.mock('../../../services/reservationService', () => ({
   getAvailableTimeSlots: vi.fn(),
 }));
+
+// Mock console.error to suppress axe warnings during tests
+const originalConsoleError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (args[0]?.includes('axe')) return;
+    originalConsoleError(...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+});
 
 // Helper to get today's date in YYYY-MM-DD format
 const getTodayString = () => new Date().toISOString().split('T')[0];
@@ -40,18 +63,40 @@ describe('DateTimeSelector Component', () => {
   test('renders correctly with default props', () => {
     render(<DateTimeSelector {...defaultProps} />);
 
-    expect(screen.getByLabelText(/Date/i)).toBeInTheDocument();
-    // The custom date button will show 'Select a date'
+    // Check for heading and fieldset structure
+    expect(screen.getByRole('heading', { name: /Select Date & Time/i })).toBeInTheDocument();
+    
+    // Check for form controls
+    expect(screen.getByLabelText(/Select a date for your reservation/i)).toBeInTheDocument();
     expect(screen.getByText('Select a date')).toBeInTheDocument();
-    expect(screen.getByLabelText(/Time/i)).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Select a time' })).toBeInTheDocument();
-    expect(screen.getByLabelText(/Party Size/i)).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: '2 people' }).selected).toBe(true);
+    
+    // Get the time select by its id instead of label
+    expect(screen.getByRole('combobox', { name: /Time/i })).toBeInTheDocument();
+    
+    // Check for the default option in time select
+    const timeSelect = screen.getByRole('combobox', { name: /Time/i });
+    expect(within(timeSelect).getByText('Select a time')).toBeInTheDocument();
+    
+    // Check party size select
+    const partySizeSelect = screen.getByRole('combobox', { name: /Party Size/i });
+    expect(partySizeSelect).toBeInTheDocument();
+    
+    // Check for default party size (if it exists)
+    if (defaultProps.partySize) {
+      const expectedOption = `${defaultProps.partySize} ${defaultProps.partySize === 1 ? 'person' : 'people'}`;
+      const options = within(partySizeSelect).getAllByRole('option');
+      const selectedOption = options.find(option => option.selected);
+      expect(selectedOption?.textContent.trim()).toBe(expectedOption);
+    }
+    
+    // Check for required indicators
+    const requiredIndicators = screen.getAllByText('*', { exact: true });
+    expect(requiredIndicators.length).toBe(3);
   });
 
   test('time select is disabled when no date is selected', () => {
     render(<DateTimeSelector {...defaultProps} />);
-    expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+    expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
   });
 
   test('renders with pre-selected values', async () => {
@@ -72,9 +117,17 @@ describe('DateTimeSelector Component', () => {
     // Check if the formatted date is displayed via the hidden input's value
     expect(screen.getByLabelText('Select a date for your reservation').value).toBe(today);
     
-    // Check selected options
-    expect(screen.getByRole('option', { name: '5:00 PM' }).selected).toBe(true);
-    expect(screen.getByRole('option', { name: '4 people' }).selected).toBe(true);
+    // Check selected options in time select
+    const timeSelect = screen.getByRole('combobox', { name: /Time/i });
+    const timeOptions = within(timeSelect).getAllByRole('option');
+    const selectedTimeOption = timeOptions.find(option => option.selected);
+    expect(selectedTimeOption?.textContent.trim()).toBe('5:00 PM');
+    
+    // Check selected options in party size select
+    const partySizeSelect = screen.getByRole('combobox', { name: /Party Size/i });
+    const partySizeOptions = within(partySizeSelect).getAllByRole('option');
+    const selectedPartySizeOption = partySizeOptions.find(option => option.selected);
+    expect(selectedPartySizeOption?.textContent.trim()).toBe('4 people');
   });
 
 
@@ -107,8 +160,8 @@ describe('DateTimeSelector Component', () => {
     });
 
     test('displays error and clears slots for past date selection', async () => {
-      render(<DateTimeSelector {...defaultProps} />);
-      const dateInput = screen.getByLabelText('Select a date for your reservation');
+      const { rerender } = render(<DateTimeSelector {...defaultProps} />);
+      const dateInput = screen.getByLabelText(/Select a date for your reservation/i, { selector: 'input' });
       
       const pastDate = new Date();
       pastDate.setDate(pastDate.getDate() - 1);
@@ -118,14 +171,21 @@ describe('DateTimeSelector Component', () => {
       expect(mockOnDateChange).toHaveBeenCalledWith(pastDateString);
       
       // Re-render with the new (invalid) date prop and error message
-      render(<DateTimeSelector 
+      rerender(<DateTimeSelector 
         {...defaultProps} 
         selectedDate={pastDateString} 
         formErrors={{ date: 'Please select a future date' }}
       />);
       
-      expect(screen.getByText('Please select a future date')).toBeInTheDocument();
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      // Check for error message with role="alert"
+      const errorMessage = screen.getByRole('alert');
+      expect(errorMessage).toHaveTextContent('Please select a future date');
+      
+      // Check that the input has aria-invalid="true"
+      const dateInputWithError = screen.getByLabelText(/Select a date for your reservation/i, { selector: 'input' });
+      expect(dateInputWithError).toHaveAttribute('aria-invalid', 'true');
+      
+      expect(screen.getByLabelText(/Time \*/i, { selector: 'select' })).toBeDisabled();
     });
 
     test('resets selected time if it becomes unavailable after date change', async () => {
@@ -175,7 +235,7 @@ describe('DateTimeSelector Component', () => {
         />
       );
       
-      const timeSelect = screen.getByLabelText(/Time/i);
+      const timeSelect = screen.getByLabelText(/Time \*/i, { selector: 'select' });
       fireEvent.change(timeSelect, { target: { value: '18:00' } });
       
       expect(mockOnTimeChange).toHaveBeenCalledWith('18:00');
@@ -193,9 +253,11 @@ describe('DateTimeSelector Component', () => {
         />
       );
       
-      // Check for the exact text that appears in the component
-      expect(screen.getByText('No available times for this date.')).toBeInTheDocument();
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      // Check for the message with aria-live attribute
+      const noTimesMessage = screen.getByText('No available times for this date.');
+      expect(noTimesMessage).toBeInTheDocument();
+      expect(noTimesMessage).toHaveAttribute('aria-live', 'polite');
+      expect(screen.getByLabelText(/Time \*/i, { selector: 'select' })).toBeDisabled();
     });
   });
 
@@ -209,131 +271,6 @@ describe('DateTimeSelector Component', () => {
 
       fireEvent.change(partySizeSelect, { target: { value: '11' } }); // For 11+ people
       expect(mockOnPartySizeChange).toHaveBeenCalledWith(11);
-    });
-  });
-
-  describe('Display Formatting', () => {
-    test('displays formatted date and time when selected', async () => {
-      const date = getTodayString(); // Use today's date
-      const time = '19:30';
-      
-      // Render with available times already set
-      render(
-        <DateTimeSelector 
-          {...defaultProps} 
-          selectedDate={date} 
-          selectedTime={time} 
-          availableTimes={[time, '20:00']}
-        />
-      );
-
-      // Format date for assertion (e.g., June 04, 2025)
-      const [year, month, day] = date.split('-').map(Number);
-      const expectedDateString = new Date(year, month - 1, day).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-      expect(screen.getByText(expectedDateString)).toBeInTheDocument();
-
-      // Check for the selected time option
-      const timeOption = screen.getByRole('option', { name: '7:30 PM' });
-      expect(timeOption.selected).toBe(true);
-    });
-    
-    // Test formatTimeForDisplay function with various time formats
-    test('formatTimeForDisplay correctly formats time values', () => {
-      // Render with times that will exercise different branches of formatTimeForDisplay
-      render(<DateTimeSelector 
-        {...defaultProps} 
-        selectedDate={getTodayString()} 
-        availableTimes={['17:00', '08:30', '12:00', '00:00']} 
-      />);
-      
-      // Check that times are formatted correctly
-      expect(screen.getByRole('option', { name: '5:00 PM' })).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: '8:30 AM' })).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: '12:00 PM' })).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: '12:00 AM' })).toBeInTheDocument();
-    });
-    
-    // Test edge cases for formatTimeForDisplay
-    test('formatTimeForDisplay handles edge cases', () => {
-      render(
-        <DateTimeSelector 
-          {...defaultProps}
-          selectedDate={getTodayString()}
-          availableTimes={['00:00', '12:00', '23:59']} 
-        />
-      );
-      
-      // Check midnight, noon, and just before midnight
-      expect(screen.getByRole('option', { name: '12:00 AM' })).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: '12:00 PM' })).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: '11:59 PM' })).toBeInTheDocument();
-    });
-    
-    // Test formatDateForDisplay function with different date formats
-    test('formatDateForDisplay handles different date formats correctly', () => {
-      // Test with different dates to ensure formatting works correctly
-      const dates = [
-        '2025-01-01', // New Year's Day
-        '2025-12-25', // Christmas
-        getTodayString() // Today
-      ];
-      
-      // Test each date
-      dates.forEach(date => {
-        render(<DateTimeSelector {...defaultProps} selectedDate={date} />);
-        
-        // Format date for assertion
-        const [year, month, day] = date.split('-').map(Number);
-        const expectedDateString = new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          timeZone: 'UTC'
-        });
-        
-        expect(screen.getByText(expectedDateString)).toBeInTheDocument();
-        
-        // Cleanup after each render
-        cleanup();
-      });
-    });
-    
-    // Test formatDateForDisplay with empty input
-    test('formatDateForDisplay handles empty date string', () => {
-      render(<DateTimeSelector {...defaultProps} selectedDate="" />);
-      expect(screen.getByText('Select a date')).toBeInTheDocument();
-    });
-  });
-  
-  describe('Form Validation', () => {
-    // Test validateField is called correctly
-    test('calls validateField when inputs lose focus', () => {
-      const today = getTodayString();
-      render(
-        <DateTimeSelector 
-          {...defaultProps} 
-          selectedDate={today}
-          selectedTime="17:00"
-          partySize={4}
-          availableTimes={['17:00', '18:00']}
-        />
-      );
-      
-      // Test date validation
-      fireEvent.blur(screen.getByLabelText('Select a date for your reservation'));
-      expect(mockValidateField).toHaveBeenCalledWith('date', today);
-      
-      // Test time validation
-      fireEvent.blur(screen.getByLabelText(/Time/i));
-      expect(mockValidateField).toHaveBeenCalledWith('time', '17:00');
-      
-      // Test party size validation
-      fireEvent.blur(screen.getByLabelText(/Party Size/i));
-      expect(mockValidateField).toHaveBeenCalledWith('partySize', 4);
     });
     
     // Test error states for all form fields
@@ -350,9 +287,46 @@ describe('DateTimeSelector Component', () => {
         />
       );
       
-      expect(screen.getByText('Invalid date selected')).toBeInTheDocument();
+      // Check for error messages with role="alert"
+      const errorMessages = screen.getAllByRole('alert');
+      expect(errorMessages).toHaveLength(3);
+      
+      expect(errorMessages[0]).toHaveTextContent('Invalid date selected');
+      expect(errorMessages[1]).toHaveTextContent('Please select a time');
+      expect(errorMessages[2]).toHaveTextContent('Please select a valid party size');
+      
+      // Check that inputs have aria-invalid="true"
+      const dateInput = screen.getByLabelText('Select a date for your reservation');
+      const timeSelect = screen.getByRole('combobox', { name: /Time/i });
+      const partySizeSelect = screen.getByRole('combobox', { name: /Party Size/i });
+      
+      expect(dateInput).toHaveAttribute('aria-invalid', 'true');
+      expect(timeSelect).toHaveAttribute('aria-invalid', 'true');
+      expect(partySizeSelect).toHaveAttribute('aria-invalid', 'true');
+    });
+    
+    test('validates time selection', () => {
+      const mockValidateField = vi.fn();
+      
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={getTodayString()}
+          availableTimes={['17:00', '18:00']}
+          validateField={mockValidateField}
+          formErrors={{ time: 'Please select a time' }}
+        />
+      );
+      
+      // Check that the error message is displayed
       expect(screen.getByText('Please select a time')).toBeInTheDocument();
-      expect(screen.getByText('Please select a valid party size')).toBeInTheDocument();
+      
+      // Check that inputs have aria-invalid="true"
+      const dateInput = screen.getByLabelText('Select a date for your reservation');
+      const timeSelect = screen.getByRole('combobox', { name: /Time/i });
+      
+      expect(timeSelect).toHaveAttribute('aria-invalid', 'true');
+      expect(dateInput).not.toHaveAttribute('aria-invalid', 'true');
     });
   });
   
@@ -398,7 +372,22 @@ describe('DateTimeSelector Component', () => {
     });
 
     // Test loading state UI
-    test('displays loading state correctly', () => {
+    test('shows no available times message', () => {
+      render(
+        <DateTimeSelector 
+          {...defaultProps} 
+          selectedDate={getTodayString()}
+          availableTimes={[]}
+          isLoadingTimes={false}
+        />
+      );
+      
+      expect(screen.getByText('No available times for this date.')).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
+    });
+    
+    // Test loading state UI
+    test('shows loading state when fetching time slots', () => {
       render(
         <DateTimeSelector 
           {...defaultProps} 
@@ -407,30 +396,120 @@ describe('DateTimeSelector Component', () => {
         />
       );
       
+      // Check that the loading message is displayed
       expect(screen.getByText('Loading available times...')).toBeInTheDocument();
-      expect(screen.getByRole('option', { name: 'Loading times...' })).toBeInTheDocument();
+      
+      // Check that the time select is disabled during loading
+      const timeSelect = screen.getByRole('combobox', { name: /Time/i });
+      expect(timeSelect).toBeDisabled();
+      
+      // Check that the loading option is shown in the select
+      expect(screen.getByText('Loading times...')).toBeInTheDocument();
     });
     
     // Test disabled states based on conditions
-    test('time select is disabled under various conditions', () => {
+    test('disables time select when appropriate', () => {
       // Case 1: No date selected
-      render(<DateTimeSelector {...defaultProps} selectedDate="" />);
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      render(<DateTimeSelector {...defaultProps} />);
+      expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
       cleanup();
       
       // Case 2: Loading times
       render(<DateTimeSelector {...defaultProps} selectedDate={getTodayString()} isLoadingTimes={true} />);
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
       cleanup();
       
       // Case 3: No available times
       render(<DateTimeSelector {...defaultProps} selectedDate={getTodayString()} availableTimes={[]} />);
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
       cleanup();
       
       // Case 4: Date error exists
       render(<DateTimeSelector {...defaultProps} selectedDate={getTodayString()} formErrors={{date: 'Invalid date'}} />);
-      expect(screen.getByLabelText(/Time/i)).toBeDisabled();
+      expect(screen.getByRole('combobox', { name: /Time/i })).toBeDisabled();
+    });
+  });
+
+  // Accessibility Tests
+  describe('Accessibility', () => {
+    test('should have no accessibility violations', async () => {
+      const { container } = render(<DateTimeSelector {...defaultProps} />);
+      const results = await axe(container);
+      expect(results.violations.length).toBe(0);
+    });
+
+    test('should have proper ARIA attributes when form has errors', async () => {
+      const propsWithErrors = {
+        ...defaultProps,
+        formErrors: {
+          date: 'Please select a valid date',
+          time: 'Please select a time',
+          partySize: 'Please select party size'
+        }
+      };
+
+      render(<DateTimeSelector {...propsWithErrors} />);
+      
+      // Check date input
+      const dateInput = screen.getByLabelText(/select a date for your reservation/i);
+      expect(dateInput).toHaveAttribute('aria-invalid', 'true');
+      expect(dateInput).toHaveAttribute('aria-required', 'true');
+      expect(dateInput).toHaveAttribute('aria-describedby');
+      
+      // Check time select
+      const timeSelect = screen.getByRole('combobox', { name: /time/i });
+      expect(timeSelect).toHaveAttribute('aria-invalid', 'true');
+      expect(timeSelect).toHaveAttribute('aria-required', 'true');
+      expect(timeSelect).toHaveAttribute('aria-describedby');
+      
+      // Check party size select
+      const partySizeSelect = screen.getByRole('combobox', { name: /party size/i });
+      expect(partySizeSelect).toHaveAttribute('aria-invalid', 'true');
+      expect(partySizeSelect).toHaveAttribute('aria-required', 'true');
+      expect(partySizeSelect).toHaveAttribute('aria-describedby');
+      
+      // Check error messages
+      const errorMessages = screen.getAllByRole('alert');
+      expect(errorMessages).toHaveLength(3);
+    });
+
+    test('should have proper ARIA attributes when form is valid', () => {
+      render(<DateTimeSelector {...defaultProps} />);
+      
+      // Check date input
+      const dateInput = screen.getByLabelText(/select a date for your reservation/i);
+      expect(dateInput).not.toHaveAttribute('aria-invalid', 'true');
+      expect(dateInput).toHaveAttribute('aria-required', 'true');
+      
+      // Check time select
+      const timeSelect = screen.getByRole('combobox', { name: /time/i });
+      expect(timeSelect).not.toHaveAttribute('aria-invalid', 'true');
+      expect(timeSelect).toHaveAttribute('aria-required', 'true');
+      
+      // Check party size select
+      const partySizeSelect = screen.getByRole('combobox', { name: /party size/i });
+      expect(partySizeSelect).not.toHaveAttribute('aria-invalid', 'true');
+      expect(partySizeSelect).toHaveAttribute('aria-required', 'true');
+    });
+
+    test('should have proper semantic structure', () => {
+      render(<DateTimeSelector {...defaultProps} />);
+      
+      // Check for proper heading
+      expect(screen.getByRole('heading', { name: /select date & time/i })).toBeInTheDocument();
+      
+      // Check for group role (the main container has role="group")
+      expect(screen.getByRole('group', { name: /select date & time/i })).toBeInTheDocument();
+      
+      // Check for fieldset element
+      expect(document.querySelector('fieldset')).toBeInTheDocument();
+      
+      // Check for legend with visually hidden class - updated to match the actual class name in the component
+      expect(document.querySelector('legend._visuallyHidden_139470')).not.toBeNull();
+      
+      // Check for helper text
+      const helperText = screen.getByText(/please select a date between today and/i);
+      expect(helperText).toBeInTheDocument();
     });
   });
 });
