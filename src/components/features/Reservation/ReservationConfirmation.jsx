@@ -46,6 +46,7 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify, isSubmi
   
   return (
     <div className={styles.confirmationContainer}>
+      <h2 className={styles.pageTitle}>Reservation Confirmation</h2>
       {/* <h2 className={styles.sectionTitle}>Reservation Summary</h2> */}
       
       <div className={styles.summaryCard}>

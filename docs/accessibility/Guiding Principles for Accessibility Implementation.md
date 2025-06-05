@@ -3,8 +3,58 @@ Title: Accessibility Implementation Summary - DateTimeSelector Component
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 17:50:00 PDT
-Last Updated: 2025-06-04 17:50:00 PDT
+Last Updated: 2025-06-04 18:45:40 PDT
 Version: 1.0
+---
+
+# Guiding Principles for Accessibility Implementation
+
+This section outlines the recommended approach for implementing and verifying accessibility improvements across the Little Lemon application.
+
+## Test-Driven Development (TDD) for Accessibility
+
+Adopting a Test-Driven Development (TDD) approach is highly recommended for systematically improving and verifying accessibility. This methodology ensures that accessibility is built-in and validated at each step, rather than being an afterthought.
+
+The core TDD cycle is **Red-Green-Refactor**:
+
+1.  **RED**: Write a test for a specific accessibility requirement or feature. This test *must fail* initially because the necessary code modifications have not yet been made. This confirms the test is valid and correctly targets the desired improvement.
+    *   *Example*: Write a test to assert that a list of items is rendered as a semantic `<ul>` with `<li>` children. If the component currently uses `<div>`s, this test will fail.
+
+2.  **GREEN**: Write the *minimum amount of code* required to make the failing test pass. The focus is solely on satisfying the test's conditions.
+    *   *Example*: Modify the component to use `<ul>` and `<li>` tags as required by the test.
+
+3.  **REFACTOR**: With the test passing, review the newly added code and any related existing code. Improve its structure, clarity, efficiency, or maintainability, ensuring all tests (including the new accessibility test) continue to pass.
+    *   *Example*: Ensure CSS styles still apply correctly after changing HTML tags. If the change impacts other tests (e.g., a button's accessible name changes due to an `aria-label`, causing functional tests to fail), update those tests as part of the refactoring phase to reflect the new, more accessible implementation.
+
+### Applying TDD to Accessibility - Step-by-Step Process:
+
+1.  **Analysis & Target Identification (The "Plan")**:
+    *   **Understand the Component**: Review the component's current implementation (`.jsx` file), its purpose, and existing structure.
+    *   **Review Existing Tests**: Examine the component's test file (`.test.jsx`) to understand current coverage and identify gaps in accessibility testing.
+    *   **Identify Accessibility Targets**: Based on the component's functionality and accessibility best practices (WCAG guidelines, ARIA patterns), pinpoint specific areas for improvement. Examples include:
+        *   Automated `axe` checks (e.g., using `jest-axe`).
+        *   Semantic HTML structure (e.g., lists, headings, landmarks).
+        *   Keyboard navigability and focus management.
+        *   Accessible names and descriptions for interactive elements (e.g., `aria-label`, `aria-labelledby`, `aria-describedby`).
+        *   ARIA roles and states.
+        *   Color contrast (though primarily a design/CSS concern, can be noted).
+
+2.  **Iterative Red-Green-Refactor for Each Target**:
+    *   Address each identified accessibility target individually using the Red-Green-Refactor cycle.
+    *   Start with automated checks like `jest-axe` to catch baseline issues.
+    *   Progress to more specific structural and interactive element improvements.
+
+### Benefits of Accessibility TDD:
+
+*   **Clarity of Intent**: Defines accessible outcomes *before* implementation.
+*   **Confidence**: Passing tests provide assurance that features are accessible as intended.
+*   **Regression Prevention**: Tests act as a safety net against future accidental breakage.
+*   **Living Documentation**: Tests serve as documentation for the component's accessible features.
+*   **Focus and Iteration**: Encourages tackling improvements in manageable, focused steps.
+*   **Ensures Testability**: Promotes designing components that are inherently more testable for accessibility.
+
+By consistently applying this TDD approach, we can build a more robustly accessible application and maintain high standards of inclusivity.
+
 ---
 
 # Accessibility Implementation Summary: DateTimeSelector Component

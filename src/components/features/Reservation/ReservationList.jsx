@@ -34,10 +34,10 @@ const ReservationList = ({ reservations, removeReservationById }) => {
   };
 
   return (
-    <div className={styles.reservationList}>
+    <ul className={styles.reservationList}>
       {/* Removed H2 "Your Reservations" as MyReservationsPage provides an H1 */}
       {reservations.map((reservation) => (
-        <div key={reservation.id} className={styles.reservationCard}>
+        <li key={reservation.id} className={styles.reservationCard}>
           <div className={styles.cardTitleHeader}>
             <h3 className={styles.cardTitle}>Reservation for {formatDate(reservation.date)}</h3>
             <span className={styles.cardSubTitle}>Confirmed: {formatConfirmedAt(reservation.confirmedAt)}</span>
@@ -88,13 +88,14 @@ const ReservationList = ({ reservations, removeReservationById }) => {
                 }
               }}
               className={`${styles.button} ${styles.removeButton}`}
+              aria-label={`Remove reservation for ${reservation.name} on ${formatDate(reservation.date)}`}
             >
               Remove Reservation
             </button>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

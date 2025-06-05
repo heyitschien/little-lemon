@@ -22,6 +22,8 @@ vi.mock('../../../services/reservationService', () => ({
 // Mock window.confirm
 global.window.confirm = vi.fn();
 
+import { axe } from 'jest-axe';
+
 // Helper to create a future date string
 const getFutureDateString = (daysAhead) => {
   const date = new Date();
@@ -182,6 +184,109 @@ describe('ReservationList Component', () => {
     fireEvent.click(newReservationButton);
 
     expect(mockNavigate).toHaveBeenCalledWith('/reservations');
+  });
+
+  describe('Accessibility', () => {
+    const mockReservations = [
+      {
+        id: 'res-axe-1',
+        date: getFutureDateString(1),
+        time: '19:00',
+        partySize: 2,
+        name: 'Axe Test User',
+        email: 'axe@example.com',
+        phone: '111-222-3333',
+        occasion: 'axe-occasion',
+        confirmedAt: new Date().toISOString(),
+      },
+    ];
+
+    test('should have no axe violations with reservations', async () => {
+      const { container } = render(<ReservationList reservations={mockReservations} removeReservationById={vi.fn()} />);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    test('should have no axe violations when no reservations', async () => {
+      const { container } = render(<ReservationList reservations={[]} removeReservationById={vi.fn()} />);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    test('should render reservations as an unordered list with list items', () => {
+      const mockReservations = [
+        { id: '1', date: '2025-12-01', time: '19:00', partySize: 2, name: 'Test User 1' },
+        { id: '2', date: '2025-12-02', time: '20:00', partySize: 3, name: 'Test User 2' },
+      ];
+      render(<ReservationList reservations={mockReservations} removeReservationById={vi.fn()} />);
+      
+      const listElement = screen.getByRole('list');
+      expect(listElement).toBeInTheDocument();
+      expect(listElement.tagName).toBe('UL'); // Check if it's specifically a UL
+
+      const listItems = screen.getAllByRole('listitem');
+      expect(listItems.length).toBe(mockReservations.length);
+      listItems.forEach(item => {
+        expect(item.tagName).toBe('LI'); // Check if each item is an LI
+      });
+    });
+
+    test('each reservation card should have a descriptive heading', () => {
+      const mockReservations = [
+        { id: 'card-head-1', date: getFutureDateString(5), time: '19:00', partySize: 2, name: 'User One', confirmedAt: new Date().toISOString() },
+        { id: 'card-head-2', date: getFutureDateString(10), time: '20:00', partySize: 4, name: 'User Two', confirmedAt: new Date().toISOString() },
+      ];
+      // Helper function to format date similar to component for name matching
+      const formatDateForTest = (dateStr) => {
+        const dateObj = new Date(dateStr + 'T00:00:00'); // Ensure consistent time for date object
+        return dateObj.toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        });
+      };
+
+      render(<ReservationList reservations={mockReservations} removeReservationById={vi.fn()} />);
+      
+      const headings = screen.getAllByRole('heading', { level: 3 });
+      expect(headings.length).toBe(mockReservations.length);
+
+      // Check content of each heading
+      mockReservations.forEach(reservation => {
+        const expectedHeadingName = new RegExp(`Reservation for ${formatDateForTest(reservation.date)}`, 'i');
+        expect(screen.getByRole('heading', { level: 3, name: expectedHeadingName })).toBeInTheDocument();
+      });
+    });
+
+    test('remove button should have a descriptive aria-label', () => {
+      // Helper to format date as it appears in the component's heading/aria-label
+      const formatDateForTest = (dateStr) => {
+        const dateObj = new Date(dateStr + 'T00:00:00');
+        return dateObj.toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        });
+      };
+
+      const reservationDate = getFutureDateString(7);
+      const reservationName = 'Aria Test User';
+      const mockReservations = [
+        {
+          id: 'aria-btn-1',
+          date: reservationDate,
+          time: '19:00',
+          partySize: 2,
+          name: reservationName,
+          confirmedAt: new Date().toISOString(),
+        },
+      ];
+      render(<ReservationList reservations={mockReservations} removeReservationById={vi.fn()} />);
+      
+      // Find button by its visible text
+      const removeButton = screen.getByRole('button', { name: /Remove Reservation/i });
+      expect(removeButton).toBeInTheDocument();
+
+      // Assert the aria-label provides more context
+      const expectedAriaLabel = `Remove reservation for ${reservationName} on ${formatDateForTest(reservationDate)}`;
+      expect(removeButton).toHaveAttribute('aria-label', expectedAriaLabel);
+    });
   });
 
   describe('Formatting Functions', () => {
@@ -366,6 +471,14 @@ describe('ReservationList Component', () => {
   });
   
   describe('Cancellation Logic', () => {
+    // Helper to format date as it appears in the component's aria-label
+    const formatDateForTest = (dateStr) => {
+      const dateObj = new Date(dateStr + 'T00:00:00'); // Ensure consistent time for date object
+      return dateObj.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      });
+    };
+
     const reservationToCancel = {
       id: 'res-to-cancel',
       date: getFutureDateString(3),
@@ -390,7 +503,8 @@ describe('ReservationList Component', () => {
       const { rerender } = render(<ReservationList reservations={[reservationToCancel]} removeReservationById={mockRemoveReservationById} />);
       await waitFor(() => screen.getByText('Cancel Candidate'));
 
-      const cancelButton = screen.getByRole('button', { name: 'Remove Reservation' });
+      const expectedAriaLabel = new RegExp(`Remove reservation for ${reservationToCancel.name} on ${formatDateForTest(reservationToCancel.date)}`, 'i');
+      const cancelButton = screen.getByRole('button', { name: expectedAriaLabel });
       fireEvent.click(cancelButton);
 
       expect(global.window.confirm).toHaveBeenCalledWith('Are you sure you want to remove this reservation?');
@@ -409,7 +523,8 @@ describe('ReservationList Component', () => {
       render(<ReservationList reservations={[reservationToCancel]} removeReservationById={mockRemoveReservationById} />);
       await waitFor(() => screen.getByText('Cancel Candidate'));
 
-      const cancelButton = screen.getByRole('button', { name: 'Remove Reservation' });
+      const expectedAriaLabel = new RegExp(`Remove reservation for ${reservationToCancel.name} on ${formatDateForTest(reservationToCancel.date)}`, 'i');
+      const cancelButton = screen.getByRole('button', { name: expectedAriaLabel });
       fireEvent.click(cancelButton);
 
       expect(global.window.confirm).toHaveBeenCalledWith('Are you sure you want to remove this reservation?');
@@ -425,7 +540,8 @@ describe('ReservationList Component', () => {
       render(<ReservationList reservations={[reservationToCancel]} removeReservationById={mockRemoveReservationById} />);
       await waitFor(() => screen.getByText('Cancel Candidate'));
 
-      const cancelButton = screen.getByRole('button', { name: 'Remove Reservation' });
+      const expectedAriaLabel = new RegExp(`Remove reservation for ${reservationToCancel.name} on ${formatDateForTest(reservationToCancel.date)}`, 'i');
+      const cancelButton = screen.getByRole('button', { name: expectedAriaLabel });
       fireEvent.click(cancelButton);
 
       expect(mockRemoveReservationById).toHaveBeenCalledWith('res-to-cancel');
@@ -444,7 +560,8 @@ describe('ReservationList Component', () => {
       render(<ReservationList reservations={[reservationToCancel]} removeReservationById={mockRemoveReservationById} />);
       await waitFor(() => screen.getByText('Cancel Candidate'));
 
-      const cancelButton = screen.getByRole('button', { name: 'Remove Reservation' });
+      const expectedAriaLabel = new RegExp(`Remove reservation for ${reservationToCancel.name} on ${formatDateForTest(reservationToCancel.date)}`, 'i');
+      const cancelButton = screen.getByRole('button', { name: expectedAriaLabel });
       fireEvent.click(cancelButton);
 
       expect(mockRemoveReservationById).toHaveBeenCalledWith('res-to-cancel');

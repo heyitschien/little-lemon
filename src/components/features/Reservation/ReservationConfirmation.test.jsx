@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ReservationConfirmation from './ReservationConfirmation';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { axe } from 'jest-axe';
 
 describe('ReservationConfirmation Component', () => {
   const mockOnConfirm = vi.fn();
@@ -187,4 +188,32 @@ describe('ReservationConfirmation Component', () => {
     expect(timeValueSpan.textContent).toBe('');
   });
 
+  describe('Accessibility', () => {
+    test('renders a main heading for the confirmation section', () => {
+      render(
+        <ReservationConfirmation 
+          reservationData={baseReservationData} 
+          onConfirm={mockOnConfirm} 
+          onModify={mockOnModify} 
+        />
+      );
+      // We expect an H2 heading with the text "Reservation Confirmation"
+      // This will likely fail as the component currently has an H3 "Reservation Summary"
+      // and a commented out H2.
+      expect(screen.getByRole('heading', { level: 2, name: /Reservation Confirmation/i })).toBeInTheDocument();
+    });
+
+    test('passes basic axe accessibility checks', async () => {
+      const { container } = render(
+        <ReservationConfirmation 
+          reservationData={baseReservationData} 
+          onConfirm={mockOnConfirm} 
+          onModify={mockOnModify} 
+        />
+      );
+      // Basic axe check
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+  });
 });

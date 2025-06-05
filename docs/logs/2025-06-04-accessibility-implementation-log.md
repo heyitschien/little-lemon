@@ -3,7 +3,7 @@ Title: Accessibility Implementation Log - DateTimeSelector Component
 Author: Chien Escalera Duong
 Date Created: 2025-06-04
 Time Created: 18:00:00 PDT
-Last Updated: 2025-06-04 18:24:37 PDT
+Last Updated: 2025-06-04 18:44:25 PDT
 Version: 1.0
 ---
 
@@ -54,6 +54,23 @@ Today's work focused on implementing accessibility improvements for the DateTime
    - Created implementation summary document (`/docs/accessibility/accessibility-implementation-summary.md`).
    - Updated this implementation log with all changes.
 
+8. **Applied Accessibility TDD to `ReservationList` Component**
+   - Analyzed existing component code (`ReservationList.jsx`) and tests (`ReservationList.test.jsx`).
+   - Added baseline `jest-axe` checks to `ReservationList.test.jsx` for automated accessibility violation detection; initial checks passed.
+   - **Semantic List Structure**: 
+     - Wrote a failing test to assert the list should be a `<ul>` with `<li>` items.
+     - Modified `ReservationList.jsx` to use `<ul>` and `<li>` tags, making the test pass.
+   - **Descriptive Headings**: 
+     - Wrote a test to ensure each reservation card has an `<h3>` with descriptive text; this passed as the structure was already correct but now explicitly tested.
+   - **Accessible Remove Buttons**:
+     - Wrote a failing test to ensure "Remove Reservation" buttons have unique, descriptive `aria-label`s.
+     - Modified `ReservationList.jsx` to add dynamic `aria-label`s (e.g., "Remove reservation for [Name] on [Date]").
+     - Refactored existing functional tests in the "Cancellation Logic" suite to query buttons by their new accessible names (the `aria-label`s) instead of generic visible text, ensuring all tests passed.
+
+9. **Updated Documentation**
+   - Created implementation summary document (`/docs/accessibility/accessibility-implementation-summary.md`).
+   - Updated this implementation log with all changes.
+
 ## Code Changes
 
 The following files were modified or created:
@@ -85,6 +102,18 @@ The following files were modified or created:
    - Updated selectors for date and time inputs to be more specific (e.g., `getByLabelText(/Time \*/i, { selector: 'select' })`, `getByLabelText(/Select a date for your reservation/i, { selector: 'input' })`).
    - Refactored a test to use `rerender` for updating component props, resolving issues with multiple component instances.
    - Added new test suites for "Time and Date Formatting" and "Field Validation on Blur" to increase function coverage to 100%.
+
+7. `/src/components/features/Reservation/ReservationList.jsx`
+   - Changed outer `div` to `ul` for the main list container.
+   - Changed `div` for each reservation card to `li`.
+   - Added dynamic `aria-label` to "Remove Reservation" buttons for better accessibility.
+
+8. `/src/components/features/Reservation/ReservationList.test.jsx`
+   - Added `jest-axe` for automated accessibility audits.
+   - Added specific tests for semantic list structure (`ul`/`li`).
+   - Added tests to verify descriptive `h3` headings for each card.
+   - Added tests for descriptive `aria-label`s on "Remove Reservation" buttons.
+   - Updated existing functional tests (Cancellation Logic) to find buttons by their new, more descriptive `aria-label`s.
 
 ## Next Steps
 
