@@ -1,0 +1,28 @@
+# axe-linter configuration for Little Lemon project
+# Documentation: https://github.com/deque/axe-linter-action
+
+# Exclude specific rules if needed
+rules:
+  # Example: Disable a specific rule
+  # "image-alt": false
+
+# Exclude specific files or directories
+exclude:
+  # Example: Exclude build directories
+  - "dist/**/*"
+  - "build/**/*"
+  - "node_modules/**/*"
+
+# Configure custom components
+jsx:
+  # Example: Map custom components to HTML elements
+  components:
+    # MyCustomButton: "button"
+    # MyCustomImage: "img"
+
+# Set severity levels
+severity:
+  # Example: Set all issues to error level
+  default: error
+  # Or set specific rules to different levels
+  # "image-alt": warning
