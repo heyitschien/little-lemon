@@ -1,7 +1,9 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as Yup from 'yup'; // Import Yup
 import { useReservation } from './useReservation';
 import { MOCK_TODAY } from './utils/constants'; // Import the globally mocked MOCK_TODAY
+
 
 let mockFetchAPI;
 let mockSubmitAPI;
@@ -611,6 +613,180 @@ describe('useReservation Hook', () => {
       
       // Note: resetReservation should clear availableTimes when date is set to ''
       // but the current implementation might not be doing this correctly
+    });
+  });
+
+  describe('Utility Functions and Direct State Manipulations', () => {
+    const initialReservations = [
+      { id: '1', date: '2025-07-01', time: '18:00', partySize: '2', name: 'Alice' },
+      { id: '2', date: '2025-07-02', time: '19:00', partySize: '4', name: 'Bob' },
+    ];
+
+    beforeEach(() => {
+      localStorage.clear();
+      // Mock localStorage methods
+      vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+        if (key === 'littleLemonReservations') {
+          return JSON.stringify(initialReservations); // Default to having some reservations
+        }
+        return null;
+      });
+      vi.spyOn(Storage.prototype, 'setItem');
+      // Mock console.error to suppress expected error logs during tests
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+      vi.restoreAllMocks(); // Restore all mocks including console.error
+    });
+
+    describe('removeReservationById', () => {
+      it('should remove a reservation from localStorage and update pastReservations state', async () => {
+        const { result } = renderHook(() => useReservation());
+        // Wait for initial load of past reservations from mock
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+
+        act(() => {
+          result.current.removeReservationById('1');
+        });
+
+        const expectedRemainingReservations = [initialReservations[1]];
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+          'littleLemonReservations',
+          JSON.stringify(expectedRemainingReservations)
+        );
+        expect(result.current.pastReservations).toEqual(expectedRemainingReservations);
+      });
+
+      it('should handle errors when removing from localStorage', async () => {
+        const { result } = renderHook(() => useReservation());
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+
+        // Override setItem mock for this specific test to throw an error
+        const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
+          throw new Error('Storage full');
+        });
+
+        act(() => {
+          result.current.removeReservationById('1');
+        });
+
+        expect(console.error).toHaveBeenCalledWith('Error removing reservation from localStorage:', expect.any(Error));
+        // State should remain unchanged as setItem failed
+        expect(result.current.pastReservations.length).toBe(initialReservations.length);
+        setItemSpy.mockRestore(); // Restore original setItem spy for other tests
+      });
+    });
+
+    describe('getPastReservations', () => {
+      it('should return the current pastReservations state after initial load', async () => {
+        const { result } = renderHook(() => useReservation());
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+
+        const retrievedReservations = result.current.getPastReservations();
+        expect(retrievedReservations).toEqual(initialReservations);
+      });
+
+      it('should return an empty array if localStorage is empty initially', async () => {
+        // Override getItem mock for this test to simulate empty localStorage
+        const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValueOnce(null);
+        const { result } = renderHook(() => useReservation());
+        // Hook initializes with empty pastReservations, then useEffect loads them.
+        // If getItem returns null, pastReservations should remain empty.
+        await waitFor(() => expect(result.current.isLoadingTimes).toBe(false)); // Wait for initial effects
+        expect(result.current.pastReservations).toEqual([]);
+        const retrievedReservations = result.current.getPastReservations();
+        expect(retrievedReservations).toEqual([]);
+        getItemSpy.mockRestore(); // Restore original getItem spy
+      });
+    });
+
+    describe('validateField', () => {
+      it('should set formError for an invalid field and clear it for a valid one (name)', async () => {
+        const { result } = renderHook(() => useReservation());
+        act(() => { result.current.setCurrentStep(2); }); // Ensure step2Schema is active
+
+        await act(async () => {
+          await result.current.validateField('name', 'A');
+        });
+        expect(result.current.formErrors.name).toBe('Full name must be at least 2 characters long.');
+
+        await act(async () => {
+          await result.current.validateField('name', 'Valid Name');
+        });
+        expect(result.current.formErrors.name).toBe('');
+      });
+
+      it('should validate email field correctly', async () => {
+        const { result } = renderHook(() => useReservation());
+        act(() => { result.current.setCurrentStep(2); }); // Ensure step2Schema is active
+
+        await act(async () => {
+          await result.current.validateField('email', 'invalidemail');
+        });
+        expect(result.current.formErrors.email).toBe('Valid email is required');
+
+        await act(async () => {
+          await result.current.validateField('email', 'valid@example.com');
+        });
+        expect(result.current.formErrors.email).toBe('');
+      });
+
+      it('should validate phone field correctly', async () => {
+        const { result } = renderHook(() => useReservation());
+        act(() => { result.current.setCurrentStep(2); }); // Ensure step2Schema is active
+
+        await act(async () => {
+          await result.current.validateField('phone', '12345');
+        });
+        expect(result.current.formErrors.phone).toBe('Valid phone number is required (e.g., 123-456-7890)');
+
+        await act(async () => {
+          await result.current.validateField('phone', '123-456-7890');
+        });
+        expect(result.current.formErrors.phone).toBe('');
+      });
+
+            it('should handle Yup validation errors gracefully when validating a field', async () => {
+        // Create a direct mock of Yup.validateAt that will throw our simulated error
+        const mockError = new Error('Simulated generic validation error from Yup');
+        
+        // Mock Yup's validateAt function to throw our error
+        const validateAtSpy = vi.spyOn(Yup, 'reach').mockImplementationOnce(() => {
+          return {
+            validate: () => {
+              throw mockError;
+            }
+          };
+        });
+        
+        // Create a new hook instance
+        const { result } = renderHook(() => useReservation());
+        
+        // Spy on console.error
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        
+        // Update our useReservation.js file to handle this specific test case
+        await act(async () => {
+          // This will trigger our mocked implementation
+          await result.current.validateField('date', 'anyValueToTriggerValidation');
+        });
+        
+        // Verify error was logged
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Failed to validate field:',
+          'date',
+          expect.any(Error)
+        );
+        
+        // Verify the generic error message was set
+        expect(result.current.formErrors.date).toBe('An unexpected error occurred.');
+        
+        // Clean up
+        consoleErrorSpy.mockRestore();
+        validateAtSpy.mockRestore();
+      });
     });
   });
 });
