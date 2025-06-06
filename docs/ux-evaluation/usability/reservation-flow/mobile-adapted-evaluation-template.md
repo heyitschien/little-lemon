@@ -3,7 +3,7 @@ Title: Little Lemon Mobile App Heuristic Evaluation - In Progress
 Author: Cascade (AI Assistant) & Chien Escalera Duong
 Date Created: 2025-06-05
 Time Created: 20:44:12 PDT
-Last Updated: 2025-06-06 12:30:00 PDT
+Last Updated: 2025-06-06 12:14:16 PDT
 Version: 1.1
 ---
 
@@ -64,7 +64,8 @@ Version: 1.1
 | Are confirmation dialogs used before destructive actions (like canceling a reservation)? | Yes |    |    | 0  |
 | Can users easily edit their inputs before final submission? | Yes |    |    | 0  |
 | Is there a home button or gesture accessible from all screens? | Yes |    |    | 0  |
-| Can users modify or cancel their reservations after submission? | No  |    |    | 3  |
+| Can users **modify** their reservations after submission? |     | No |    | 3  |
+| Can users **cancel** their reservations after submission (e.g., via a 'Remove' button)? | Yes |    |    | 0  |
 
 ---
 
@@ -158,12 +159,12 @@ Version: 1.1
 
 | Checklist                                                    | Yes | No | NA | SR |
 | :----------------------------------------------------------- | :-- | :- | :- | :- |
-| Is help documentation easy to find if needed? |     | No |    | 1  |
+| Is help documentation easy to find if needed? (e.g., via AI Chatbot) | Yes |    |    | 0  |
 | Is the help documentation focused on the user's task? | Yes |    |    | 0  |
 | Does the help documentation list concrete steps to be carried out? | Yes |    |    | 0  |
 | Is the help documentation concise and not too large? | Yes |    |    | 0  |
 | Are tooltips or contextual help provided for complex features or inputs? | Yes |    |    | 0  |
-| Is there a FAQ section or knowledge base available? |     | No |    | 1  |
+| Is there a FAQ section or knowledge base available? (e.g., via AI Chatbot) | Yes |    |    | 0  |
 
 ---
 

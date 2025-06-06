@@ -3,7 +3,7 @@ Title: Little Lemon Mobile App Problem Finding Template
 Author: Chien Escalera Duong
 Date Created: 2025-06-05
 Time Created: 20:44:12 PDT
-Last Updated: 2025-06-06 12:50:00 PDT
+Last Updated: 2025-06-06 12:14:16 PDT
 Version: 1.0
 ---
 
@@ -53,7 +53,7 @@ Version: 1.0
 
 | Problem Found                                                                 | Screen/Location                                       | ER | Recommendation                                                                                                |
 | :---------------------------------------------------------------------------- | :---------------------------------------------------- | :- | :------------------------------------------------------------------------------------------------------------ |
-| Users cannot modify or cancel submitted reservations online via the app.        | Post-submission (e.g., from confirmation or user profile) | E1 | Implement features to allow users to view, modify (e.g., time, party size), and cancel their bookings online. |
+| Users cannot **edit/modify** submitted reservations online via the app. (Cancellation is possible via 'Remove Reservation' button). | Post-submission (e.g., from confirmation or user profile) | E1 | Implement features to allow users to view and **edit/modify** (e.g., time, party size) their bookings online. |
 |               |                 |    |               |
 |               |                 |    |               |
 
@@ -130,9 +130,7 @@ Version: 1.0
 
 | Problem Found                                                                 | Screen/Location                                       | ER | Recommendation                                                                                                |
 | :---------------------------------------------------------------------------- | :---------------------------------------------------- | :- | :------------------------------------------------------------------------------------------------------------ |
-| No direct link to broader help/FAQ from within the reservation flow.          | Throughout reservation flow (e.g., in a header/footer)  | E3 | Add a small, unobtrusive link or icon (e.g., '?') that leads to a general help/FAQ page.                     |
-| No integrated FAQ or knowledge base directly accessible within the flow.      | Throughout reservation flow / Help section            | E2 | Consider integrating a small, searchable FAQ or knowledge base accessible via the help link.                |
-|               |                 |    |               |
+| No specific problems found. The AI chatbot is prominently displayed and serves as the primary interactive help and FAQ system. | Throughout app (bottom right icon) | NA | Consider adding subtle animation or cues to the AI chatbot icon to enhance its perceived 'aliveness' and encourage interaction, if desired. |
 
 ---
 
@@ -180,7 +178,7 @@ Version: 1.0
 ### High Severity Issues (Priority 2)
 *High Impact (SR 3-4) AND High Effort (ER E0-E1)*
 
-1. **Inability to Modify/Cancel Reservations Post-Submission (SR 3, ER E1):** Users cannot alter or cancel their bookings through the app after confirming, requiring manual intervention (e.g., phone call). (Heuristic 3)
+1. **Inability to Edit/Modify Reservations Post-Submission (SR 3, ER E1):** Users cannot alter their bookings through the app after confirming, requiring manual intervention (e.g., phone call). Cancellation is available. (Heuristic 3)
 2. 
 3. 
 
@@ -188,7 +186,7 @@ Version: 1.0
 *Low-Medium Impact (SR 1-2) AND Low Effort (ER E3-E4)*
 
 1. **Platform Design Guideline Adherence (SR 1, ER E3):** The app uses custom branding, which, while consistent, doesn't strictly follow native OS visual guidelines. (Heuristic 4)
-2. **Help Documentation Accessibility (SR 1, ER E3):** No direct link to a broader help/FAQ section is available from within the reservation flow. (Heuristic 10)
+2. 
 3. 
 
 ### Long-term Improvements (Priority 4)
@@ -197,5 +195,4 @@ Version: 1.0
 1. **Lack of Past Reservation Recall for Rebooking (SR 2, ER E2):** The system doesn't remember details from previous bookings to expedite rebooking. (Heuristic 6)
 2. **No Shortcuts for Frequent Users (SR 2, ER E2):** The app lacks accelerators like quick booking from history for experienced users. (Heuristic 7)
 3. **No Interface Customization or Saved Preferences (SR 1, ER E2):** Users cannot save default preferences (e.g., party size, typical time) to pre-fill forms. (Heuristic 7)
-4. **No Integrated FAQ/Knowledge Base (SR 1, ER E2):** A dedicated FAQ or knowledge base is not directly accessible within the reservation flow. (Heuristic 10)
-5. **Limited Offline Support/Network Resilience (SR 1, ER E1):** While basic error handling for network issues exists, there's no extensive offline support or advanced network resilience. (Mobile-Specific)
+4. **Limited Offline Support/Network Resilience (SR 1, ER E1):** While basic error handling for network issues exists, there's no extensive offline support or advanced network resilience. (Mobile-Specific)
