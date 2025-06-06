@@ -7,6 +7,10 @@ let mockFetchAPI;
 let mockSubmitAPI;
 
 beforeEach(() => {
+  // Ensure global.fetchAPI and global.submitAPI are defined before spying
+  global.fetchAPI = vi.fn();
+  global.submitAPI = vi.fn();
+
   mockFetchAPI = vi.spyOn(global, 'fetchAPI');
   mockSubmitAPI = vi.spyOn(global, 'submitAPI');
 
