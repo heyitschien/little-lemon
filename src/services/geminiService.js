@@ -1,79 +1,8 @@
-import { menuItems as allMenuItems } from '../data/menuData'; // Import all menu items
+// Import menu data is no longer needed since we removed the ingredient spotlight feature
 
 const API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${API_KEY}`;
 
-// Helper function to get a random subset of item names for the prompt
-const getRandomMenuItemsPrompt = (items, count = 3) => {
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count).map(item => item.name).join(', ');
-};
-
-export const fetchIngredientSpotlightData = async () => {
-  if (!API_KEY) {
-    console.error("Gemini API Key is missing. Please set VITE_REACT_APP_GEMINI_API_KEY in your .env file.");
-    throw new Error("API Key missing. Cannot fetch ingredient spotlight.");
-  }
-
-  const randomDishNames = getRandomMenuItemsPrompt(allMenuItems, 3);
-  const menuItemsForPrompt = `Some of our popular dishes include: ${randomDishNames}.`; // Used to give context
-
-  const prompt = `
-    You are a creative food expert for a Mediterranean restaurant called Little Lemon.
-    Provide a spotlight on a single, interesting Mediterranean ingredient.
-    ${menuItemsForPrompt}
-    Your response must be in JSON format and include:
-    1. "ingredientName": The name of the ingredient (e.g., "Kalamata Olives", "Feta Cheese", "Sumac").
-    2. "ingredientDescription": A brief, engaging description of the ingredient (2-3 sentences).
-    3. "featuredDishName": The name of a dish from our menu (or a classic Mediterranean dish if none of our listed dishes prominently feature it) that showcases this ingredient.
-    4. "dishReasoning": A short explanation (1-2 sentences) of why this dish is a great example for the ingredient or how the ingredient enhances the dish.
-
-    Example of a dish that might feature an ingredient: If the ingredient is 'Extra Virgin Olive Oil', a featured dish could be 'Classic Greek Salad' and the reasoning could be 'Our Greek Salad is generously drizzled with high-quality extra virgin olive oil, allowing its fruity and peppery notes to perfectly complement the fresh vegetables and feta.'
-    Ensure the ingredient is genuinely Mediterranean and the information is appealing to a restaurant customer.
-  `;
-
-  const payload = {
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "OBJECT",
-        properties: {
-          "ingredientName": { "type": "STRING" },
-          "ingredientDescription": { "type": "STRING" },
-          "featuredDishName": { "type": "STRING" },
-          "dishReasoning": { "type": "STRING" }
-        },
-        required: ["ingredientName", "ingredientDescription", "featuredDishName", "dishReasoning"]
-      }
-    }
-  };
-
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('Error from Gemini API (fetchIngredientSpotlightData):', response.status, errorBody);
-      throw new Error(`Gemini API request failed (fetchIngredientSpotlightData) with status ${response.status}: ${errorBody}`);
-    }
-
-    const data = await response.json();
-    // The Gemini API with responseSchema should directly return the JSON object matching the schema.
-    // No need to access candidates[0].content.parts[0].text here for JSON output.
-    return data;
-
-  } catch (error) {
-    console.error('Network or other error calling Gemini API (fetchIngredientSpotlightData):', error);
-    throw error; // Re-throw to be handled by the calling component
-  }
-};
 
 export const sendMessageToGemini = async (promptText) => {
   if (!API_KEY) {
