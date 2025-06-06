@@ -2,28 +2,28 @@
 
 .testimonialsSection {
   background-color: white; /* Changed to white as per user request */
-  padding: 60px 0;
+  padding: 3rem 0; /* Standardized to 48px (3rem) */
   text-align: center; /* Center the title */
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1rem; /* Standardized to 16px (1rem) to match other sections */
 }
 
 .testimonialsTitle {
   font-family: 'Markazi Text', serif;
-  font-size: 40pt; /* Display Title / Sub Title - Style Guide */
+  font-size: 40px; /* Match style guide Display Title spec */
   font-weight: 400; /* Style Guide: Markazi Text Regular */
   color: #333333; /* var(--highlight-black) - Adjusted for new background */
-  margin-bottom: 40px;
+  margin-bottom: 2rem; /* Standardized to 32px (2rem) */
 }
 
 .testimonialsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4 cards on desktop */
-  gap: 30px;
+  gap: 1.5rem; /* Standardized to 24px (1.5rem) */
 }
 
 /* Responsive adjustments for the grid */
@@ -40,10 +40,21 @@
 }
 
 @media (max-width: 768px) { /* Smaller Tablet / Large Mobile - 1 column */
+  .testimonialsSection {
+    padding: 1.5rem 0; /* Consistent with Hero and Menu sections */
+  }
+  
+  .container {
+    padding: 0 1rem; /* Consistent with Hero and Menu sections */
+  }
+  
   .testimonialsGrid {
     grid-template-columns: 1fr;
+    gap: 1rem; /* Slightly reduced gap for mobile */
   }
+  
   .testimonialsTitle {
-    font-size: 32pt;
+    font-size: 40px; /* Match style guide Display Title spec */
+    margin-bottom: 1.5rem; /* Consistent spacing */
   }
 }

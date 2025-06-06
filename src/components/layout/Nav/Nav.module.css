@@ -19,6 +19,9 @@
   text-decoration: none;
   padding: 0.5rem 0; /* Add some padding for easier clicking */
   display: block; /* Ensures padding applies correctly */
+  font-family: 'Karla', sans-serif; /* Match style guide font */
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  font-weight: 500; /* Match style guide Lead Text spec */
 }
 
 .navLink:hover {
@@ -56,6 +59,7 @@
     gap: 1rem; /* Spacing for vertical links */
     align-items: center; /* Center align links on mobile */
     z-index: 998;
+    box-sizing: border-box;
   }
 
   /* 
@@ -68,7 +72,11 @@
   .navLink {
     width: 100%; /* Make links take full width of mobile menu */
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 16px; /* Match style guide Paragraph Text spec */
     padding: 0.75rem 0;
+    min-height: 44px; /* Industry standard for touch targets */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

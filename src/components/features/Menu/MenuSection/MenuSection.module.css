@@ -16,15 +16,15 @@
 
 .sectionTitle {
   font-family: 'Markazi Text', serif;
-  font-size: 2.5rem;
+  font-size: 40px; /* Match style guide Display Title spec */
   color: #495E57;
   text-transform: none;
   margin: 0;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem; /* Consistent spacing */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 400;
+  font-weight: 400; /* Match style guide Display Title spec */
 }
 
 .bikeIcon {
@@ -52,12 +52,17 @@
   margin-right: 0.8rem;
   background-color: #edefee;
   border: none;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  border-radius: 16px; /* Match style guide UI Elements spec */
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  font-weight: 500; /* Match style guide Lead Text spec */
   color: #333333;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  min-height: 44px; /* Industry standard for touch targets */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filterPill:last-child {
@@ -84,11 +89,12 @@
 
 .categoryTitle {
   font-family: 'Markazi Text', serif;
-  font-size: 2rem;
+  font-size: 32px; /* Consistent heading hierarchy */
   color: var(--primary-green, #495E57);
   position: relative;
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
+  font-weight: 400; /* Match style guide Display Title spec */
 }
 
 .categoryTitle::after {
@@ -159,7 +165,11 @@
 /* Mobile-specific styles */
 @media (max-width: 768px) {
   .menuSection {
-    padding: 1.5rem 0;
+    padding: 1.5rem 0; /* Consistent with Hero section */
+  }
+  
+  .container {
+    padding: 0 1rem; /* Consistent with Hero section */
   }
   
   .stickyWrapper {
@@ -169,6 +179,16 @@
   
   .filterPill {
     padding: 0.4rem 1rem;
-    font-size: 0.85rem;
+    font-size: 16px; /* Match style guide Paragraph Text spec */
+    min-height: 40px; /* Slightly smaller but still accessible */
+  }
+  
+  .sectionTitle {
+    font-size: 40px; /* Match style guide Display Title spec */
+    margin-bottom: 1rem;
+  }
+  
+  .categoryTitle {
+    font-size: 28px; /* Smaller for mobile but maintains hierarchy */
   }
 }

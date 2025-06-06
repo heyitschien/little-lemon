@@ -1,12 +1,13 @@
 .menuItemCard {
   background-color: white;
-  border-radius: 16px;
+  border-radius: 16px; /* Match style guide UI Elements spec */
   padding: 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
   border: 1px solid #EDEFEE;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 .cardContent {
@@ -17,20 +18,21 @@
 
 .cardTitle {
   font-family: 'Karla', sans-serif;
-  font-size: 1.5rem;
+  font-size: 24px; /* Match style guide Card Title spec */
   margin: 0 0 0.5rem 0;
   color: #333333;
-  font-weight: 700;
+  font-weight: 700; /* Match style guide Card Title spec */
   line-height: 1.2;
 }
 
 .cardDescription {
   font-family: 'Karla', sans-serif;
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  line-height: 1.5; /* Match style guide Paragraph Text spec */
   color: #666666;
   margin: 0 0 1.5rem 0;
   flex-grow: 1;
+  font-weight: 400; /* Match style guide Paragraph Text spec */
 }
 
 .cardPriceContainer {
@@ -54,14 +56,15 @@
   background-color: #F4CE14;
   color: #333333;
   border: none;
-  border-radius: 8px;
+  border-radius: 16px; /* Match style guide UI Elements spec */
   padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  font-weight: 500; /* Match style guide Lead Text spec */
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 140px;
   white-space: nowrap;
+  min-height: 44px; /* Industry standard for touch targets */
 }
 
 .plusIcon {
@@ -103,16 +106,29 @@
 @media (max-width: 768px) {
   .menuItemCard {
     width: 100%;
+    padding: 1rem; /* Consistent padding */
+  }
+  
+  .cardTitle {
+    font-size: 20px; /* Slightly smaller for mobile */
   }
   
   .cardDescription {
+    font-size: 16px; /* Match style guide Paragraph Text spec */
     -webkit-line-clamp: 2;
     line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    margin-bottom: 1rem; /* Reduced spacing for mobile */
   }
 
   .addToCartButton {
     width: 100%;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1rem;
+    min-height: 40px; /* Slightly smaller but still accessible */
+    font-size: 16px; /* Match style guide Paragraph Text spec */
   }
 
   .cardPriceContainer {
@@ -121,6 +137,11 @@
   }
 
   .cardPrice {
-    font-size: 1.25rem;
+    font-size: 18px; /* Consistent with style guide */
+    font-weight: 500; /* Match style guide Lead Text spec */
+  }
+  
+  .cardImageContainer {
+    margin-bottom: 1rem; /* Reduced spacing for mobile */
   }
 }

@@ -1,6 +1,6 @@
 /* src/components/About/About.module.css */
 .aboutSection {
-  padding: 60px 0;
+  padding: 3rem 0; /* Standardized to 48px (3rem) */
   background-color: #EDEFEE; /* Style Guide: Highlight White (Backgrounds) */
   font-family: 'Karla', sans-serif;
 }
@@ -8,10 +8,10 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1rem; /* Standardized to 16px (1rem) to match other sections */
   display: flex;
   align-items: center; /* Vertically align content and images */
-  gap: 40px; /* Space between text content and images */
+  gap: 2rem; /* Standardized to 32px (2rem) */
 }
 
 .aboutContent {
@@ -21,27 +21,28 @@
 
 .title {
   font-family: 'Markazi Text', serif;
-  font-size: 40pt; /* Display Title - Style Guide */
+  font-size: 40px; /* Match style guide Display Title spec */
   font-weight: 400; /* Style Guide: Markazi Text Regular */
   color: #F4CE14; /* Primary Yellow - Style Guide */
   margin-top: 0;
-  margin-bottom: 0px; /* Reduced space */
+  margin-bottom: 0; /* Reduced space */
 }
 
 .subtitle {
   font-family: 'Markazi Text', serif;
-  font-size: 32pt; /* Slightly smaller than title */
+  font-size: 32px; /* Consistent heading hierarchy */
   font-weight: 400; /* Style Guide: Markazi Text Regular */
   color: #333333; /* Highlight Black - Style Guide */
   margin-top: -10px; /* Pull up closer to title */
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem; /* Standardized to 20px (1.25rem) */
 }
 
 .aboutContent p {
-  font-size: 16pt; /* Paragraph Text - Style Guide */
-  line-height: 1.5;
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  line-height: 1.5; /* Match style guide Paragraph Text spec */
   color: #333333; /* Highlight Black - Style Guide */
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem; /* Standardized to 20px (1.25rem) */
+  font-weight: 400; /* Match style guide Paragraph Text spec */
 }
 
 .aboutImages {
@@ -89,21 +90,39 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .aboutSection {
+    padding: 1.5rem 0; /* Consistent with Hero, Menu, and Testimonials sections */
+  }
+  
   .container {
     flex-direction: column;
     text-align: center;
+    padding: 0 1rem; /* Consistent with other sections */
   }
 
   .aboutContent,
   .aboutImages {
     max-width: 100%;
   }
+  
+  .title {
+    font-size: 40px; /* Match style guide Display Title spec */
+  }
+  
+  .subtitle {
+    font-size: 28px; /* Smaller for mobile but maintains hierarchy */
+    margin-bottom: 1rem; /* Reduced spacing for mobile */
+  }
+  
+  .aboutContent p {
+    font-size: 16px; /* Match style guide Paragraph Text spec */
+  }
 
   .aboutImages {
-    margin-top: 30px;
+    margin-top: 1.5rem; /* Standardized to 24px (1.5rem) */
     min-height: initial; /* Reset min-height for stacked layout */
     flex-direction: column; /* Stack images on mobile */
-    gap: 20px;
+    gap: 1rem; /* Standardized to 16px (1rem) */
   }
 
   .imageWrapper1,
@@ -120,6 +139,6 @@
   }
 
   .imageWrapper1 {
-    margin-bottom: 20px; /* Space between stacked images */
+    margin-bottom: 1.25rem; /* Standardized to 20px (1.25rem) */
   }
 }

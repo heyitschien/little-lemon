@@ -3,8 +3,8 @@
   padding: 12px 24px;
   border-radius: 16px; /* From style guide */
   font-family: 'Karla', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px; /* Match style guide Paragraph Text spec */
+  font-weight: 500; /* Match style guide Lead Text spec */
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
@@ -12,6 +12,10 @@
   color: #333333; /* var(--highlight-black) */
   border: none; /* Ensure no default border */
   text-align: center;
+  min-height: 44px; /* Industry standard for touch targets */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button:hover {
@@ -39,4 +43,13 @@
 .disabled:hover {
   background-color: #CCCCCC;
   color: #666666;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .button {
+    padding: 10px 20px;
+    font-size: 16px; /* Match style guide Paragraph Text spec */
+    min-height: 40px; /* Slightly smaller but still accessible */
+  }
 }
