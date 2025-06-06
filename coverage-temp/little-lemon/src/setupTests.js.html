@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for little-lemon/src/components/layout/MainComponent/MainComponent.jsx</title>
+    <title>Code coverage report for little-lemon/src/setupTests.js</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../../../prettify.css" />
-    <link rel="stylesheet" href="../../../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.png" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../../../sort-arrow-sprite.png);
+            background-image: url(../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">little-lemon/src/components/layout/MainComponent</a> MainComponent.jsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">little-lemon/src</a> setupTests.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -30,16 +30,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
@@ -81,10 +81,7 @@
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -96,36 +93,30 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/components/MainComponent/MainComponent.jsx
-<span class="cstat-no" title="statement not covered" >import React from 'react';</span>
-<span class="cstat-no" title="statement not covered" >import styles from './MainComponent.module.css'; // For future styles</span>
-<span class="cstat-no" title="statement not covered" >import Hero from '../Hero/Hero'; // Import the Hero component</span>
-<span class="cstat-no" title="statement not covered" >import MenuSection from '../../features/Menu/MenuSection/MenuSection'; // Import the MenuSection component</span>
-<span class="cstat-no" title="statement not covered" >import Testimonials from '../../features/Testimonials/Testimonials'; // Import the Testimonials component</span>
-<span class="cstat-no" title="statement not covered" >import About from '../../features/About/About'; // Import the About component</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >// src/setupTests.js<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >// jest-dom adds custom jest matchers for asserting on DOM nodes.</span>
+<span class="cstat-no" title="statement not covered" >// allows you to do things like:</span>
+<span class="cstat-no" title="statement not covered" >// expect(element).toHaveTextContent(/react/i)</span>
+<span class="cstat-no" title="statement not covered" >// learn more: https://github.com/testing-library/jest-dom</span>
+<span class="cstat-no" title="statement not covered" >import '@testing-library/jest-dom';</span>
+<span class="cstat-no" title="statement not covered" >import { vi } from 'vitest';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >function MainComponent() {</span>
-<span class="cstat-no" title="statement not covered" >    return (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;main className={styles.mainContent}&gt; </span>
-<span class="cstat-no" title="statement not covered" >            &lt;Hero /&gt; {/* Render the Hero component */}</span>
-<span class="cstat-no" title="statement not covered" >            &lt;MenuSection /&gt; {/* Render the MenuSection component */}</span>
-<span class="cstat-no" title="statement not covered" >            &lt;Testimonials /&gt; {/* Render the Testimonials component */}</span>
-<span class="cstat-no" title="statement not covered" >            &lt;About /&gt; {/* Render the About component */}</span>
-            {/* Other sections will be added here later */}
-<span class="cstat-no" title="statement not covered" >        &lt;/main&gt;</span>
-    );
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >// Define global mocks for API functions</span>
+<span class="cstat-no" title="statement not covered" >// These will be spied on and further customized in individual test files</span>
+<span class="cstat-no" title="statement not covered" >global.fetchAPI = vi.fn();</span>
+<span class="cstat-no" title="statement not covered" >global.submitAPI = vi.fn();</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export default MainComponent;</span>
+<span class="cstat-no" title="statement not covered" >// Mock MOCK_TODAY for consistent date testing</span>
+<span class="cstat-no" title="statement not covered" >// Constants file is at src/hooks/utils/constants.js</span>
+<span class="cstat-no" title="statement not covered" >vi.mock('./hooks/utils/constants', () =&gt; ({</span>
+<span class="cstat-no" title="statement not covered" >  MOCK_TODAY: new Date('2025-07-15T12:00:00.000Z'), // A fixed date for testing</span>
+<span class="cstat-no" title="statement not covered" >}));</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -135,14 +126,14 @@
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2025-06-06T02:57:07.479Z
             </div>
-        <script src="../../../../../prettify.js"></script>
+        <script src="../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../../../sorter.js"></script>
-        <script src="../../../../../block-navigation.js"></script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
     </body>
 </html>
     
