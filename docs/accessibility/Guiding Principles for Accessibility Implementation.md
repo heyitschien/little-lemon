@@ -145,3 +145,4 @@ These changes align with our commitment to creating an inclusive application tha
 ---
 
 *This document will be updated as additional accessibility improvements are implemented.*
+
