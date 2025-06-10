@@ -24,13 +24,15 @@ const MyReservationsPage = () => {
           </div>
         )}
         
-        <div className={styles.actions}>
-          <Button to="/reservations" variant="primary">
-            Make a New Reservation
-          </Button>
-          <Button to="/" variant="secondary">
-            Return to Home
-          </Button>
+        <div className={styles.actionsContainer}>
+          <div className={styles.actions}>
+            <Button to="/reservations" variant="primary" className={styles.actionButton}>
+              Make a New Reservation
+            </Button>
+            <Button to="/" variant="secondary" className={styles.actionButton}>
+              Return to Home
+            </Button>
+          </div>
         </div>
       </div>
     </section>

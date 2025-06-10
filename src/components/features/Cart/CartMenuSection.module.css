@@ -1,12 +1,12 @@
 .menuSection {
-  margin-top: 0;
+  margin-top: -0.5rem;
   padding-bottom: 1rem;
 }
 
 .sectionTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #333;
 }
 

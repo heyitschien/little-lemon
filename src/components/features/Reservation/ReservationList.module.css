@@ -57,6 +57,7 @@
 
 .detailItem {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
   /* font-family: 'Karla', sans-serif; /* Moved to parent .reservationDetails */
 }
@@ -67,7 +68,8 @@
 
 .detailLabel {
   font-weight: 700;
-  min-width: 120px; /* Adjusted from 150px, can fine-tune */
+  min-width: 100px;
+  width: 30%;
   color: #333333; /* Highlight Black */
   margin-right: 10px; /* Added for spacing */
 }
@@ -75,6 +77,9 @@
 .detailValue {
   flex: 1;
   color: #333333; /* Highlight Black */
+  word-break: break-word; /* Allow long words like emails to break */
+  overflow-wrap: break-word; /* Modern alternative to word-wrap */
+  max-width: 65%; /* Ensure it doesn't push beyond the container */
 }
 
 .cardActions {
@@ -106,4 +111,38 @@
   color: #C62828; /* Darker red text on hover */
   border-color: #C62828; /* Darker red border on hover */
   transform: translateY(-1px);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .reservationList {
+    padding: 10px;
+  }
+
+  .cardTitleHeader {
+    padding: 1rem;
+  }
+
+  .cardTitle {
+    font-size: 1.5rem;
+  }
+
+  .reservationDetails {
+    padding: 1rem;
+  }
+
+  .detailItem {
+    margin-bottom: 0.75rem;
+  }
+
+  .detailLabel {
+    width: 35%;
+    min-width: 80px;
+    margin-bottom: 0.25rem;
+  }
+
+  .detailValue {
+    max-width: 60%;
+    font-size: 0.95rem;
+  }
 }

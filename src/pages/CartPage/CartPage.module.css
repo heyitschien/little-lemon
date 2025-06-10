@@ -117,20 +117,13 @@
   margin: 1.5rem 0 1rem;
 }
 
-.deliveryTimeIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: #F4CE14;
-  border-radius: 50%;
-  color: #333;
-  margin-right: 0.5rem;
-}
+/* Removed .deliveryTimeIcon as we're using the bike icon directly */
 
-.clockIcon {
-  font-size: 1.2rem;
+.bikeIcon {
+  width: 36px;
+  height: 36px;
+  margin-right: 0.75rem;
+  color: #495E57;
 }
 
 .deliveryTimeInfo {
@@ -142,12 +135,15 @@
 }
 
 .deliveryTimeInfo span:first-child {
-  font-size: 0.9rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
   color: #333;
 }
 
 .deliveryTimeInfo span:last-child {
-  font-weight: bold;
+  font-family: 'Karla', sans-serif;
+  font-weight: 500;
   font-size: 1rem;
 }
 
@@ -174,15 +170,20 @@
 }
 
 .cutleryInfo h3 {
-  font-size: 1rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
   margin-bottom: 0.25rem;
   color: #333;
 }
 
 .cutleryInfo p {
-  font-size: 0.875rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
   color: #666;
   max-width: 300px;
+  line-height: 1.5;
 }
 
 .cutleryToggle {
@@ -238,8 +239,9 @@
 }
 
 .summaryTitle {
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-family: 'Markazi Text', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
   margin-bottom: 1rem;
   color: #333;
 }
@@ -262,7 +264,7 @@
   font-size: 0.8rem;
   color: #666;
   font-style: italic;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0 0;
 }
 
 /* Add subtle animation to cart items */
@@ -271,10 +273,12 @@
 }
 
 .itemsListTitle {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #666;
+  font-family: 'Karla', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #333;
+  padding: 1rem;
 }
 
 .summaryItem {
@@ -296,8 +300,9 @@
 }
 
 .itemName {
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -335,11 +340,12 @@
   color: white !important;
   border-radius: 4px !important;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease !important;
   position: absolute;
-  right: 0;
   white-space: nowrap;
-  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  top: 0;
+  right: -60px;
+  transform: translateX(0) translateY(0);
 }
 
 .desktopRemoveButton.visible {
@@ -352,11 +358,12 @@
 }
 
 .itemTotalPrice {
-  font-weight: 600;
+  font-family: 'Karla', sans-serif;
   font-size: 1rem;
-  color: #495E57;
+  font-weight: 500;
   min-width: 60px;
   text-align: right;
+  color: #333;
 }
 
 /* Add More Section */
@@ -659,10 +666,11 @@
   
   .quantityControlWrapper {
     margin-right: 2rem;
-    padding-right: 5rem; /* More space for the remove button on desktop */
+    padding-right: 2rem; /* Adjusted space for the remove button on desktop */
     display: flex;
     justify-content: center;
     min-width: 150px;
+    position: relative;
   }
   
   .quantityControl {
@@ -688,7 +696,8 @@
   
   .desktopRemoveButton {
     font-size: 0.9rem !important;
-    right: -10px;
+    right: -50px;
+    top: 0;
   }
   
   /* Hide swipe hint on desktop */
@@ -775,9 +784,9 @@
   
   /* Make swipe hint more visible on mobile */
   .swipeHint {
-    padding: 0.75rem 0;
+    padding: 0.5rem 0;
     background-color: #f8f8f8;
     border-radius: 4px;
-    margin: 0.75rem 0;
+    margin: 0.5rem 0 0.25rem;
   }
 }

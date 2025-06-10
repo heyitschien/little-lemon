@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './CartPage.module.css';
 import Button from '../../components/common/Button/Button';
 import CartMenuSection from '../../components/features/Cart/CartMenuSection';
+import BikeIcon from '../../assets/icons/bike.svg';
 
 // CartItem component for better organization and swipe functionality
 const CartItem = ({ item, updateQuantity, removeFromCart }) => {
@@ -145,9 +146,7 @@ const CartPage = () => {
           
           {/* Delivery time section */}
           <div className={styles.deliveryTime}>
-            <div className={styles.deliveryTimeIcon}>
-              <span className={styles.clockIcon}>⏱️</span>
-            </div>
+            <img src={BikeIcon} alt="Delivery" className={styles.bikeIcon} />
             <div className={styles.deliveryTimeInfo}>
               <span>Delivery Time</span>
               <span>{deliveryTime}</span>
@@ -198,7 +197,7 @@ const CartPage = () => {
             </div>
             
             {/* Add More To Your Order section */}
-            <div style={{ marginTop: '-1rem' }}>
+            <div style={{ marginTop: '0' }}>
               <CartMenuSection />
             </div>
             
