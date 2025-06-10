@@ -1,5 +1,15 @@
 /* ReservationList.module.css */
 
+/* No reservations message styling */
+.noReservationsMessage {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #495E57;
+  margin: 2rem auto;
+  width: 100%;
+  font-family: 'Karla', sans-serif;
+}
+
 .reservationList {
   width: 100%;
   max-width: 800px;

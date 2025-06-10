@@ -3,7 +3,7 @@ import styles from './ReservationList.module.css';
 
 const ReservationList = ({ reservations, removeReservationById }) => {
   if (!reservations || reservations.length === 0) {
-    return <p>No past reservations found.</p>;
+    return <p className={styles.noReservationsMessage}>No past reservations found.</p>;
   }
 
   const formatDate = (dateString) => {

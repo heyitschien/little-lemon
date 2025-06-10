@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from './MyReservationsPage.module.css';
 import ReservationList from '../../components/features/Reservation/ReservationList';
 import { useReservation } from '../../hooks/useReservation';
+import Button from '../../components/common/Button/Button';
 
 /**
  * MyReservationsPage Component
@@ -18,12 +18,12 @@ const MyReservationsPage = () => {
       <ReservationList reservations={pastReservations} removeReservationById={removeReservationById} />
       
       <div className={styles.actions}>
-        <Link to="/reservations" className={styles.newReservationButton}>
+        <Button to="/reservations" variant="primary">
           Make a New Reservation
-        </Link>
-        <Link to="/" className={styles.homeButton}>
+        </Button>
+        <Button to="/" variant="secondary">
           Return to Home
-        </Link>
+        </Button>
       </div>
     </div>
   );
