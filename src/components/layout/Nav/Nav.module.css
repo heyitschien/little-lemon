@@ -22,10 +22,30 @@
   font-family: 'Karla', sans-serif; /* Match style guide font */
   font-size: 16px; /* Match style guide Paragraph Text spec */
   font-weight: 500; /* Match style guide Lead Text spec */
+  position: relative; /* For active indicator */
+  transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .navLink:hover {
   color: #495E57; /* Little Lemon Primary Green for hover */
+}
+
+/* Active link styling */
+.activeLink {
+  color: #F4CE14; /* Little Lemon Primary Yellow for active state */
+  font-weight: 700; /* Bold for active link */
+}
+
+/* Add indicator line under active link */
+.activeLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #F4CE14; /* Little Lemon Primary Yellow */
+  border-radius: 2px;
 }
 
 /* --- Cart Styles --- */
@@ -33,6 +53,27 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.basketIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.cartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #F4CE14; /* Little Lemon Yellow */
+  color: #333333;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
 }
 
 /* --- Mobile Styles --- */
@@ -78,5 +119,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px; /* Rounded corners for mobile */
+  }
+  
+  /* Mobile active link styling */
+  .activeLink {
+    background-color: rgba(244, 206, 20, 0.15); /* Light yellow background */
+  }
+  
+  /* Change the indicator for mobile */
+  .activeLink::after {
+    display: none; /* Remove the underline indicator */
+  }
+  
+  /* Add left border indicator instead */
+  .activeLink {
+    border-left: 4px solid #F4CE14; /* Left border indicator */
+    padding-left: 4px; /* Offset for the border */
   }
 }

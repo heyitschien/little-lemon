@@ -1,7 +1,7 @@
 .hero {
   background-color: #495E57;
   color: #FFFFFF;
-  padding: 2rem 0;
+  padding: 1rem 0 2rem 0; /* Reduced top padding, kept bottom padding */
   width: 100%;
   min-height: 400px;
   display: flex;

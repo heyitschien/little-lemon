@@ -1,6 +1,6 @@
 /* src/components/About/About.module.css */
 .aboutSection {
-  padding: 3rem 0; /* Standardized to 48px (3rem) */
+  padding: 1.5rem 0 3rem 0; /* Reduced top padding, kept bottom padding */
   background-color: #EDEFEE; /* Style Guide: Highlight White (Backgrounds) */
   font-family: 'Karla', sans-serif;
   overflow: hidden; /* Prevent any potential layout shifts */
@@ -9,7 +9,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem; /* Standardized to 16px (1rem) to match other sections */
+  padding: 0; /* Remove horizontal padding to allow images to extend */
   display: flex;
   align-items: center; /* Vertically align content and images */
   gap: 2rem; /* Standardized to 32px (2rem) */
@@ -18,6 +18,7 @@
 .aboutContent {
   flex: 1; /* Takes up available space */
   max-width: 50%; /* Ensure it doesn't get too wide */
+  padding: 0 1rem; /* Add padding to the content only to keep text centered */
 }
 
 .title {
@@ -57,6 +58,7 @@
   min-height: 450px; /* Give some height to the image container */
   will-change: opacity; /* Optimize for animations */
   contain: layout; /* Improve rendering performance */
+  padding: 0; /* Remove padding to allow images to extend fully */
 }
 
 .imageWrapper1,
@@ -86,20 +88,20 @@
 
 /* Positioning for the overlapping images as seen in many designs */
 .imageWrapper1 {
-  width: 280px; /* Example dimension */
+  width: 320px; /* Increased width */
   height: 350px; /* Example dimension */
   z-index: 0; /* Back image */
   top: 20px; /* Adjust for positioning */
-  left: 20px; /* Adjust for positioning */
+  left: 0; /* Extend to the left edge */
   transform: rotate(-8deg); /* Slight rotation */
 }
 
 .imageWrapper2 {
-  width: 280px; /* Example dimension */
+  width: 320px; /* Increased width */
   height: 350px; /* Example dimension */
   z-index: 1; /* Front image */
   top: 100px; /* Increased from 80px */
-  left: 150px; /* Increased from 100px */
+  left: 130px; /* Adjusted for better positioning with wider images */
   transform: rotate(5deg); /* Slight counter-rotation */
 }
 
@@ -112,12 +114,16 @@
   .container {
     flex-direction: column;
     text-align: center;
-    padding: 0 1rem; /* Consistent with other sections */
+    padding: 0; /* Remove padding to allow images to extend */
   }
 
   .aboutContent,
   .aboutImages {
     max-width: 100%;
+  }
+  
+  .aboutContent {
+    padding: 0 1rem; /* Maintain padding for text on mobile */
   }
   
   .title {
@@ -149,8 +155,8 @@
   .imageWrapper1,
   .imageWrapper2 {
     position: relative; /* Reset absolute positioning */
-    width: 80%; /* Adjust width for mobile */
-    max-width: 300px;
+    width: 90%; /* Wider images for mobile */
+    max-width: 350px;
     top: auto;
     left: auto;
     bottom: auto;
