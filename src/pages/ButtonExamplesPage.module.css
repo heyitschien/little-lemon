@@ -1,0 +1,31 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Karla', sans-serif;
+}
+
+.container h1 {
+  font-family: 'Markazi Text', serif;
+  color: #495E57;
+  margin-bottom: 1rem;
+}
+
+.description {
+  margin-bottom: 2rem;
+  color: #333333;
+  line-height: 1.5;
+  max-width: 800px;
+  border-left: 4px solid #F4CE14;
+  padding-left: 1rem;
+  background-color: #FBFBFB;
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+}
