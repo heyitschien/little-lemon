@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Hero.module.css';
 import defaultHeroImage from '../../../assets/images/restauranfood.jpg'; // Renamed for clarity
 import Button from '../../common/Button/Button'; // Import the new Button component
@@ -18,6 +18,12 @@ const Hero = ({
   customImageContainerStyles = {}, // New prop for additional image container styling
   customImageStyles = {} // New prop for additional image styling
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Handle image load event
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
   return (
     <section className={styles.hero} style={customHeroStyles} data-component-name="Hero">
       <div className={`container ${styles.heroContainer}`} style={customContainerStyles}>
@@ -38,7 +44,17 @@ const Hero = ({
           )}
         </div>
         <div className={styles.heroImageContainer} style={customImageContainerStyles}>
-          <img src={imageSrc} alt={imageAlt} style={customImageStyles} />
+          <div className={`${styles.imageWrapper} ${imageLoaded ? styles.imageLoaded : ''}`}>
+            <img 
+              src={imageSrc} 
+              alt={imageAlt} 
+              style={customImageStyles} 
+              loading="lazy"
+              onLoad={handleImageLoad}
+              className={styles.heroImage}
+            />
+            {!imageLoaded && <div className={styles.imagePlaceholder}></div>}
+          </div>
         </div>
       </div>
     </section>

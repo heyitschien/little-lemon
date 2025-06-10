@@ -12,6 +12,11 @@ import freshlySqueezedLemonadeImg from '../assets/images/freshly-squeezed-lemona
 import mediterraneanMintTeaImg from '../assets/images/mediterranean-mint-tea.png';
 import italianEspressoImg from '../assets/images/italian-espresso.png';
 
+// Import new dish images
+import seafoodPaellaImg from '../assets/images/new-dishes/seafood-paella.png';
+import lambSouvlakiImg from '../assets/images/new-dishes/lamb-souvlaki.png';
+import galaktobourekoImg from '../assets/images/new-dishes/galaktoboureko.png';
+
 // Placeholder for menuData.js
 // This file will export an array of menu item objects and categories.
 
@@ -134,5 +139,34 @@ export const menuItems = [
     description: "Rich and aromatic single shot of espresso, the perfect pick-me-up.",
     image: italianEspressoImg,
     dietaryTags: ["vegetarian", "vegan", "gluten-free", "dairy-free"]
+  },
+  // New Main Courses
+  {
+    id: 13,
+    category: "Main Courses",
+    name: "Seafood Paella",
+    price: 24.99,
+    description: "A vibrant Spanish rice dish cooked with saffron and topped with a medley of seafood including shrimp, mussels, and calamari, garnished with fresh lemon and parsley.",
+    image: seafoodPaellaImg,
+    dietaryTags: ["pescatarian", "gluten-free"]
+  },
+  {
+    id: 14,
+    category: "Main Courses",
+    name: "Lamb Souvlaki",
+    price: 21.50,
+    description: "Tender marinated lamb skewers grilled to perfection, served with warm pita bread, tzatziki sauce, and a side of Greek salad with feta cheese.",
+    image: lambSouvlakiImg,
+    dietaryTags: []
+  },
+  // New Dessert
+  {
+    id: 15,
+    category: "Desserts",
+    name: "Galaktoboureko",
+    price: 8.50,
+    description: "A traditional Greek dessert featuring a creamy semolina custard wrapped in crispy filo pastry, soaked in a citrus-infused syrup and garnished with a touch of cinnamon.",
+    image: galaktobourekoImg,
+    dietaryTags: ["vegetarian"]
   }
 ];

@@ -25,8 +25,37 @@
   height: 100%; /* Fill the header height */
 }
 
+.logoContainer {
+  position: relative;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.logoLoaded {
+  opacity: 1;
+}
+
+.logoPlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #EDEFEE;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite alternate;
+}
+
 .logo {
   height: 50px; /* Adjust height as needed */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Prevent flickering */
+  -webkit-font-smoothing: antialiased; /* Improve text rendering */
+  image-rendering: -webkit-optimize-contrast; /* Improve image rendering on WebKit/Edge */
 }
 
 /* Mobile cart link styling */
@@ -109,9 +138,13 @@
     display: none;
   }
 
-  .logo {
+  .logoContainer {
     height: 50px;
     margin-right: 2rem;
+  }
+  
+  .logo {
+    height: 50px;
   }
 
   .mainNav {
@@ -142,9 +175,15 @@
     position: relative; /* For absolute positioning of bars */
   }
   
-  .logo {
+  .logoContainer {
     justify-self: center; /* Center the logo */
     height: 40px; /* Slightly smaller on mobile */
+  }
+  
+  .logo {
+    height: 40px; /* Slightly smaller on mobile */
+    width: auto;
+    max-width: 100%;
   }
   
   .mobileCartLink {

@@ -3,6 +3,7 @@
   padding: 3rem 0; /* Standardized to 48px (3rem) */
   background-color: #EDEFEE; /* Style Guide: Highlight White (Backgrounds) */
   font-family: 'Karla', sans-serif;
+  overflow: hidden; /* Prevent any potential layout shifts */
 }
 
 .container {
@@ -37,9 +38,13 @@
   margin-bottom: 1.25rem; /* Standardized to 20px (1.25rem) */
 }
 
+.aboutText {
+  margin-top: 1.25rem;
+}
+
 .aboutContent p {
-  font-size: 16px; /* Match style guide Paragraph Text spec */
-  line-height: 1.5; /* Match style guide Paragraph Text spec */
+  font-size: 18px; /* Increased from 16px to match other sections */
+  line-height: 1.6; /* Improved readability */
   color: #333333; /* Highlight Black - Style Guide */
   margin-bottom: 1.25rem; /* Standardized to 20px (1.25rem) */
   font-weight: 400; /* Match style guide Paragraph Text spec */
@@ -50,6 +55,8 @@
   max-width: 50%;
   position: relative; /* For positioning images if needed */
   min-height: 450px; /* Give some height to the image container */
+  will-change: opacity; /* Optimize for animations */
+  contain: layout; /* Improve rendering performance */
 }
 
 .imageWrapper1,
@@ -58,6 +65,13 @@
   border-radius: 16px; /* Rounded Corners - Style Guide */
   overflow: hidden; /* Ensures images respect border-radius */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* Start invisible for fade-in effect */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transitions */
+  will-change: opacity, transform; /* Optimize for animations */
+}
+
+.imageLoaded {
+  opacity: 1; /* Fade in when loaded */
 }
 
 .aboutImage1,
@@ -67,6 +81,7 @@
   height: 100%; /* Make image fill the wrapper height */
   object-fit: cover; /* Fill and crop image */
   border-radius: 16px; /* Ensure image itself is rounded if wrapper fails */
+  transform: scale(1.01); /* Slightly larger to avoid white edges during rotation */
 }
 
 /* Positioning for the overlapping images as seen in many designs */
@@ -115,7 +130,13 @@
   }
   
   .aboutContent p {
-    font-size: 16px; /* Match style guide Paragraph Text spec */
+    font-size: 18px; /* Increased from 16px to match other sections */
+    line-height: 1.5; /* Slightly reduced for mobile */
+  }
+  
+  .aboutText {
+    max-width: 90%;
+    margin: 0 auto;
   }
 
   .aboutImages {

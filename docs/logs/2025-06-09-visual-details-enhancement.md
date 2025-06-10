@@ -27,7 +27,7 @@ Fine-tune the Little Lemon app for visual consistency and polish across all majo
 
 ## Menu Page
 - [ ] Replace the word "cart" in the menu navigation with the cart icon used in the mobile header (asset in images folder)
-- [ ] Add 2 more main course items to the menu module
+- [x] Add 2 more main course items to the menu module
 
 ## Reservation Page
 - [ ] Align "No past reservations found." message to center (currently left-aligned); apply proper color and styling (reference cart empty state CSS)

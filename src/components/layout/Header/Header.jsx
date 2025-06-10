@@ -1,5 +1,5 @@
 // src/components/layout/Header/Header.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Nav from '../Nav/Nav';
 import styles from './Header.module.css';
 import logoSrc from '../../../assets/icons/Logo.svg'; 
@@ -8,7 +8,15 @@ import { useCart } from '../../../context/useCart';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false); 
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const { cartCount } = useCart();
+  
+  // Preload the logo image
+  useEffect(() => {
+    const img = new Image();
+    img.src = logoSrc;
+    img.onload = () => setLogoLoaded(true);
+  }, []);
 
   const toggleMenu = () => { 
     setMenuOpen(!menuOpen);
@@ -33,11 +41,15 @@ function Header() {
         </button>
 
         {/* Logo - centered on mobile */}
-        <img
-          src={logoSrc}
-          alt="Little Lemon Logo"
-          className={styles.logo}
-        />
+        <div className={`${styles.logoContainer} ${logoLoaded ? styles.logoLoaded : ''}`}>
+          <img
+            src={logoSrc}
+            alt="Little Lemon Logo"
+            className={styles.logo}
+            onLoad={() => setLogoLoaded(true)}
+          />
+          {!logoLoaded && <div className={styles.logoPlaceholder}></div>}
+        </div>
 
         {/* Cart icon - visible only on mobile */}
         <a href="/cart" className={styles.mobileCartLink}>

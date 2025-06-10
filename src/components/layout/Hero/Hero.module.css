@@ -60,14 +60,52 @@
   width: 100%;
   height: 400px;
   justify-self: end;
+  position: relative;
+  overflow: hidden; /* Prevent any potential layout shifts */
+  contain: layout; /* Improve rendering performance */
 }
 
-.heroImageContainer img {
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  will-change: opacity; /* Optimize for animations */
+}
+
+.imageLoaded {
+  opacity: 1;
+}
+
+.imagePlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #EDEFEE;
+  border-radius: 16px;
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.heroImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Prevent flickering during animations */
 }
 
 /* Responsive adjustments - SIDE BY SIDE LAYOUT FOR ALL DEVICES */
@@ -118,12 +156,18 @@
     justify-content: center; /* Center the image horizontally */
   }
   
-  .heroImageContainer img {
+  .heroImage {
     height: auto; /* Auto height to maintain aspect ratio */
     max-height: 168px; /* Increased height by 20% (from 140px) */
     width: 90%; /* Slightly less than container width */
     border-radius: 16px; /* Consistent rounded corners */
     object-fit: cover;
+  }
+  
+  .imagePlaceholder {
+    max-height: 168px;
+    width: 90%;
+    margin: 0 auto;
   }
   
   /* Ensure button has proper mobile styling */
@@ -166,11 +210,16 @@
     justify-content: center; /* Center the image horizontally */
   }
   
-  .heroImageContainer img {
+  .heroImage {
     max-height: 144px; /* Increased height by 20% (from 120px) */
     width: 90%; /* Slightly less than container width */
     border-radius: 16px; /* Consistent rounded corners */
     object-fit: cover;
+  }
+  
+  .imagePlaceholder {
+    max-height: 144px;
+    width: 90%;
   }
   
   .heroButton {
