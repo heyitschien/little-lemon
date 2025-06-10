@@ -1,0 +1,93 @@
+.menuSection {
+  margin-top: 0;
+  padding-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.filterContainer {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0 1rem;
+  margin-bottom: 1rem;
+  padding-left: 0.25rem;
+}
+
+.filterContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.filterPill {
+  padding: 0.6rem 1.2rem;
+  background-color: #EDEFEE;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin: 0.15rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.4rem;
+}
+
+.filterPill:hover {
+  background-color: #E0E1E0;
+}
+
+.filterPill.active {
+  background-color: #495E57;
+  color: white;
+}
+
+.menuItemsContainer {
+  position: relative;
+  padding: 0 1.5rem;
+  margin: 0 -0.5rem 0 -0.25rem;
+}
+
+.menuItemsGrid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+.menuItemsGrid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll indicators removed as requested */
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .menuItemsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  
+  .filterPill {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+    height: 2.2rem;
+    margin: 0.1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .menuItemsGrid {
+    grid-template-columns: 1fr;
+  }
+}
