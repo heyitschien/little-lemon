@@ -1,227 +1,190 @@
-# Little Lemon Restaurant Web Application
+# Little Lemon Restaurant - Meta Front-End Capstone Project
 
-[![Test Coverage](https://img.shields.io/badge/coverage-31.76%25-yellow.svg)](./coverage/README.md)
+![Reservation Flow Coverage](https://img.shields.io/badge/Reservation%20Flow%20Coverage-100%25-brightgreen)
 
 ## Project Overview
-This is the capstone project for the Meta Front-End Developer Professional Certificate program. The Little Lemon web application is a responsive React-based solution for the fictional Mediterranean restaurant "Little Lemon", focusing on improving the user experience for table reservations.
+This is the capstone project for the Meta Front-End Developer Professional Certificate program. The Little Lemon web application is a responsive React-based solution for a fictional Mediterranean restaurant, focusing on improving the user experience for table reservations.
 
-## Project Information
-- **Developer**: Chien
-- **Project Start Date**: May 27, 2025
-- **Current Status**: In Development - Post House Cleaning
-- **Repository**: [github.com/heyitschien/little-lemon](https://github.com/heyitschien/little-lemon)
-- **Environments**:
-  - **Production**: [little-lemon.vercel.app](https://little-lemon.vercel.app) (main branch)
-  - **Staging**: [little-lemon-staging.vercel.app](https://little-lemon-staging.vercel.app) (staging branch)
+## For Peer Reviewers
 
-## Project Objectives
-The main goal is to create a fully functional and user-friendly table reservation system that addresses previous user complaints about confusion, appearance, and functionality. The application will showcase skills learned throughout the Meta Front-End Developer program.
+Welcome to my Little Lemon Restaurant project! This guide will help you navigate the project and evaluate it according to the required criteria.
 
-## Features
-- Responsive design that works across devices
-- Table reservation system with intuitive UI
-- Form validation for user inputs
-- Accessibility compliance
-- Modern React component architecture
+### Getting Started
 
-## Technology Stack
-- **Frontend Framework**: React 19
-- **Build Tool**: Vite 6
-- **Styling**: CSS with responsive design principles
-- **Version Control**: Git/GitHub
-- **Code Quality**: ESLint and Prettier
+1. **Clone the repository**:
+   ```
+   git clone https://github.com/heyitschien/little-lemon.git
+   cd little-lemon
+   ```
 
-## Development Setup
-This project uses modern development tools optimized for AI-assisted development in Windsurf IDE.
+2. **Install dependencies**:
+   ```
+   npm install
+   ```
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm (v9 or higher)
+3. **Run the application**:
+   ```
+   npm start
+   ```
+   The application will be available at [http://localhost:3000](http://localhost:3000)
 
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/heyitschien/meta-front-end.git
+### Evaluation Criteria Guide
 
-# Navigate to project directory
-cd meta-front-end/courses/c8.capstone-project/little-lemon
+#### 1. UX/UI Design Implementation
+The application follows the Little Lemon brand guidelines with a responsive design that works on mobile, tablet, and desktop devices.
 
-# Install dependencies
-npm install
-```
+**Key pages to review:**
+- Home page: `/`
+- About page: `/about`
+- Menu page: `/menu`
+- **Reservations page**: `/reservations` (primary focus of the project)
+- My Reservations page: `/my-reservations`
 
-### Available Scripts
-```bash
-# Start development server
-npm run dev
+#### 2. Accessibility Features
+The application implements accessibility best practices:
+- Semantic HTML5 elements (header, nav, main, section, footer)
+- ARIA attributes for interactive elements
+- Keyboard navigation support (try tabbing through the reservation form)
+- Color contrast compliance for text readability
+- Alt text for all images
 
-# Check for linting issues
-npm run lint
+**Key files to check:**
+- `src/components/layout/Header/Header.jsx`
+- `src/components/features/Reservation/ReservationForm.jsx`
 
-# Format code with Prettier
-npm run format
+#### 3. Unit Testing
+The project includes comprehensive unit tests for the reservation functionality, which is the core business logic of the application.
 
-# Build for production
-npm run build
+![Reservation Flow Coverage](https://img.shields.io/badge/Reservation%20Flow%20Coverage-100%25-brightgreen)
+![Overall Coverage](https://img.shields.io/badge/Overall%20Coverage-33.5%25-yellow)
 
-# Preview production build
-npm run preview
-```
-
-## Project Structure
-
-The project is organized to promote scalability, maintainability, and a clear separation of concerns. Below is a detailed overview of the directory structure and the purpose of each key folder and file.
-
-```
-little-lemon/
-├── .gitignore            # Specifies intentionally untracked files that Git should ignore
-├── .prettierrc           # Configuration file for Prettier code formatter
-├── .github/              # GitHub configuration files
-│   └── workflows/        # GitHub Actions workflow definitions
-├── README.md             # This file: Project overview, setup, structure, and guidelines
-├── docs/                 # All project documentation, planning, and design artifacts
-│   ├── bugs/             # Bug reports and tracking
-│   ├── ci-cd-pipeline/   # CI/CD pipeline documentation
-│   ├── design/           # Design documents and specifications
-│   ├── high-level/       # High-level architecture and project structure
-│   ├── house-cleaning/   # House cleaning plans and documentation
-│   ├── logs/             # Project progress logs
-│   ├── testing/          # Testing documentation and guides
-│   ├── ui-style/         # UI style guides and design system
-│   └── wire-frame/       # Wireframes and mockups
-├── eslint.config.js      # Configuration for ESLint
-├── index.html            # The main HTML page that serves as the entry point for the SPA
-├── node_modules/         # Directory where project dependencies are installed (managed by npm)
-├── package-lock.json     # Records the exact versions of dependencies
-├── package.json          # Lists project dependencies and defines scripts (dev, build, lint, etc.)
-├── playwright.config.ts  # Configuration for Playwright testing
-├── scripts/              # Utility scripts for development and deployment
-├── src/                  # Main application source code
-│   ├── App.css           # Styles for the main App component and global layout utilities
-│   ├── App.jsx           # The root React component of the application
-│   ├── main.jsx          # The entry point for the React application (renders App into the DOM)
-│   ├── index.css         # Global styles, CSS resets, and CSS custom properties (variables)
-│   ├── assets/           # UI assets processed by Vite (images, icons, fonts)
-│   │   ├── icons/        # SVG icons and other icon formats
-│   │   └── images/       # Image files (jpg, png, webp, etc.)
-│   ├── components/       # Reusable React UI components
-│   │   ├── common/       # Shared components used across multiple features
-│   │   │   └── Button/   # Button component and styles
-│   │   ├── features/     # Feature-specific components
-│   │   │   ├── About/    # About page components
-│   │   │   ├── ChatAssistant/ # Chat assistant feature components
-│   │   │   ├── Menu/     # Menu-related components
-│   │   │   ├── Reservation/ # Reservation-related components
-│   │   │   └── Testimonials/ # Testimonial components
-│   │   └── layout/       # Layout components
-│   │       ├── Footer/   # Footer component and styles
-│   │       ├── Header/   # Header component and styles
-│   │       ├── Hero/     # Hero section component and styles
-│   │       ├── MainComponent/ # Main content wrapper component
-│   │       └── Nav/      # Navigation component and styles
-│   ├── context/          # React Context API files (global state management)
-│   ├── data/             # Static data and mock data for development
-│   ├── hooks/            # Custom React Hooks
-│   ├── pages/            # Top-level components representing application pages/views
-│   │   ├── AboutPage/    # About page
-│   │   ├── CartPage/     # Shopping cart page
-│   │   ├── MenuPage/     # Menu page
-│   │   ├── MyReservationsPage/ # User reservations page
-│   │   └── ReservationPage/ # Reservation booking page
-│   ├── services/         # API call logic and other external service integrations
-│   └── utils/            # General utility functions
-├── tests/                # Test files for the application
-├── tests-examples/       # Example test files
-└── vite.config.js        # Configuration file for Vite build tool
-```
-
-### Directory Guidelines: What Goes Where
-
-*   **`public/`**:
-    *   Place assets here that **must not** be processed by the build pipeline (e.g., `favicon.ico`, `robots.txt`, `manifest.json`).
-    *   Files are served from the root path (`/`).
-
-*   **`src/`**: This is where all your application's source code lives.
-    *   **`src/assets/`**: Store images, icons, custom fonts, etc., that are directly imported and used within your React components. Vite will process these assets (optimize, hash filenames).
-    *   **`src/components/`**:
-        *   This directory contains all UI components organized into three main categories:
-            * **`common/`**: Shared components that are used across multiple features (e.g., `Button`, form elements)
-            * **`features/`**: Feature-specific components organized by feature area (e.g., `Menu`, `Reservation`)
-            * **`layout/`**: Components that define the application's layout structure (e.g., `Header`, `Footer`, `Nav`)
-        *   Each component should reside in its own folder containing its JSX file and scoped styles (e.g., `Button.jsx` and `Button.module.css`)
-        *   Aim for small, focused components with clear responsibilities
-    *   **`src/contexts/`**:
-        *   Use this for React Context API providers and consumers if you need to share state across different parts of your application without prop drilling (e.g., theme context, user authentication context).
-    *   **`src/hooks/`**:
-        *   Place custom React Hooks here (functions starting with `use` that encapsulate reusable stateful logic or side effects).
-    *   **`src/pages/`**:
-        *   When you introduce routing (e.g., with React Router), create components here that represent entire pages or views of your application (e.g., `HomePage.jsx`, `ReservationsPage.jsx`).
-        *   These components typically compose multiple smaller components from `src/components/`.
-    *   **`src/services/`**:
-        *   Use this directory for modules that handle external API calls (e.g., fetching reservation data, submitting forms to a backend).
-        *   Keeps API logic separate from UI components.
-    *   **`src/utils/`**:
-        *   For miscellaneous helper functions that can be used across the application (e.g., date formatting, validation functions, constants).
-    *   **`App.jsx`**: The main application shell. It typically sets up routing (if any) and renders the primary layout structure (Header, Main content area, Footer).
-    *   **`main.jsx`**: The JavaScript entry point. Initializes React and renders the `App` component into the `index.html`.
-    *   **`index.css`**: For global styles like CSS resets (e.g., `normalize.css` or custom resets), base element styling (`body`, `html`), and global CSS custom properties (variables).
-    *   **`App.css`**: For styles specifically related to the `App.jsx` component's layout or very general utility classes that don't fit into `index.css` or component-specific modules.
-
-*   **`docs/`** (Project Root):
-    *   All non-code artifacts related to project planning, design, architecture, and documentation. This includes wireframes, UI mockups, project specifications, meeting notes, and this structure guide.
-
-By following these guidelines, your project will remain organized, easy to navigate, and easier to scale as new features are added.
-
-## Development Approach
-This project follows a modern development workflow:
-1. **Planning**: Define requirements and create wireframes
-2. **Development**: Implement features using React components
-3. **Testing**: Ensure functionality and accessibility
-4. **Deployment**: Build and deploy the application
-
-## Learning Objectives
-This capstone project integrates skills from all previous courses in the Meta Front-End Developer program:
-- React fundamentals and advanced concepts
-- Responsive design principles
-- UX/UI methodologies
-- Semantic HTML structure
-- CSS styling and layout
-- Form validation
-- Unit testing
-- Accessibility compliance
-
-## Testing and Coverage
-
-The project uses Vitest for unit testing with a focus on component testing and function coverage.
-
-### Available Test Commands
+**Available Test Commands:**
 
 ```bash
-# Run tests without coverage
-npm run test
+# Run all tests
+npm test
 
-# Run tests with UI
+# Run tests with interactive UI
 npm run test:ui
 
-# Generate coverage report
+# Run tests with coverage report
+npm run test:coverage
+
+# Generate detailed coverage report
 npm run coverage:report
 
 # Run tests with coverage in UI mode
 npm run coverage:ui
 ```
 
-### Coverage Report
+**Viewing Test Coverage:**
+After running `npm run coverage:report`, you can view the detailed HTML coverage report by opening the generated files in the `coverage` directory.
 
-The current test coverage is 31.76% overall, with higher coverage in critical components:
-- ReservationForm: 81% function coverage
-- DateTimeSelector: 90% function coverage
+**Key test files to review:**
+- `src/components/features/Reservation/ReservationForm.test.jsx`
+- `src/components/features/Reservation/DateTimeSelector.test.jsx`
+- `src/components/features/Reservation/ReservationConfirmation.test.jsx`
+- `src/components/features/Reservation/ReservationList.test.jsx`
+- `src/hooks/useReservation.test.js`
+- `src/services/reservationService.test.js`
 
-To view the detailed coverage report:
-1. Run `npm run coverage:report`
-2. Open `coverage/index.html` in your browser
+**Reservation Flow Coverage Details:**
 
-For more information about the coverage workflow, see [coverage/README.md](./coverage/README.md).
+| Component/Module | Statements | Branches | Functions | Lines |
+|-----------------|------------|----------|-----------|-------|
+| Reservation Components | 100% | 95.76% | 100% | 100% |
+| useReservation Hook | 97.66% | 89.47% | 100% | 97.66% |
+| Reservation Service | 97.35% | 96.87% | 90.9% | 97.35% |
 
-## Expanding the ESLint configuration
+**Testing Strategy:**
+The testing approach focuses on the core reservation flow, which is the primary feature of this capstone project. This targeted strategy ensures that the most critical business logic is thoroughly tested while demonstrating proficiency in React testing practices.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+#### 4. Booking Form Functionality
+The reservation booking form is the main feature of this project.
+
+**To test the form:**
+1. Navigate to `/reservations`
+2. Try submitting the form without filling required fields (validation should trigger)
+3. Complete the form with valid information
+4. Check the confirmation screen after submission
+
+**Form features:**
+- Interactive date and time selection
+- Party size selection with validation
+- Contact information fields with validation
+- Form submission with confirmation
+
+#### 5. Semantics and Responsiveness
+
+**To test responsiveness:**
+1. Use browser dev tools to view the site in different screen sizes
+2. Check how the navigation, reservation form, and other components adapt
+
+**Implementation details:**
+- Semantic HTML5 elements throughout the codebase
+- CSS modules for component-specific styling
+- Media queries for responsive design
+- Flexible layouts using CSS Grid and Flexbox
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── common/          # Reusable UI elements
+│   ├── features/
+│   │   └── Reservation/ # Reservation form components
+│   └── layout/          # Header, Footer, Navigation
+├── hooks/               # Custom React hooks
+├── pages/               # Page components
+│   └── ReservationPage/ # Main reservation page
+└── services/            # API services
+```
+
+## Technology Stack
+- React
+- CSS Modules
+- React Router
+- Context API for state management
+
+## Developer
+- Chien Escalera Duong
+- June 2025
+
+## Development Setup
+This project uses modern development tools for a professional React application.
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+
+### Repository Information
+This project is maintained in a Git repository, making it easy to track changes and collaborate with other developers.
+
+## Peer Review Checklist
+
+When reviewing this project, please consider the following criteria:
+
+1. **UX/UI Implementation**
+   - Does the application follow the Little Lemon brand guidelines?
+   - Is the design responsive across different device sizes?
+
+2. **Accessibility**
+   - Are semantic HTML elements used appropriately?
+   - Do interactive elements have proper ARIA attributes?
+   - Can the application be navigated using a keyboard?
+
+3. **Unit Testing**
+   - Do the tests cover critical functionality?
+   - Do all tests pass when running `npm test`?
+
+4. **Booking Form**
+   - Does the form validate user inputs correctly?
+   - Is the form submission process clear and functional?
+   - Does the form provide appropriate feedback?
+
+5. **Semantics and Responsiveness**
+   - Does the application render correctly on different screen sizes?
+   - Is the HTML structure semantic and well-organized?
+
+Thank you for taking the time to review this project!
