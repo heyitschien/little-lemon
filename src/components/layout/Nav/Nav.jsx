@@ -58,7 +58,7 @@ function Nav({ menuOpen, setMenuOpen, className }) {
             My Reservations
           </Link>
         </li>
-        <li>
+        <li className={styles.cartNavItem}>
           <Link 
             to="/cart" 
             className={`${styles.navLink} ${styles.cartLink} ${location.pathname === '/cart' ? styles.activeLink : ''}`} 

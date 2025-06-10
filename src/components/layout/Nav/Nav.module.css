@@ -86,6 +86,11 @@
     z-index: 999;
   }
   
+  /* Hide cart icon in mobile menu since it's already in the header */
+  .cartNavItem {
+    display: none;
+  }
+  
   .navList {
     /* Default mobile state: hidden and ready to be shown */
     display: none; /* Hide by default on mobile */
