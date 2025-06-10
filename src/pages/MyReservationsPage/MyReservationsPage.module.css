@@ -4,6 +4,35 @@
   width: 100%; /* Consistent with confirmation page container */
   margin: 0 auto;
   background-color: #EDEFEE;
+  min-height: calc(100vh - 200px); /* Subtract header/footer height to ensure full page coverage */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Start content from the top */
+}
+
+.contentContainer {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1; /* Allow container to grow and fill available space */
+}
+
+.noReservations {
+  text-align: center;
+  padding: 2rem;
+  margin: 1rem 0;
+  width: 100%;
+  max-width: 800px;
+}
+
+.noReservations p {
+  font-size: 1.2rem;
+  color: #495E57;
+  margin-bottom: 0;
 }
 
 .myReservationsPage h1 {
@@ -53,6 +82,7 @@
 @media (max-width: 768px) {
   .myReservationsPage {
     padding: 1rem 0; /* Mobile padding adjustment */
+    min-height: calc(100vh - 150px); /* Adjusted for mobile header/footer */
   }
   .myReservationsPage h1 {
     font-size: 2rem;

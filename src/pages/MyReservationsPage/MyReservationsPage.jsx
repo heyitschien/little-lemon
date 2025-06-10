@@ -13,19 +13,27 @@ const MyReservationsPage = () => {
   const { pastReservations, removeReservationById } = useReservation();
 
   return (
-    <div className={styles.myReservationsPage}>
-      <h1>My Reservations</h1>
-      <ReservationList reservations={pastReservations} removeReservationById={removeReservationById} />
-      
-      <div className={styles.actions}>
-        <Button to="/reservations" variant="primary">
-          Make a New Reservation
-        </Button>
-        <Button to="/" variant="secondary">
-          Return to Home
-        </Button>
+    <section className={styles.myReservationsPage}>
+      <div className={styles.contentContainer}>
+        <h1>My Reservations</h1>
+        {pastReservations && pastReservations.length > 0 ? (
+          <ReservationList reservations={pastReservations} removeReservationById={removeReservationById} />
+        ) : (
+          <div className={styles.noReservations}>
+            <p>No past reservations found.</p>
+          </div>
+        )}
+        
+        <div className={styles.actions}>
+          <Button to="/reservations" variant="primary">
+            Make a New Reservation
+          </Button>
+          <Button to="/" variant="secondary">
+            Return to Home
+          </Button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
