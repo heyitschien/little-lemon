@@ -12,7 +12,6 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
   const startX = useRef(0);
   const currentX = useRef(0);
   const [swiping, setSwiping] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   
   // Touch handlers for swipe-to-remove functionality
   const handleTouchStart = (e) => {
@@ -61,8 +60,6 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Item name */}
       <div className={styles.itemInfo}>
@@ -91,16 +88,15 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
           </Button>
         </div>
         
-        {/* Desktop-only remove button that appears on hover */}
+        {/* Desktop-only X button for removing items */}
         <div className={styles.desktopRemoveWrapper}>
-          <Button 
-            variant="secondary"
+          <button 
             onClick={() => removeFromCart(item.id)}
-            ariaLabel={`Remove ${item.name} from cart`}
-            className={`${styles.desktopRemoveButton} ${isHovered ? styles.visible : ''}`}
+            aria-label={`Remove ${item.name} from cart`}
+            className={styles.desktopXButton}
           >
-            Remove
-          </Button>
+            ×
+          </button>
         </div>
       </div>
       
