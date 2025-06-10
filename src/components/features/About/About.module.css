@@ -70,10 +70,56 @@
   opacity: 0; /* Start invisible for fade-in effect */
   transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transitions */
   will-change: opacity, transform; /* Optimize for animations */
+  background-color: #EDEFEE; /* Match background color for smoother transitions */
+  transform-style: preserve-3d; /* Better 3D transforms */
+  backface-visibility: hidden; /* Prevent flickering during animations */
+  contain: layout paint style; /* Improve rendering performance */
 }
 
 .imageLoaded {
   opacity: 1; /* Fade in when loaded */
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+/* Placeholder styling */
+.imagePlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 16px;
+  z-index: 1;
+}
+
+/* Error state styling */
+.imageError {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  border-radius: 16px;
+  z-index: 1;
+}
+
+/* Shimmer animation for placeholders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .aboutImage1,
@@ -84,6 +130,11 @@
   object-fit: cover; /* Fill and crop image */
   border-radius: 16px; /* Ensure image itself is rounded if wrapper fails */
   transform: scale(1.01); /* Slightly larger to avoid white edges during rotation */
+  position: relative;
+  z-index: 2; /* Place above placeholder */
+  image-rendering: -webkit-optimize-contrast; /* Sharper images in webkit/Edge */
+  transition: opacity 0.3s ease-in; /* Smooth fade-in */
+  will-change: opacity; /* Hint for browser optimization */
 }
 
 /* Positioning for the overlapping images as seen in many designs */
@@ -163,6 +214,8 @@
     right: auto;
     transform: rotate(0deg); /* Reset rotation */
     margin: 0 auto; /* Center images */
+    height: 250px; /* Fixed height for consistent layout */
+    contain: layout size; /* Improve rendering performance */
   }
 
   .imageWrapper1 {
