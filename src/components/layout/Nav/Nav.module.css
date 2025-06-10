@@ -127,19 +127,23 @@
     border-radius: 8px; /* Rounded corners for mobile */
   }
   
-  /* Mobile active link styling */
+  /* Mobile active link styling - now matches desktop for consistency */
   .activeLink {
-    background-color: rgba(244, 206, 20, 0.15); /* Light yellow background */
+    color: #F4CE14; /* Little Lemon Primary Yellow for active state */
+    font-weight: 700; /* Bold for active link */
   }
   
-  /* Change the indicator for mobile */
+  /* Keep the underline indicator for mobile too */
   .activeLink::after {
-    display: none; /* Remove the underline indicator */
-  }
-  
-  /* Add left border indicator instead */
-  .activeLink {
-    border-left: 4px solid #F4CE14; /* Left border indicator */
-    padding-left: 4px; /* Offset for the border */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #F4CE14; /* Little Lemon Primary Yellow */
+    border-radius: 2px;
+    /* Adjust position for mobile */
+    bottom: 5px;
   }
 }
