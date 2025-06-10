@@ -37,7 +37,7 @@
 .filterContainer {
   display: flex;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem 0.5rem;
   margin-bottom: 0.75rem;
   /* Using standard properties for better cross-browser compatibility */
 }
@@ -177,10 +177,15 @@
     padding-top: 0.5rem;
   }
   
+  .filterContainer {
+    padding: 0.25rem 0.75rem 0.5rem; /* Increased left padding for mobile */
+  }
+
   .filterPill {
     padding: 0.4rem 1rem;
     font-size: 16px; /* Match style guide Paragraph Text spec */
     min-height: 40px; /* Slightly smaller but still accessible */
+    margin-right: 0.6rem; /* Slightly reduced margin between pills on mobile */
   }
   
   .sectionTitle {

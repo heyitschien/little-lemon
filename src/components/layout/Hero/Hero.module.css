@@ -46,26 +46,15 @@
   line-height: 1.4; /* Tighter line height to match image */
 }
 
-/* Button styling to match image */
-.btnPrimary {
-  display: inline-block;
+/* Button styling for hero section */
+.heroButton {
   padding: 12px 32px; /* Wider padding */
-  border-radius: 16px;
-  font-family: 'Karla', sans-serif;
   font-size: 18px;
   font-weight: 600; /* Semi-bold */
-  text-decoration: none;
-  cursor: pointer;
-  background-color: #F4CE14; /* Yellow */
-  color: #333333; /* Dark text */
-  border: none;
-  text-align: center;
+  margin-top: 8px;
 }
 
-.btnPrimary:hover {
-  background-color: #E9C412; /* Darker yellow */
-  color: #000000;
-}
+/* Button hover is now handled by our standardized Button component */
 
 .heroImageContainer {
   width: 100%;
@@ -138,13 +127,10 @@
   }
   
   /* Ensure button has proper mobile styling */
-  .btnPrimary {
+  .heroButton {
     padding: 10px 22px; /* 20% smaller padding */
     font-size: 16px; /* Match style guide Paragraph Text spec */
-    border-radius: 16px; /* Match style guide UI Elements spec */
     font-weight: 500; /* Match style guide Lead Text spec */
-    transform: none;
-    transform-origin: center;
   }
 }
 
@@ -187,10 +173,8 @@
     object-fit: cover;
   }
   
-  .btnPrimary {
+  .heroButton {
     padding: 8px 20px; /* 20% smaller padding */
     font-size: 14px; /* 20% smaller font */
-    transform: scale(0.8); /* Make button 20% smaller overall */
-    transform-origin: left center; /* Scale from left side for left-aligned text */
   }
 }

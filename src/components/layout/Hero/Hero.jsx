@@ -26,7 +26,13 @@ const Hero = ({
           {subtitle && <h2>{subtitle}</h2>}
           {paragraph && <p>{paragraph}</p>}
           {showCta && ctaText && ctaLink && (
-            <Button to={ctaLink} ariaLabel={ctaText}>
+            <Button 
+              to={ctaLink} 
+              ariaLabel={ctaText}
+              variant="primary"
+              size="large"
+              className={styles.heroButton}
+            >
               {ctaText}
             </Button>
           )}
