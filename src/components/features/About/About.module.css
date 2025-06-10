@@ -215,7 +215,7 @@
     transform: rotate(0deg); /* Reset rotation */
     margin: 0 auto; /* Center images */
     height: 250px; /* Fixed height for consistent layout */
-    contain: layout size; /* Improve rendering performance */
+    contain: layout paint; /* Improve rendering performance */
   }
 
   .imageWrapper1 {
