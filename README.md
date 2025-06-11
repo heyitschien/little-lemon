@@ -24,9 +24,13 @@ Welcome to my Little Lemon Restaurant project! This guide will help you navigate
 
 3. **Run the application**:
    ```
+   npm start
+   # OR
    npm run dev
    ```
    The application will be available at [http://localhost:5173](http://localhost:5173)
+   
+   > **Note:** For detailed setup instructions, see the [SETUP.md](./SETUP.md) file
 
 ### Evaluation Criteria Guide
 
