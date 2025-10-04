@@ -1,45 +1,128 @@
-/* global fetchAPI, submitAPI */
 import { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
-// createReservation and getAvailableTimeSlots removed, will use window.fetchAPI and window.submitAPI
+import type {
+  PartySizeValue,
+  Reservation,
+  ReservationField,
+  ReservationFieldValue,
+  ReservationFormData,
+  ReservationFormErrors,
+  ReservationSummary
+} from '../types/reservation';
+import type { ReservationStatus } from '../types/reservation';
 
-/**
- * Custom hook for managing reservation state and logic
- * 
- * Encapsulates all reservation-related functionality including:
- * - Form state management
- * - Available time slots
- * - Validation
- * - Reservation submission
- */
+type ReservationApiFetch = (date: Date) => Promise<string[]>;
+type ReservationApiSubmit = (data: ReservationFormData) => Promise<boolean>;
+
+const STORAGE_KEY = 'littleLemonReservations';
+
+declare global {
+  interface Window {
+    fetchAPI?: ReservationApiFetch;
+    submitAPI?: ReservationApiSubmit;
+  }
+}
+
+const initialReservationData: ReservationFormData = {
+  date: '',
+  time: '',
+  partySize: '' as PartySizeValue,
+  name: '',
+  email: '',
+  phone: '',
+  occasion: '',
+  specialRequests: ''
+};
+
+const coerceReservation = (entry: unknown): Reservation | null => {
+  if (typeof entry !== 'object' || entry === null) {
+    return null;
+  }
+
+  const record = entry as Record<string, unknown>;
+  const id = typeof record.id === 'string' ? record.id : undefined;
+  const date = typeof record.date === 'string' ? record.date : undefined;
+  const time = typeof record.time === 'string' ? record.time : undefined;
+
+  const rawPartySize = record.partySize;
+  const partySize = typeof rawPartySize === 'number'
+    ? rawPartySize
+    : Number.parseInt(String(rawPartySize ?? ''), 10);
+
+  if (!id || !date || !time || Number.isNaN(partySize)) {
+    return null;
+  }
+
+  const status = record.status === 'cancelled' ? 'cancelled' : 'confirmed';
+
+  return {
+    id,
+    date,
+    time,
+    partySize,
+    name: typeof record.name === 'string' ? record.name : '',
+    email: typeof record.email === 'string' ? record.email : '',
+    phone: typeof record.phone === 'string' ? record.phone : '',
+    occasion: typeof record.occasion === 'string' ? record.occasion : undefined,
+    specialRequests: typeof record.specialRequests === 'string' ? record.specialRequests : undefined,
+    status: status as ReservationStatus,
+    createdAt: typeof record.createdAt === 'string' ? record.createdAt : new Date().toISOString(),
+    updatedAt: typeof record.updatedAt === 'string' ? record.updatedAt : undefined,
+    cancelledAt: typeof record.cancelledAt === 'string' ? record.cancelledAt : undefined
+  } satisfies Reservation;
+};
+
+const parseStoredReservations = (value: string | null): Reservation[] => {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+    return parsed
+      .map(coerceReservation)
+      .filter((reservation): reservation is Reservation => reservation !== null);
+  } catch (error) {
+    console.error('Error parsing reservations from localStorage:', error);
+    return [];
+  }
+};
+
+const loadStoredReservations = (): Reservation[] => {
+  try {
+    return parseStoredReservations(localStorage.getItem(STORAGE_KEY));
+  } catch (error) {
+    console.error('Error loading past reservations:', error);
+    return [];
+  }
+};
+
+const saveStoredReservations = (reservations: Reservation[]): void => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reservations));
+  } catch (error) {
+    console.error('Error saving reservations to localStorage:', error);
+  }
+};
+
+const getFetchApi = (): ReservationApiFetch | undefined => {
+  return typeof window.fetchAPI === 'function' ? window.fetchAPI : undefined;
+};
+
+const getSubmitApi = (): ReservationApiSubmit | undefined => {
+  return typeof window.submitAPI === 'function' ? window.submitAPI : undefined;
+};
+
 export function useReservation() {
-  // State for reservation data
-  const [reservationData, setReservationData] = useState({
-    date: '',
-    time: '',
-    partySize: '',
-    name: '',
-    email: '',
-    phone: '',
-    occasion: '',
-    specialRequests: ''
-  });
-  
-  // State for the current step in the reservation process
-  const [currentStep, setCurrentStep] = useState(1);
-  
-  // State for available time slots
-  const [availableTimes, setAvailableTimes] = useState([]);
-  
-  // State for the confirmed reservation (after submission)
-  const [confirmedReservation, setConfirmedReservation] = useState(null);
-  
-  // State for error message
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isLoadingTimes, setIsLoadingTimes] = useState(false);
-  const [pastReservations, setPastReservations] = useState([]);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reservationData, setReservationData] = useState<ReservationFormData>(initialReservationData);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [confirmedReservation, setConfirmedReservation] = useState<ReservationSummary | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isLoadingTimes, setIsLoadingTimes] = useState<boolean>(false);
+  const [pastReservations, setPastReservations] = useState<Reservation[]>([]);
+  const [formErrors, setFormErrors] = useState<ReservationFormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // --- Validation Schemas with Yup ---
   const step1Schema = Yup.object().shape({
@@ -78,57 +161,48 @@ export function useReservation() {
   // --- End Validation Schemas ---
 
   // Function to remove a reservation by its ID
-  const removeReservationById = (idToRemove) => {
+  const removeReservationById = (idToRemove: string) => {
     try {
       const updatedReservations = pastReservations.filter(reservation => reservation.id !== idToRemove);
-      localStorage.setItem('littleLemonReservations', JSON.stringify(updatedReservations));
+      saveStoredReservations(updatedReservations);
       setPastReservations(updatedReservations);
     } catch (error) {
-      console.error('Error removing reservation from localStorage:', error);
-      // Optionally, set an error message to inform the user
+      if (error instanceof Error) {
+        console.error('Error removing reservation from localStorage:', error);
+      }
       setErrorMessage('Failed to remove reservation from local history.');
     }
   };
   
   // Fetch initial times and load past reservations on mount
   useEffect(() => {
-    const loadPastReservations = () => {
-      try {
-        const storedReservations = localStorage.getItem('littleLemonReservations');
-        if (storedReservations) {
-          setPastReservations(JSON.parse(storedReservations));
-        }
-      } catch (error) {
-        console.error('Error loading past reservations:', error);
-        // Optionally, set an error message or handle this state if needed
-      }
-    };
+    setPastReservations(loadStoredReservations());
 
-    loadPastReservations(); // Load reservations first
     const fetchInitialTimes = async () => {
       setIsLoadingTimes(true);
       setErrorMessage('');
       try {
-        const apiFetchFunction = window.fetchAPI || (typeof fetchAPI === 'function' ? fetchAPI : undefined);
-        if (typeof apiFetchFunction === 'function') {
+        const apiFetchFunction = getFetchApi();
+        if (apiFetchFunction) {
           const today = new Date();
           const times = await apiFetchFunction(today);
-          setAvailableTimes(times || []);
+          setAvailableTimes(times ?? []);
         } else {
-          console.error('fetchAPI is not defined on window object or globally.');
           setAvailableTimes([]);
           setErrorMessage('Error: Booking API not loaded.');
         }
       } catch (error) {
-        console.error('Error fetching initial times:', error);
+        if (error instanceof Error) {
+          console.error('Error fetching initial times:', error);
+        }
         setAvailableTimes([]);
         setErrorMessage('Failed to load available times. Please try again.');
       }
       setIsLoadingTimes(false);
     };
 
-    fetchInitialTimes();
-  }, []); // Empty dependency array ensures this runs only on mount
+    void fetchInitialTimes();
+  }, []);
 
   // Update available times when date changes
   useEffect(() => {
@@ -137,23 +211,23 @@ export function useReservation() {
         setIsLoadingTimes(true);
         setErrorMessage('');
         try {
-          const apiFetchFunction = window.fetchAPI || (typeof fetchAPI === 'function' ? fetchAPI : undefined);
-          if (typeof apiFetchFunction === 'function') {
+          const apiFetchFunction = getFetchApi();
+          if (apiFetchFunction) {
             const selectedDateObj = new Date(reservationData.date);
             const timeSlots = await apiFetchFunction(selectedDateObj);
-            setAvailableTimes(timeSlots || []);
-            
-            // If the currently selected time is not available in the new slots, reset it
-            if (reservationData.time && timeSlots && !timeSlots.includes(reservationData.time)) { // Added check for timeSlots existence
+            setAvailableTimes(timeSlots ?? []);
+
+            if (reservationData.time && timeSlots && !timeSlots.includes(reservationData.time)) {
               setReservationData(prev => ({ ...prev, time: '' }));
             }
           } else {
-            console.error('fetchAPI is not defined on window object or globally.');
             setAvailableTimes([]);
             setErrorMessage('Error: Booking API not loaded.');
           }
         } catch (error) {
-          console.error('Error fetching times for selected date:', error);
+          if (error instanceof Error) {
+            console.error('Error fetching times for selected date:', error);
+          }
           setAvailableTimes([]);
           setErrorMessage('Failed to load available times for the selected date. Please try again.');
         }
@@ -173,7 +247,7 @@ export function useReservation() {
   
   // Handle date, time, and party size changes
   // --- Validation Functions ---
-  const validateField = useCallback(async (field, value) => {
+  const validateField = useCallback(async (field: ReservationField, value: ReservationFieldValue) => {
     // Special case for the test with 'anyValueToTriggerValidation'
     if (field === 'date' && value === 'anyValueToTriggerValidation') {
       const testError = new Error('Simulated generic validation error from Yup');
@@ -186,51 +260,58 @@ export function useReservation() {
       const schema = currentStep === 1 ? step1Schema : step2Schema;
       
       // Explicitly use Yup.reach to get the field schema
-      const fieldSchema = Yup.reach(schema, field);
+      const fieldSchema = Yup.reach(schema, field as string) as Yup.Schema<unknown>;
       await fieldSchema.validate(value);
       
       setFormErrors(prevErrors => ({ ...prevErrors, [field]: '' }));
-    } catch (err) {
-      if (err.name === 'ValidationError') {
-        // Normal validation error - use the message from Yup
-        setFormErrors(prevErrors => ({ ...prevErrors, [field]: err.message }));
-      } else {
-        // Other unexpected errors - log them but don't set form errors
-        // This matches the test expectation that formErrors.date should be undefined
-        console.error(`Error validating field ${field}: ${err.message}`, err);
-        // We're intentionally not setting formErrors here for unexpected errors
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        setFormErrors(prevErrors => ({ ...prevErrors, [field]: error.message }));
+      } else if (error instanceof Error) {
+        console.error(`Error validating field ${field}: ${error.message}`, error);
       }
     }
   }, [currentStep, step1Schema, step2Schema]);
 
-  const validateStep = useCallback(async (step) => {
+  const validateStep = useCallback(async (step: number) => {
     const schema = step === 1 ? step1Schema : step2Schema;
-    const dataToValidate = step === 1 
-      ? { date: reservationData.date, time: reservationData.time, partySize: reservationData.partySize }
-      : { name: reservationData.name, email: reservationData.email, phone: reservationData.phone, specialRequests: reservationData.specialRequests };
+    const dataToValidate = step === 1
+      ? {
+          date: reservationData.date,
+          time: reservationData.time,
+          partySize: reservationData.partySize === '' ? '' : reservationData.partySize
+        }
+      : {
+          name: reservationData.name,
+          email: reservationData.email,
+          phone: reservationData.phone,
+          specialRequests: reservationData.specialRequests ?? ''
+        };
     
     try {
       await schema.validate(dataToValidate, { abortEarly: false });
-      setFormErrors({}); // Clear all errors for the step
+      setFormErrors({});
       return true;
-    } catch (err) {
-      const errors = {};
-      err.inner.forEach(error => {
-        if (error.path && !errors[error.path]) { // Check if error.path is defined
-          errors[error.path] = error.message;
-        }
-      });
-      setFormErrors(errors);
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors: ReservationFormErrors = {};
+        error.inner.forEach(innerError => {
+          if (innerError.path && !errors[innerError.path]) {
+            errors[innerError.path] = innerError.message;
+          }
+        });
+        setFormErrors(errors);
+      }
       return false;
     }
   }, [reservationData, step1Schema, step2Schema]);
   // --- End Validation Functions ---
 
-  const handleDateTimeChange = (field, value) => {
+  const handleDateTimeChange = (field: ReservationField, value: ReservationFieldValue) => {
     setReservationData(prev => ({
       ...prev,
       [field]: value
-    }));
+    } as ReservationFormData));
     
     // Clear available times if date is cleared
     if (field === 'date' && value === '') {
@@ -238,15 +319,11 @@ export function useReservation() {
     }
     
     // Validate the field after updating the state
-    try {
-      validateField(field, value);
-    } catch (error) {
-      console.error(`Error validating field ${field}: ${error.message}`, error);
-    }
+    void validateField(field, value);
   };
   
   // Handle form data changes
-  const handleFormChange = (newFormData) => {
+  const handleFormChange = (newFormData: Partial<ReservationFormData>) => {
     setReservationData(prev => ({
       ...prev,
       ...newFormData
@@ -266,7 +343,8 @@ export function useReservation() {
     
     // Additionally, ensure required fields are not just empty (Yup handles this, but good for initial check)
     if (currentStep === 1) {
-      return stepIsValid && reservationData.date && reservationData.time && reservationData.partySize;
+      const partySizeValid = typeof reservationData.partySize === 'number' && reservationData.partySize > 0;
+      return stepIsValid && Boolean(reservationData.date) && Boolean(reservationData.time) && partySizeValid;
     }
     if (currentStep === 2) {
       return stepIsValid && reservationData.name && reservationData.email && reservationData.phone;
@@ -303,9 +381,8 @@ export function useReservation() {
     setFormErrors({}); // Also clear form errors
     setIsSubmitting(true);
     try {
-      const apiSubmitFunction = window.submitAPI || (typeof submitAPI === 'function' ? submitAPI : undefined);
+      const apiSubmitFunction = getSubmitApi();
       if (typeof apiSubmitFunction !== 'function') {
-        console.error('submitAPI is not defined on window object or globally.');
         setErrorMessage('Error: Booking submission API not loaded.');
         return false; // Indicate failure
       }
@@ -314,25 +391,39 @@ export function useReservation() {
       const submissionSuccessful = await apiSubmitFunction(reservationData);
 
       if (submissionSuccessful) {
-        // For the confirmation display, we'll use the data that was successfully submitted.
-        // The external API (api.js) doesn't return a full reservation object with an ID.
-        // If it did, we would use that here.
-        // For now, we'll create a mock ID for display purposes if needed or just use submitted data.
-        const newReservation = { 
-          ...reservationData, 
-          id: `LL-${Date.now()}`,
-          confirmedAt: new Date().toISOString() 
+        const reservationId = `LL-${Date.now()}`;
+        const confirmedAt = new Date().toISOString();
+
+        const summary: ReservationSummary = {
+          ...reservationData,
+          id: reservationId,
+          confirmedAt
         };
-        setConfirmedReservation(newReservation);
-        
-        // Update localStorage with the new reservation
-        try {
-          const updatedReservations = [...pastReservations, newReservation];
-          localStorage.setItem('littleLemonReservations', JSON.stringify(updatedReservations));
+        setConfirmedReservation(summary);
+
+        const numericPartySize =
+          typeof reservationData.partySize === 'number'
+            ? reservationData.partySize
+            : Number.parseInt(reservationData.partySize, 10);
+
+        if (!Number.isNaN(numericPartySize)) {
+          const storedReservation: Reservation = {
+            id: reservationId,
+            date: reservationData.date,
+            time: reservationData.time,
+            partySize: numericPartySize,
+            name: reservationData.name,
+            email: reservationData.email,
+            phone: reservationData.phone,
+            occasion: reservationData.occasion || undefined,
+            specialRequests: reservationData.specialRequests || undefined,
+            status: 'confirmed',
+            createdAt: confirmedAt
+          };
+
+          const updatedReservations = [...pastReservations, storedReservation];
+          saveStoredReservations(updatedReservations);
           setPastReservations(updatedReservations);
-        } catch (error) {
-          console.error('Error saving reservation to localStorage:', error);
-          // Optionally, inform the user that saving to local history failed but reservation is confirmed
         }
 
         setCurrentStep(4); // Move to the success step

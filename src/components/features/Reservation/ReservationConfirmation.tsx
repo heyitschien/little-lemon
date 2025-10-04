@@ -1,19 +1,22 @@
 import React from 'react';
 import styles from './ReservationConfirmation.module.css';
+import type { ReservationFormData } from '../../../types/reservation';
 
-/**
- * ReservationConfirmation Component
- * 
- * Displays a summary of the reservation details and provides options for confirming or modifying the reservation.
- * 
- * @param {Object} props - Component props
- * @param {Object} props.reservationData - Reservation data to display
- * @param {Function} props.onConfirm - Function to call when the reservation is confirmed
- * @param {Function} props.onModify - Function to call when the user wants to modify the reservation
- */
-const ReservationConfirmation = ({ reservationData, onConfirm, onModify, isSubmitting }) => {
+interface ReservationConfirmationProps {
+  reservationData: ReservationFormData;
+  onConfirm: () => void;
+  onModify: () => void;
+  isSubmitting: boolean;
+}
+
+const ReservationConfirmation: React.FC<ReservationConfirmationProps> = ({
+  reservationData,
+  onConfirm,
+  onModify,
+  isSubmitting
+}) => {
   // Format date for display (e.g., "2023-05-20" to "Saturday, May 20, 2023")
-  const formatDateForDisplay = (dateString) => {
+  const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -23,7 +26,7 @@ const ReservationConfirmation = ({ reservationData, onConfirm, onModify, isSubmi
   };
   
   // Format time for display (e.g., "17:00" to "5:00 PM")
-  const formatTimeForDisplay = (time) => {
+  const formatTimeForDisplay = (time: string): string => {
     if (!time) return '';
     
     const [hours, minutes] = time.split(':');

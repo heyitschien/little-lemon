@@ -1,21 +1,26 @@
-import React from 'react'; // Removed useState as internal errors state is no longer needed
+import React from 'react';
 import styles from './ReservationForm.module.css';
+import type { ReservationFormData, ReservationFormErrors } from '../../../types/reservation';
 
-/**
- * ReservationForm Component
- * 
- * Collects customer information for a reservation.
- * 
- * @param {Object} props - Component props
- * @param {Object} props.formData - Current form data
- * @param {Function} props.onFormChange - Function to call when form data changes
- */
-const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) => {
+interface ReservationFormProps {
+  formData: ReservationFormData;
+  onFormChange: (nextForm: ReservationFormData) => void;
+  formErrors: ReservationFormErrors;
+  validateField: (field: keyof ReservationFormData, value: string | number) => void;
+}
+
+const ReservationForm: React.FC<ReservationFormProps> = ({
+  formData,
+  onFormChange,
+  formErrors,
+  validateField
+}) => {
   // Internal 'errors' state and 'validateForm' function removed, using formErrors from props
 
   // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> = (event) => {
+    const { name, value } = event.currentTarget;
+    const fieldName = name as keyof ReservationFormData;
     let processedValue = value;
 
     if (name === 'phone') {
@@ -30,29 +35,44 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
         processedValue = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
       }
     }
-    
+
     // Update form data
-    onFormChange({
+    const nextForm = {
       ...formData,
-      [name]: processedValue
-    });
-    
+      [fieldName]: processedValue
+    } as ReservationFormData;
+
+    onFormChange(nextForm);
+
     // On-blur validation will be handled by input's onBlur prop
   };
 
   // 'validateForm' function removed, validation handled by useReservation hook
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    
+
     // Validate all required fields on form submission
     validateField('name', formData.name);
     validateField('email', formData.email);
     validateField('phone', formData.phone);
-    
+
     // Form submission is still handled by the parent component
     // This validation ensures errors are displayed immediately in tests
+  };
+
+  const validateFromTarget = (target: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) => {
+    const { name, value } = target;
+    validateField(name as keyof ReservationFormData, value);
+  };
+
+  const handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> = (event) => {
+    validateFromTarget(event.currentTarget);
+  };
+
+  const handleTouchEnd: React.TouchEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> = (event) => {
+    validateFromTarget(event.currentTarget);
   };
 
   return (
@@ -73,8 +93,8 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             onChange={handleInputChange}
             placeholder="John Doe"
             required
-            onBlur={(e) => validateField(e.target.name, e.target.value)}
-            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
+            onBlur={handleBlur}
+            onTouchEnd={handleTouchEnd}
           />
           {formErrors.name && <p className={styles.errorText}>{formErrors.name}</p>}
         </div>
@@ -92,8 +112,8 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             onChange={handleInputChange}
             placeholder="john.doe@example.com"
             required
-            onBlur={(e) => validateField(e.target.name, e.target.value)}
-            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
+            onBlur={handleBlur}
+            onTouchEnd={handleTouchEnd}
           />
           {formErrors.email && <p className={styles.errorText}>{formErrors.email}</p>}
         </div>
@@ -111,8 +131,8 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             onChange={handleInputChange}
             placeholder="(123) 456-7890"
             required
-            onBlur={(e) => validateField(e.target.name, e.target.value)}
-            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
+            onBlur={handleBlur}
+            onTouchEnd={handleTouchEnd}
           />
           {formErrors.phone && <p className={styles.errorText}>{formErrors.phone}</p>}
         </div>
@@ -127,8 +147,8 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             className={styles.selectInput}
             value={formData.occasion || ''}
             onChange={handleInputChange}
-            onBlur={(e) => validateField(e.target.name, e.target.value)}
-            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
+            onBlur={handleBlur}
+            onTouchEnd={handleTouchEnd}
           >
             <option value="">Select an occasion</option>
             <option value="birthday">Birthday</option>
@@ -151,8 +171,8 @@ const ReservationForm = ({ formData, onFormChange, formErrors, validateField }) 
             onChange={handleInputChange}
             placeholder="Any allergies, dietary restrictions, or special requests?"
             rows={4}
-            onBlur={(e) => validateField(e.target.name, e.target.value)}
-            onTouchEnd={(e) => validateField(e.target.name, e.target.value)}
+            onBlur={handleBlur}
+            onTouchEnd={handleTouchEnd}
           />
           {formErrors.specialRequests && <p className={styles.errorText}>{formErrors.specialRequests}</p>}
         </div>

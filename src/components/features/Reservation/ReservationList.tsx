@@ -1,12 +1,18 @@
 import React from 'react';
 import styles from './ReservationList.module.css';
+import type { Reservation } from '../../../types/reservation';
 
-const ReservationList = ({ reservations, removeReservationById }) => {
+interface ReservationListProps {
+  reservations: Reservation[];
+  removeReservationById: (id: string) => void;
+}
+
+const ReservationList: React.FC<ReservationListProps> = ({ reservations, removeReservationById }) => {
   if (!reservations || reservations.length === 0) {
     return <p className={styles.noReservationsMessage}>No past reservations found.</p>;
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     const [year, month, day] = dateString.split('-').map(Number);
     return new Date(year, month - 1, day).toLocaleDateString(undefined, {
       weekday: 'long',
@@ -16,7 +22,7 @@ const ReservationList = ({ reservations, removeReservationById }) => {
     });
   };
 
-  const formatTime = (time) => {
+  const formatTime = (time: string): string => {
     if (!time) return '';
     const [hours, minutes] = time.split(':');
     const hoursNum = parseInt(hours, 10);
@@ -25,12 +31,17 @@ const ReservationList = ({ reservations, removeReservationById }) => {
     return `${hours12}:${minutes} ${period}`;
   };
 
-  const formatConfirmedAt = (isoString) => {
+  const formatConfirmedAt = (isoString?: string): string => {
     if (!isoString) return 'N/A';
     return new Date(isoString).toLocaleString(undefined, {
       dateStyle: 'medium',
       timeStyle: 'short'
     });
+  };
+
+  const formatPartySize = (partySize: number): string => {
+    const label = partySize === 1 ? 'person' : 'people';
+    return `${partySize} ${label}`;
   };
 
   return (
@@ -49,7 +60,7 @@ const ReservationList = ({ reservations, removeReservationById }) => {
             </div>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>Party Size:</span>
-              <span className={styles.detailValue}>{reservation.partySize} {parseInt(reservation.partySize, 10) === 1 ? 'person' : 'people'}</span>
+              <span className={styles.detailValue}>{formatPartySize(reservation.partySize)}</span>
             </div>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>Name:</span>
@@ -81,7 +92,7 @@ const ReservationList = ({ reservations, removeReservationById }) => {
             )}
           </div>
           <div className={styles.cardActions}>
-            <button 
+            <button
               onClick={() => {
                 if (window.confirm('Are you sure you want to remove this reservation?')) {
                   removeReservationById(reservation.id);

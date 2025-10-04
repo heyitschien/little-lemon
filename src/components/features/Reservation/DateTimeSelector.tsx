@@ -1,23 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import styles from './DateTimeSelector.module.css';
-// getAvailableTimeSlots removed, will be passed as prop
+import type {
+  PartySizeValue,
+  ReservationField,
+  ReservationFieldValue,
+  ReservationFormErrors
+} from '../../../types/reservation';
 
-/**
- * DateTimeSelector Component
- * 
- * Allows users to select a date, time, and party size for their reservation.
- * 
- * @param {Object} props - Component props
- * @param {string} props.selectedDate - Currently selected date
- * @param {string} props.selectedTime - Currently selected time
- * @param {number} props.partySize - Number of people in the party
- * @param {Array<string>} props.availableTimes - Array of available time slots for the selected date
- * @param {boolean} props.isLoadingTimes - Boolean indicating if times are currently being loaded
- * @param {Function} props.onDateChange - Function to call when date changes
- * @param {Function} props.onTimeChange - Function to call when time changes
- * @param {Function} props.onPartySizeChange - Function to call when party size changes
- */
-const DateTimeSelectorComponent = React.memo(({
+interface DateTimeSelectorProps {
+  selectedDate: string;
+  selectedTime: string;
+  partySize: PartySizeValue;
+  availableTimes: string[];
+  isLoadingTimes: boolean;
+  onDateChange: (date: string) => void;
+  onTimeChange: (time: string) => void;
+  onPartySizeChange: (size: PartySizeValue) => void;
+  formErrors: ReservationFormErrors;
+  validateField: (field: ReservationField, value: ReservationFieldValue) => void;
+}
+
+const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
   selectedDate,
   selectedTime,
   partySize,
@@ -32,12 +35,14 @@ const DateTimeSelectorComponent = React.memo(({
   // const [dateError, setDateError] = useState(''); // Removed, using formErrors from props
   
   // Get today's date in YYYY-MM-DD format for min date attribute
-  const today = new Date().toISOString().split('T')[0];
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   
   // Calculate the max date (6 months from today)
-  const maxDate = new Date();
-  maxDate.setMonth(maxDate.getMonth() + 6);
-  const maxDateString = maxDate.toISOString().split('T')[0];
+  const maxDateString = useMemo(() => {
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 6);
+    return maxDate.toISOString().split('T')[0];
+  }, []);
   
   // Internal date validation useEffect removed, will rely on formErrors from useReservation hook
 
@@ -50,25 +55,31 @@ const DateTimeSelectorComponent = React.memo(({
   }, [selectedDate, selectedTime, availableTimes, onTimeChange]);
   
   // Handle date change
-  const handleDateChange = (e) => {
-    const newDate = e.target.value;
+  const handleDateChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const newDate = event.currentTarget.value;
     onDateChange(newDate);
   };
   
   // Handle time change
-  const handleTimeChange = (e) => {
-    const newTime = e.target.value;
+  const handleTimeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    const newTime = event.currentTarget.value;
     onTimeChange(newTime);
   };
   
   // Handle party size change
-  const handlePartySizeChange = (e) => {
-    const newPartySize = parseInt(e.target.value, 10);
-    onPartySizeChange(newPartySize);
+  const handlePartySizeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    const rawValue = event.currentTarget.value;
+    if (rawValue === '') {
+      onPartySizeChange('');
+      return;
+    }
+
+    const parsed = parseInt(rawValue, 10);
+    onPartySizeChange(Number.isNaN(parsed) ? '' : parsed);
   };
   
   // Format time for display (e.g., "17:00" to "5:00 PM")
-  const formatTimeForDisplay = (time) => {
+  const formatTimeForDisplay = (time: string): string => {
     if (!time) return '';
     
     const [hours, minutes] = time.split(':');
@@ -80,7 +91,7 @@ const DateTimeSelectorComponent = React.memo(({
   };
   
   // Format date for display (e.g., "2023-03-15" to "March 15, 2023")
-  const formatDateForDisplay = (dateString) => {
+  const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     
     // Parse the date string directly without creating a Date object
@@ -100,9 +111,9 @@ const DateTimeSelectorComponent = React.memo(({
 
 
   // Create refs for error message IDs
-  const dateErrorId = useRef('date-error-' + Math.random().toString(36).substr(2, 9));
-  const timeErrorId = useRef('time-error-' + Math.random().toString(36).substr(2, 9));
-  const partySizeErrorId = useRef('party-size-error-' + Math.random().toString(36).substr(2, 9));
+  const dateErrorId = useRef<string>('date-error-' + Math.random().toString(36).substr(2, 9));
+  const timeErrorId = useRef<string>('time-error-' + Math.random().toString(36).substr(2, 9));
+  const partySizeErrorId = useRef<string>('party-size-error-' + Math.random().toString(36).substr(2, 9));
   
   // Determine if fields are invalid
   const isDateInvalid = !!formErrors.date;
@@ -143,7 +154,7 @@ const DateTimeSelectorComponent = React.memo(({
               max={maxDateString}
               required
               aria-required="true"
-              aria-invalid={isDateInvalid}
+              aria-invalid={isDateInvalid ? 'true' : 'false'}
               aria-describedby={isDateInvalid ? dateErrorId.current : undefined}
               aria-label="Select a date for your reservation"
             />
@@ -176,7 +187,7 @@ const DateTimeSelectorComponent = React.memo(({
             disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!formErrors.date}
             required
             aria-required="true"
-            aria-invalid={isTimeInvalid}
+            aria-invalid={isTimeInvalid ? 'true' : 'false'}
             aria-describedby={isTimeInvalid ? timeErrorId.current : undefined}
           >
             <option value="">Select a time</option>
@@ -221,7 +232,7 @@ const DateTimeSelectorComponent = React.memo(({
             onBlur={() => validateField('partySize', partySize)}
             required
             aria-required="true"
-            aria-invalid={isPartySizeInvalid}
+            aria-invalid={isPartySizeInvalid ? 'true' : 'false'}
             aria-describedby={isPartySizeInvalid ? partySizeErrorId.current : undefined}
           >
             <option value="">Select party size</option>

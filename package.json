@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
+    "tsc": "tsc --noEmit",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
@@ -49,6 +50,9 @@
     "jest-axe": "^10.0.0",
     "jsdom": "^26.1.0",
     "prettier": "^3.5.3",
+    "@typescript-eslint/eslint-plugin": "^8.12.1",
+    "@typescript-eslint/parser": "^8.12.1",
+    "typescript": "^5.6.3",
     "vite": "^6.3.5",
     "vitest": "^3.2.0",
     "vitest-axe": "^0.1.0"
