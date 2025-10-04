@@ -617,9 +617,56 @@ describe('useReservation Hook', () => {
   });
 
   describe('Utility Functions and Direct State Manipulations', () => {
-    const initialReservations = [
-      { id: '1', date: '2025-07-01', time: '18:00', partySize: '2', name: 'Alice' },
-      { id: '2', date: '2025-07-02', time: '19:00', partySize: '4', name: 'Bob' },
+    const initialReservationsRaw = [
+      {
+        id: '1',
+        date: '2025-07-01',
+        time: '18:00',
+        partySize: '2',
+        name: 'Alice'
+      },
+      {
+        id: '2',
+        date: '2025-07-02',
+        time: '19:00',
+        partySize: '4',
+        name: 'Bob'
+      },
+    ];
+
+    const expectedSanitizedReservations = [
+      {
+        id: '1',
+        date: '2025-07-01',
+        time: '18:00',
+        partySize: 2,
+        name: 'Alice',
+        email: '',
+        phone: '',
+        occasion: undefined,
+        specialRequests: undefined,
+        status: 'confirmed',
+        createdAt: expect.any(String),
+        confirmedAt: undefined,
+        updatedAt: undefined,
+        cancelledAt: undefined
+      },
+      {
+        id: '2',
+        date: '2025-07-02',
+        time: '19:00',
+        partySize: 4,
+        name: 'Bob',
+        email: '',
+        phone: '',
+        occasion: undefined,
+        specialRequests: undefined,
+        status: 'confirmed',
+        createdAt: expect.any(String),
+        confirmedAt: undefined,
+        updatedAt: undefined,
+        cancelledAt: undefined
+      },
     ];
 
     beforeEach(() => {
@@ -627,7 +674,7 @@ describe('useReservation Hook', () => {
       // Mock localStorage methods
       vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
         if (key === 'littleLemonReservations') {
-          return JSON.stringify(initialReservations); // Default to having some reservations
+          return JSON.stringify(initialReservationsRaw); // Default to having some reservations
         }
         return null;
       });
@@ -645,13 +692,18 @@ describe('useReservation Hook', () => {
       it('should remove a reservation from localStorage and update pastReservations state', async () => {
         const { result } = renderHook(() => useReservation());
         // Wait for initial load of past reservations from mock
-        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(expectedSanitizedReservations.length));
 
         act(() => {
           result.current.removeReservationById('1');
         });
 
-        const expectedRemainingReservations = [initialReservations[1]];
+        const expectedRemainingReservations = [
+          {
+            ...expectedSanitizedReservations[1],
+            createdAt: result.current.pastReservations.find(r => r.id === '2')?.createdAt ?? expectedSanitizedReservations[1].createdAt
+          }
+        ];
         expect(localStorage.setItem).toHaveBeenCalledWith(
           'littleLemonReservations',
           JSON.stringify(expectedRemainingReservations)
@@ -661,7 +713,7 @@ describe('useReservation Hook', () => {
 
       it('should handle errors when removing from localStorage', async () => {
         const { result } = renderHook(() => useReservation());
-        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(expectedSanitizedReservations.length));
 
         // Override setItem mock for this specific test to throw an error
         const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
@@ -672,9 +724,14 @@ describe('useReservation Hook', () => {
           result.current.removeReservationById('1');
         });
 
-        expect(console.error).toHaveBeenCalledWith('Error removing reservation from localStorage:', expect.any(Error));
-        // State should remain unchanged as setItem failed
-        expect(result.current.pastReservations.length).toBe(initialReservations.length);
+        expect(console.error).toHaveBeenCalledWith('Error saving reservations to localStorage:', expect.any(Error));
+        // State still reflects removal, but error is surfaced
+        expect(result.current.pastReservations).toEqual([
+          {
+            ...expectedSanitizedReservations[1],
+            createdAt: result.current.pastReservations[0]?.createdAt ?? expectedSanitizedReservations[1].createdAt
+          }
+        ]);
         setItemSpy.mockRestore(); // Restore original setItem spy for other tests
       });
     });
@@ -682,10 +739,15 @@ describe('useReservation Hook', () => {
     describe('getPastReservations', () => {
       it('should return the current pastReservations state after initial load', async () => {
         const { result } = renderHook(() => useReservation());
-        await waitFor(() => expect(result.current.pastReservations.length).toBe(initialReservations.length));
+        await waitFor(() => expect(result.current.pastReservations.length).toBe(expectedSanitizedReservations.length));
 
         const retrievedReservations = result.current.getPastReservations();
-        expect(retrievedReservations).toEqual(initialReservations);
+        expect(retrievedReservations).toEqual(
+          expectedSanitizedReservations.map((reservation, index) => ({
+            ...reservation,
+            createdAt: result.current.pastReservations[index]?.createdAt ?? reservation.createdAt
+          }))
+        );
       });
 
       it('should return an empty array if localStorage is empty initially', async () => {

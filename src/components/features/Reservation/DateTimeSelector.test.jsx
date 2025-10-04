@@ -568,8 +568,8 @@ describe('DateTimeSelector Component', () => {
       // Check for fieldset element
       expect(document.querySelector('fieldset')).toBeInTheDocument();
       
-      // Check for legend with visually hidden class - updated to match the actual class name in the component
-      expect(document.querySelector('legend._visuallyHidden_139470')).not.toBeNull();
+      // Check for legend text (should be visually hidden but accessible via text)
+      expect(screen.getByText(/reservation details/i, { selector: 'legend' })).toBeInTheDocument();
       
       // Check for helper text
       const helperText = screen.getByText(/please select a date between today and/i);

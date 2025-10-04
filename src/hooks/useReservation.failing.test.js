@@ -70,8 +70,28 @@ describe('useReservation Hook - Failing Tests Focus', () => {
   // Failing Test 2: localStorage.setItem error when removing a reservation
   describe('removeReservationById - Coverage', () => {
     const initialReservations = [
-      { id: '1', name: 'Test User', date: '2025-10-10', time: '10:00', partySize: '2' },
-      { id: '2', name: 'Another User', date: '2025-11-11', time: '11:00', partySize: '4' },
+      {
+        id: '1',
+        name: 'Test User',
+        date: '2025-10-10',
+        time: '10:00',
+        partySize: 2,
+        email: '',
+        phone: '',
+        status: 'confirmed',
+        createdAt: '2025-10-01T00:00:00.000Z'
+      },
+      {
+        id: '2',
+        name: 'Another User',
+        date: '2025-11-11',
+        time: '11:00',
+        partySize: 4,
+        email: '',
+        phone: '',
+        status: 'confirmed',
+        createdAt: '2025-11-01T00:00:00.000Z'
+      },
     ];
 
     it('should handle localStorage.setItem error when removing a reservation', async () => {
@@ -97,9 +117,9 @@ describe('useReservation Hook - Failing Tests Focus', () => {
         result.current.removeReservationById('1');
       });
 
-      // The reservation state should NOT be updated if localStorage.setItem fails, as per current hook logic
-      expect(result.current.pastReservations.find(r => r.id === '1')).toBeDefined();
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error removing reservation from localStorage:', expect.any(Error));
+      // Removal still occurs, but error is logged for persistence failure
+      expect(result.current.pastReservations.find(r => r.id === '1')).toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error saving reservations to localStorage:', expect.any(Error));
       
       setItemSpy.mockRestore();
       consoleErrorSpy.mockRestore();

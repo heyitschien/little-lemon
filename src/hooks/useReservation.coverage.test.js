@@ -144,7 +144,7 @@ describe('useReservation Hook - Coverage Tests', () => {
       });
 
       expect(hookResult.current.pastReservations).toEqual([]);
-      expect(console.error).toHaveBeenCalledWith('Error loading past reservations:', expect.any(SyntaxError));
+      expect(console.error).toHaveBeenCalledWith('Error parsing reservations from localStorage:', expect.any(SyntaxError));
       
       getItemSpy.mockRestore();
       console.error.mockRestore();
@@ -202,7 +202,7 @@ describe('useReservation Hook - Coverage Tests', () => {
       expect(submissionSuccessful).toBe(true); // Submission to API was successful
       expect(result.current.currentStep).toBe(4); // Should still proceed to success step
       expect(result.current.confirmedReservation).not.toBeNull();
-      expect(console.error).toHaveBeenCalledWith('Error saving reservation to localStorage:', expect.any(Error));
+      expect(console.error).toHaveBeenCalledWith('Error saving reservations to localStorage:', expect.any(Error));
       // The errorMessage state might not be set here as the primary operation (API submit) succeeded.
       // The hook logs an error but might not show it to the user in this specific path.
       setItemSpy.mockRestore();

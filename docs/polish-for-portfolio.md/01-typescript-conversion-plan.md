@@ -3,8 +3,8 @@ Title: TypeScript Conversion Implementation Plan
 Author: Chien Escalera Duong
 Date Created: 2025-10-03
 Time Created: 17:05:35 PDT
-Last Updated: 2025-10-03 17:19:26 PDT
-Version: 1.0
+Last Updated: 2025-10-03 20:00:46 PDT
+Version: 1.1
 ---
 
 # Objective
@@ -34,20 +34,34 @@ Version: 1.0
 - **Phase 5: Test Suite** Update affected tests to `.tsx`, configure Vitest type expectations, add custom matchers typing.
 - **Phase 6: Hardening** Run `tsc`, lint, unit tests, adjust for regressions, document learnings.
 
+# Phase Progress Snapshot
+- **Phase 0** Completed — `tsconfig.json` enforces strict mode, `package.json` exposes `pnpm tsc`, and TypeScript tooling is installed.
+- **Phase 1** Completed — Shared types exist in `src/types/reservation.ts` and `src/types/chat.ts`, plus supporting declaration files.
+- **Phase 2** Completed — `ReservationForm.tsx`, `DateTimeSelector.tsx`, `ReservationConfirmation.tsx`, and `ReservationList.tsx` now use typed props/state and guard localStorage parsing.
+- **Phase 3** Completed — `useReservation.ts` and `reservationService.ts` export typed helpers with strict async signatures.
+- **Phase 4** Completed — Chat assistant UI and Gemini integration converted to `.tsx/.ts`, leveraging `ChatMessage` and `MenuItem` typings.
+- **Phase 5** In Progress — Vitest runs remain JS-based; need to finish migrating suites and configs to recognize `.ts/.tsx` tests.
+- **Phase 6** Pending — Final validation and documentation updates scheduled once test migration settles.
+
+# Validation & Test Status (Oct 3, 2025 @ 21:24 PDT)
+- `pnpm tsc --noEmit` ✅
+- `pnpm lint` ✅ (1 warning remains in `ReservationForm.test.jsx` for intentionally unused mock `value` argument)
+- `pnpm test` ✅ (Vitest suites updated: reservation hook fixtures expect typed `Reservation` objects, semantic selector uses legend text, party size assertions reflect numeric formatting)
+
 # Task Tracker
 | ID | Task | Owner | Status | Notes |
 | --- | --- | --- | --- | --- |
-| TS-01 | Add `typescript`, `@types/react`, `@types/node`, configure `tsconfig.json`. | TBD | Not Started | Include `strict: true` and `paths` if needed. |
-| TS-02 | Align ESLint/Prettier with TS extensions. | TBD | Not Started | Extend from `typescript-eslint`. |
-| TS-03 | Create `src/types/reservation.ts` with shared interfaces. | TBD | Not Started | Export for reuse across services. |
-| TS-04 | Convert `ReservationForm.jsx` to `.tsx` and type props/state. | TBD | Not Started | Add form field enum. |
-| TS-05 | Convert `DateTimeSelector.jsx` and dependent modules. | TBD | Not Started | Ensure `availableTimes` typed as `string[]`. |
-| TS-06 | Convert `ReservationConfirmation.jsx` and `ReservationList.jsx`. | TBD | Not Started | Use discriminated union for status messages. |
-| TS-07 | Convert `useReservation.js` to `.ts` with hook generics. | TBD | Not Started | Type localStorage interactions. |
-| TS-08 | Convert `reservationService.js` to `.ts` and enforce return types. | TBD | Not Started | Replace dynamic objects with typed responses. |
-| TS-09 | Convert Gemini chat components/services to TS. | TBD | Not Started | Create `ChatMessage` and `MenuRecommendation` types. |
-| TS-10 | Update Vitest config/tests for TS support. | TBD | Not Started | Ensure `setupTests.ts` typed. |
-| TS-11 | Execute validation suite (`tsc`, lint, tests) and document results. | TBD | Not Started | Capture output for portfolio notes. |
+| TS-01 | Add `typescript`, `@types/react`, `@types/node`, configure `tsconfig.json`. | TBD | Complete | `tsconfig.json` (`strict` + path aliases) and `pnpm tsc` script live in repo. |
+| TS-02 | Align ESLint/Prettier with TS extensions. | TBD | In Progress | `eslint.config.js` covers JS; needs TS/TSX patterns and parser wiring via `@typescript-eslint`. |
+| TS-03 | Create `src/types/reservation.ts` with shared interfaces. | TBD | Complete | Reservation types centralized with guards such as `isReservation()`. |
+| TS-04 | Convert `ReservationForm.jsx` to `.tsx` and type props/state. | TBD | Complete | Component now typed; local handlers use discriminated unions. |
+| TS-05 | Convert `DateTimeSelector.jsx` and dependent modules. | TBD | Complete | `DateTimeSelector.tsx` ensures `availableTimes: string[]` and typed callbacks. |
+| TS-06 | Convert `ReservationConfirmation.jsx` and `ReservationList.jsx`. | TBD | Complete | Both components leverage `ReservationSummary` and shared enums. |
+| TS-07 | Convert `useReservation.js` to `.ts` with hook generics. | TBD | Complete | Hook exports typed API with guarded localStorage parsing. |
+| TS-08 | Convert `reservationService.js` to `.ts` and enforce return types. | TBD | Complete | Service returns typed promises and normalizes responses. |
+| TS-09 | Convert Gemini chat components/services to TS. | TBD | Complete | Chat container, UI, and `geminiService.ts` fully typed using `ChatMessage`/`MenuItem`. |
+| TS-10 | Update Vitest config/tests for TS support. | TBD | In Progress | Tests still `.jsx`; need TypeScript-aware config and `vitest.setup.ts`. |
+| TS-11 | Execute validation suite (`tsc`, lint, tests) and document results. | TBD | Pending | `pnpm dev` confirmed locally; capture `pnpm tsc`, lint, test outputs post-test migration. |
 
 # Implementation Steps
 - **Phase 0** Install dependencies, add `tsconfig.json`, update scripts (`"tsc": "tsc --noEmit"`).

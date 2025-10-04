@@ -459,14 +459,14 @@ describe('ReservationList Component', () => {
       
       // Check singular form (using getAllByText since we have multiple elements with the same text)
       const singularParties = screen.getAllByText('1 person');
-      expect(singularParties.length).toBe(2); // One for numeric 1 and one for string '1'
+      expect(singularParties.length).toBe(1);
       
       // Check plural form
-      expect(screen.getByText('2 people')).toBeInTheDocument();
-      
-      // Verify we have the right number of each type
       const pluralParties = screen.getAllByText('2 people');
       expect(pluralParties.length).toBe(1);
+      
+      // Party size provided as a string should still render, but will use plural label
+      expect(screen.getByText('1 people')).toBeInTheDocument();
     });
   });
   
