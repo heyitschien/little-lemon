@@ -1,0 +1,96 @@
+.reviewContainer {
+  display: grid;
+  gap: 2rem;
+}
+
+.summarySection {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(17, 24, 39, 0.05);
+  display: grid;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.sectionDescription {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.itemName {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.itemMeta {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(17, 24, 39, 0.08);
+}
+
+.termsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.errorText {
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+
+.helperText {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .summarySection {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
