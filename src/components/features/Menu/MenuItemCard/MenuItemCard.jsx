@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './MenuItemCard.module.css';
 import { useCart } from '../../../../context/useCart';
 
-const MenuItemCard = ({ item }) => {
+const MenuItemCard = ({ item, onSelect }) => {
   // Use the cart context to get the addToCart function
   const { addToCart } = useCart();
   
@@ -18,27 +18,41 @@ const MenuItemCard = ({ item }) => {
     console.log(`Added ${name} to cart`);
   };
 
+  const handleSelect = () => {
+    if (onSelect) {
+      onSelect(item);
+    }
+  };
+
   return (
-    <div className={styles.menuItemCard} role="listitem">
-      <div className={styles.cardImageContainer}>
-        <img src={image} alt={name} className={styles.cardImage} />
-      </div>
-      <div className={styles.cardContent}>
-        <h3 className={styles.cardTitle}>{name}</h3>
-        <p className={styles.cardDescription}>{description}</p>
-        <div className={styles.cardPriceContainer}>
-          <span className={styles.cardPrice}>${price.toFixed(2)}</span>
-          <button 
-            className={styles.addToCartButton}
-            onClick={handleAddToCart}
-            aria-label={`Add ${name} to cart`}
-          >
-            <span className={styles.plusIcon}>+</span>
-            <span className={styles.ctaLabel}>Add to Cart</span>
-          </button>
+    <article className={styles.menuItemCard}>
+      <button
+        type="button"
+        className={styles.cardInteractive}
+        onClick={handleSelect}
+        aria-label={`View details for ${name}`}
+      >
+        <div className={styles.cardImageContainer}>
+          <img src={image} alt={name} className={styles.cardImage} />
         </div>
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardTitle}>{name}</h3>
+          <p className={styles.cardDescription}>{description}</p>
+        </div>
+      </button>
+
+      <div className={styles.cardPriceContainer}>
+        <span className={styles.cardPrice}>${price.toFixed(2)}</span>
+        <button
+          className={styles.addToCartButton}
+          onClick={handleAddToCart}
+          aria-label={`Add ${name} to cart`}
+        >
+          <span className={styles.plusIcon}>+</span>
+          <span className={styles.ctaLabel}>Add to Cart</span>
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 

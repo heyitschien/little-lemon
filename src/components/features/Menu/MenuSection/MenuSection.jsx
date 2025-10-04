@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './MenuSection.module.css';
 import MenuItemCard from '../MenuItemCard/MenuItemCard';
+import MenuItemModal from '../MenuItemModal/MenuItemModal';
 import { menuItems, menuCategories } from '../../../../data/menuData';
 import bikeIcon from '../../../../assets/icons/bike.svg';
 
 const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [filteredItems, setFilteredItems] = useState(menuItems);
+  const [selectedItem, setSelectedItem] = useState(null);
   const filterContainerRef = useRef(null);
 
   // Filter menu items when category changes
@@ -16,6 +18,7 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
     } else {
       setFilteredItems(menuItems.filter(item => item.category === activeCategory));
     }
+    setSelectedItem(null);
   }, [activeCategory]);
 
   // Handle category click
@@ -41,6 +44,14 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
         return acc;
       }, {})
     : { [activeCategory]: filteredItems };
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+  };
 
   return (
     <section className={styles.menuSection}>
@@ -84,9 +95,9 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
             items.length > 0 ? (
               <div key={category} className={styles.categorySection}>
                 <h3 className={styles.categoryTitle}>{category}</h3>
-                <div className={styles.menuItemsGrid}>
+                <div className={styles.menuItemsGrid} role="list">
                   {items.map((item) => (
-                    <MenuItemCard key={item.id} item={item} />
+                    <MenuItemCard key={item.id} item={item} onSelect={handleSelectItem} />
                   ))}
                 </div>
               </div>
@@ -94,6 +105,7 @@ const MenuSection = ({ title = "ORDER FOR DELIVERY!" }) => {
           )}
         </div>
       </div>
+      <MenuItemModal item={selectedItem} onClose={handleCloseModal} />
     </section>
   );
 };
