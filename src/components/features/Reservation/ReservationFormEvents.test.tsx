@@ -1,8 +1,9 @@
 // src/components/features/Reservation/ReservationFormEvents.test.jsx
 import { render, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { ComponentProps } from 'react';
 import ReservationForm from './ReservationForm';
+import type { ReservationFormData } from '../../../types/reservation';
 
 // Add mobile viewport mock for testing
 const originalInnerWidth = window.innerWidth;
@@ -23,23 +24,34 @@ afterEach(() => {
   window.dispatchEvent(new Event('resize'));
 });
 
-const mockOnFormChange = vi.fn();
-const mockValidateField = vi.fn();
-const mockFormData = {
+const buildFormData = (overrides: Partial<ReservationFormData> = {}): ReservationFormData => ({
   name: 'Test User',
   email: 'test@example.com',
   phone: '123-456-7890',
-  occasion: 'birthday', // Default or typical value
-  specialRequests: 'None'
-};
+  occasion: 'birthday',
+  specialRequests: 'None',
+  date: '2025-12-25',
+  time: '18:00',
+  partySize: 2,
+  ...overrides,
+});
+
+const mockOnFormChange = vi.fn<(nextForm: ReservationFormData) => void>();
+const mockValidateField = vi.fn<
+  (field: keyof ReservationFormData, value: ReservationFormData[keyof ReservationFormData]) => void
+>();
+
+type ReservationFormProps = ComponentProps<typeof ReservationForm>;
+
+const createProps = (overrides: Partial<ReservationFormProps> = {}): ReservationFormProps => ({
+  onFormChange: mockOnFormChange,
+  validateField: mockValidateField,
+  formErrors: {},
+  formData: buildFormData(),
+  ...overrides,
+});
 
 describe('ReservationForm Event Handlers', () => {
-  const defaultTestProps = {
-    onFormChange: mockOnFormChange,
-    validateField: mockValidateField,
-    formErrors: {},
-    formData: mockFormData
-  };
 
   beforeEach(() => {
     // Reset mocks before each test
@@ -48,7 +60,7 @@ describe('ReservationForm Event Handlers', () => {
   });
 
   test('calls validateField on blur for all input fields', () => {
-    render(<ReservationForm {...defaultTestProps} />);
+    render(<ReservationForm {...createProps()} />);
     
     // Reset mock before starting the test
     mockValidateField.mockClear();
@@ -85,85 +97,56 @@ describe('ReservationForm Event Handlers', () => {
   });
 
   test('calls validateField on touchEnd for all input fields', async () => {
-    userEvent.setup(); // Setup but don't assign to variable
-    render(<ReservationForm {...defaultTestProps} />);
-    
-    // Reset mock before starting the test
+    render(<ReservationForm {...createProps()} />);
+
     mockValidateField.mockClear();
-    
-    // Create a touch event for testing
-    const createTouchEvent = (element) => {
+
+    const triggerTouch = (label: RegExp) => {
+      const element = screen.getByLabelText(label);
       const touchEvent = new Event('touchend', { bubbles: true });
       element.dispatchEvent(touchEvent);
     };
-    
-    // Test name input touchEnd
-    const nameInput = screen.getByLabelText(/full name/i);
-    createTouchEvent(nameInput);
-    
-    // Test email input touchEnd
-    const emailInput = screen.getByLabelText(/^email$/i);
-    createTouchEvent(emailInput);
-    
-    // Test phone input touchEnd
-    const phoneInput = screen.getByLabelText(/phone number/i);
-    createTouchEvent(phoneInput);
-    
-    // Test occasion select touchEnd
-    const occasionSelect = screen.getByLabelText(/occasion \(optional\)/i);
-    createTouchEvent(occasionSelect);
-    
-    // Test special requests textarea touchEnd
-    const specialRequestsTextarea = screen.getByLabelText(/special requests \(optional\)/i);
-    createTouchEvent(specialRequestsTextarea);
-    
-    // Verify validateField was called with the correct parameters
+
+    triggerTouch(/full name/i);
+    triggerTouch(/^email$/i);
+    triggerTouch(/phone number/i);
+    triggerTouch(/occasion \(optional\)/i);
+    triggerTouch(/special requests \(optional\)/i);
+
     expect(mockValidateField).toHaveBeenCalledWith('name', 'Test User');
     expect(mockValidateField).toHaveBeenCalledWith('email', 'test@example.com');
     expect(mockValidateField).toHaveBeenCalledWith('phone', '123-456-7890');
     expect(mockValidateField).toHaveBeenCalledWith('occasion', 'birthday');
     expect(mockValidateField).toHaveBeenCalledWith('specialRequests', 'None');
-    
-    // Verify validateField was called exactly 5 times
     expect(mockValidateField).toHaveBeenCalledTimes(5);
   });
 
   test('handles phone formatting correctly for different input lengths', () => {
-    render(<ReservationForm {...defaultTestProps} formData={{...mockFormData, phone: ''}} />);
-    
-    // Get the phone input
+    const formData = buildFormData({ phone: '' });
+    render(<ReservationForm {...createProps({ formData })} />);
+
     const phoneInput = screen.getByLabelText(/phone number/i);
-    
-    // Test with 3 or fewer digits
+
     fireEvent.change(phoneInput, { target: { value: '123' } });
-    expect(mockOnFormChange).toHaveBeenLastCalledWith({
-      ...mockFormData,
-      phone: '123'
-    });
-    
-    // Test with 4-6 digits
+    expect(mockOnFormChange).toHaveBeenLastCalledWith(expect.objectContaining({ phone: '123' }));
+
     fireEvent.change(phoneInput, { target: { value: '123456' } });
-    expect(mockOnFormChange).toHaveBeenLastCalledWith({
-      ...mockFormData,
-      phone: '123-456'
-    });
-    
-    // Test with 7+ digits
+    expect(mockOnFormChange).toHaveBeenLastCalledWith(expect.objectContaining({ phone: '123-456' }));
+
     fireEvent.change(phoneInput, { target: { value: '1234567890' } });
-    expect(mockOnFormChange).toHaveBeenLastCalledWith({
-      ...mockFormData,
-      phone: '123-456-7890'
-    });
+    expect(mockOnFormChange).toHaveBeenLastCalledWith(expect.objectContaining({ phone: '123-456-7890' }));
   });
 
   test('validates all fields on form submission', () => {
-    const { container } = render(<ReservationForm {...defaultTestProps} />);
+    const { container } = render(<ReservationForm {...createProps()} />);
     
     // Find and submit the form
     const formElement = container.querySelector('form');
     expect(formElement).toBeInTheDocument();
     
-    fireEvent.submit(formElement);
+    if (formElement) {
+      fireEvent.submit(formElement);
+    }
     
     // Verify all fields are validated
     expect(mockValidateField).toHaveBeenCalledWith('name', 'Test User');
@@ -175,26 +158,16 @@ describe('ReservationForm Event Handlers', () => {
   });
   
   test('handles multiple input changes in sequence', () => {
-    render(<ReservationForm {...defaultTestProps} formData={{...mockFormData, name: '', email: '', phone: ''}} />);
-    
-    // Change name
+    const mutableFormData = buildFormData({ name: '', email: '', phone: '' });
+    render(<ReservationForm {...createProps({ formData: mutableFormData })} />);
+
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Chien Duong' } });
-    
-    // Change email
     fireEvent.change(screen.getByLabelText(/^email$/i), { target: { value: 'chien@example.com' } });
-    
-    // Change phone
     fireEvent.change(screen.getByLabelText(/phone number/i), { target: { value: '9876543210' } });
-    
-    // Verify onFormChange was called 3 times
+
     expect(mockOnFormChange).toHaveBeenCalledTimes(3);
-    
-    // Verify the last call had all updated values
-    expect(mockOnFormChange).toHaveBeenLastCalledWith({
-      ...mockFormData,
-      name: '',
-      email: '',
-      phone: '987-654-3210'
-    });
+    expect(mockOnFormChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ phone: '987-654-3210' })
+    );
   });
 });

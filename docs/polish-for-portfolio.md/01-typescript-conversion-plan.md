@@ -3,8 +3,8 @@ Title: TypeScript Conversion Implementation Plan
 Author: Chien Escalera Duong
 Date Created: 2025-10-03
 Time Created: 17:05:35 PDT
-Last Updated: 2025-10-03 20:00:46 PDT
-Version: 1.1
+Last Updated: 2025-10-03 21:53:04 PDT
+Version: 1.2
 ---
 
 # Objective
@@ -40,8 +40,8 @@ Version: 1.1
 - **Phase 2** Completed — `ReservationForm.tsx`, `DateTimeSelector.tsx`, `ReservationConfirmation.tsx`, and `ReservationList.tsx` now use typed props/state and guard localStorage parsing.
 - **Phase 3** Completed — `useReservation.ts` and `reservationService.ts` export typed helpers with strict async signatures.
 - **Phase 4** Completed — Chat assistant UI and Gemini integration converted to `.tsx/.ts`, leveraging `ChatMessage` and `MenuItem` typings.
-- **Phase 5** In Progress — Vitest runs remain JS-based; need to finish migrating suites and configs to recognize `.ts/.tsx` tests.
-- **Phase 6** Pending — Final validation and documentation updates scheduled once test migration settles.
+- **Phase 5** In Progress — Key suites updated to respect typed models; remaining work includes converting legacy `.test.jsx` suites to `.test.tsx` and wiring full TypeScript support in Vitest config.
+- **Phase 6** Pending — After test migration, rerun validation (`tsc`, lint, tests) and update project-wide docs before closing the initiative.
 
 # Validation & Test Status (Oct 3, 2025 @ 21:24 PDT)
 - `pnpm tsc --noEmit` ✅
@@ -60,8 +60,8 @@ Version: 1.1
 | TS-07 | Convert `useReservation.js` to `.ts` with hook generics. | TBD | Complete | Hook exports typed API with guarded localStorage parsing. |
 | TS-08 | Convert `reservationService.js` to `.ts` and enforce return types. | TBD | Complete | Service returns typed promises and normalizes responses. |
 | TS-09 | Convert Gemini chat components/services to TS. | TBD | Complete | Chat container, UI, and `geminiService.ts` fully typed using `ChatMessage`/`MenuItem`. |
-| TS-10 | Update Vitest config/tests for TS support. | TBD | In Progress | Tests still `.jsx`; need TypeScript-aware config and `vitest.setup.ts`. |
-| TS-11 | Execute validation suite (`tsc`, lint, tests) and document results. | TBD | Pending | `pnpm dev` confirmed locally; capture `pnpm tsc`, lint, test outputs post-test migration. |
+| TS-10 | Update Vitest config/tests for TS support. | TBD | In Progress | `vitest.setup.ts` scaffolding added; migrate remaining `.test.jsx` files and enable TS-aware path aliases. |
+| TS-11 | Execute validation suite (`tsc`, lint, tests) and document results. | TBD | Pending | Final pass depends on TS-aware Vitest config and updated docs. |
 
 # Implementation Steps
 - **Phase 0** Install dependencies, add `tsconfig.json`, update scripts (`"tsc": "tsc --noEmit"`).
@@ -76,6 +76,12 @@ Version: 1.1
 - **Static** `pnpm lint`, `pnpm tsc --noEmit`.
 - **Unit** `pnpm test` and `pnpm test ReservationForm.test.tsx` targeting converted suites.
 - **Manual** Smoke test reservation flow and chat assistant locally.
+
+# Next Steps Toward Portfolio Readiness
+- **Finalize TypeScript Tooling** Close out TS-10/TS-11 by migrating the remaining Vitest suites to `.test.tsx`, updating `eslint.config.js` to lint TS sources, and capturing the final validation transcript.
+- **Documentation Sweep** Update `README.md`, `SETUP.md`, and `docs/polish-for-portfolio.md/00-recommended-actions-index.md` to reflect the completed TypeScript migration and testing posture.
+- **Mobile UI Polish** Audit high-traffic screens (reservation flow, chat assistant) on sub-768px breakpoints; prioritize typography scaling, spacing, and touch targets before capturing portfolio-ready screenshots.
+- **Showcase Assets** Generate before/after visuals and a brief narrative summarizing the migration benefits (type safety, improved tests) for inclusion in the portfolio case study.
 
 # Risk & Mitigation
 - **Risk** Type mismatch between stored localStorage data and new interfaces. **Mitigation** Add parsing guards and migration scripts.
