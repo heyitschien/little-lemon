@@ -19,7 +19,7 @@ const MenuItemCard = ({ item }) => {
   };
 
   return (
-    <div className={styles.menuItemCard}>
+    <div className={styles.menuItemCard} role="listitem">
       <div className={styles.cardImageContainer}>
         <img src={image} alt={name} className={styles.cardImage} />
       </div>
@@ -34,7 +34,7 @@ const MenuItemCard = ({ item }) => {
             aria-label={`Add ${name} to cart`}
           >
             <span className={styles.plusIcon}>+</span>
-            <span>Add to Cart</span>
+            <span className={styles.ctaLabel}>Add to Cart</span>
           </button>
         </div>
       </div>

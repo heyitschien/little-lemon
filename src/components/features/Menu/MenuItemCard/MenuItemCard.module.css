@@ -8,6 +8,8 @@
   border: 1px solid #EDEFEE;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  scroll-snap-align: start;
+  width: 100%;
 }
 
 .cardContent {
@@ -76,6 +78,11 @@
   justify-content: center;
 }
 
+.ctaLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .addToCartButton:hover {
   background-color: #E9C412;
 }
@@ -99,49 +106,99 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
   .menuItemCard {
-    width: 100%;
-    padding: 1rem; /* Consistent padding */
+    width: clamp(220px, 70vw, 260px);
+    min-height: 260px;
+    padding: 1rem 1.1rem;
   }
-  
+
+  .cardImageContainer {
+    width: 100%;
+    height: 140px;
+    padding-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .cardImage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .cardContent {
+    gap: 0.5rem;
+  }
+
   .cardTitle {
     font-size: 20px; /* Slightly smaller for mobile */
+    margin-bottom: 0.25rem;
   }
-  
+
   .cardDescription {
-    font-size: 16px; /* Match style guide Paragraph Text spec */
+    font-size: 15px;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    margin-bottom: 1rem; /* Reduced spacing for mobile */
-  }
-
-  .addToCartButton {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    min-height: 40px; /* Slightly smaller but still accessible */
-    font-size: 16px; /* Match style guide Paragraph Text spec */
+    margin-bottom: 0.5rem;
   }
 
   .cardPriceContainer {
-    flex-direction: column;
-    gap: 1rem;
+    margin-top: auto;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .cardPrice {
-    font-size: 18px; /* Consistent with style guide */
-    font-weight: 500; /* Match style guide Lead Text spec */
+    font-size: 16px;
+    font-weight: 600;
   }
-  
+
+  .addToCartButton {
+    padding: 0.5rem 1rem;
+    font-size: 15px;
+    min-width: 0;
+    min-height: 40px;
+    border-radius: 999px;
+  }
+
+  .plusIcon {
+    font-size: 1rem;
+  }
+
+  .ctaLabel {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menuItemCard {
+    width: clamp(200px, 75vw, 240px);
+    padding: 0.875rem 1rem;
+  }
+
   .cardImageContainer {
-    margin-bottom: 1rem; /* Reduced spacing for mobile */
+    height: 120px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+  }
+
+  .cardDescription {
+    font-size: 14px;
+  }
+
+  .addToCartButton {
+    padding: 0.45rem 0.9rem;
+    font-size: 14px;
   }
 }
