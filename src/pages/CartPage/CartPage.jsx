@@ -42,7 +42,7 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
     
     // If swiped far enough left, remove the item
     if (diff < -80) {
-      removeFromCart(item.id);
+      removeFromCart(item.lineId);
     } else {
       // Reset position
       if (itemRef.current) {
@@ -53,6 +53,9 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
     setSwiping(false);
   };
   
+  const modifierTotal = item.modifiers?.reduce((sum, modifier) => sum + modifier.priceDelta, 0) ?? 0;
+  const linePrice = (item.price + modifierTotal) * item.quantity;
+
   return (
     <div 
       ref={itemRef}
@@ -64,6 +67,17 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
       {/* Item name */}
       <div className={styles.itemInfo}>
         <span className={styles.itemName}>{item.name}</span>
+        {item.modifiers && item.modifiers.length > 0 && (
+          <ul className={styles.itemModifiers}>
+            {item.modifiers.map((modifier) => (
+              <li key={modifier.id}>
+                {modifier.name}
+                {modifier.priceDelta > 0 && ` (+$${modifier.priceDelta.toFixed(2)})`}
+              </li>
+            ))}
+          </ul>
+        )}
+        {item.notes && <span className={styles.itemNotes}>“{item.notes}”</span>}
       </div>
       
       {/* Quantity controls */}
@@ -71,7 +85,7 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
         <div className={styles.quantityControl}>
           <Button 
             className={styles.quantityButton}
-            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+            onClick={() => updateQuantity(item.lineId, item.quantity - 1)}
             ariaLabel="Decrease quantity"
             variant="primary"
           >
@@ -80,7 +94,7 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
           <span className={styles.quantityValue}>{item.quantity}</span>
           <Button 
             className={styles.quantityButton}
-            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+            onClick={() => updateQuantity(item.lineId, item.quantity + 1)}
             ariaLabel="Increase quantity"
             variant="primary"
           >
@@ -91,7 +105,7 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
         {/* Desktop-only X button for removing items */}
         <div className={styles.desktopRemoveWrapper}>
           <button 
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => removeFromCart(item.lineId)}
             aria-label={`Remove ${item.name} from cart`}
             className={styles.desktopXButton}
           >
@@ -102,14 +116,14 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
       
       {/* Price */}
       <span className={styles.itemTotalPrice}>
-        ${(item.price * item.quantity).toFixed(2)}
+        ${linePrice.toFixed(2)}
       </span>
     </div>
   );
 };
 
 const CartPage = () => {
-  const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { cartItems, cartSubtotal, updateQuantity, removeFromCart, clearCart } = useCart();
   const [deliveryTime, setDeliveryTime] = useState('20 minutes');
   const [cutleryNeeded, setCutleryNeeded] = useState(false);
   
@@ -120,7 +134,7 @@ const CartPage = () => {
   };
   
   // Calculate additional fees
-  const subtotal = cartTotal;
+  const subtotal = cartSubtotal;
   const deliveryFee = 2.00;
   const serviceFee = 1.00;
   const total = subtotal + deliveryFee + serviceFee;

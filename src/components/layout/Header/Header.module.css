@@ -59,9 +59,27 @@
 }
 
 /* Mobile cart link styling */
-.mobileCartLink {
-  display: none; /* Hidden by default, shown on mobile */
+.cartTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
   position: relative;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.cartTrigger:focus-visible {
+  outline: 2px solid #495E57;
+  outline-offset: 3px;
+}
+
+.cartTrigger:hover {
+  background-color: rgba(73, 94, 87, 0.08);
 }
 
 .basketIcon {
@@ -69,20 +87,41 @@
   height: 24px;
 }
 
-.cartCount {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #F4CE14; /* Little Lemon Yellow */
+.cartDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cartLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: #495E57;
+}
+
+.cartSubtotal {
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #333333;
-  border-radius: 50%;
-  width: 20px;
+}
+
+.cartBadge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background-color: #F4CE14;
+  color: #333333;
+  border-radius: 999px;
+  min-width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
   font-weight: bold;
+  padding: 0 4px;
 }
 
 /* Hamburger menu styling - moved from Nav.module.css */
@@ -133,8 +172,7 @@
     padding: 0 4rem;
   }
 
-  .hamburger,
-  .mobileCartLink {
+  .hamburger {
     display: none;
   }
 
@@ -186,14 +224,26 @@
     max-width: 100%;
   }
   
-  .mobileCartLink {
-    display: block; /* Show cart on mobile */
-    justify-self: end; /* Align to the right */
-    width: 44px; /* Industry standard for touch targets */
-    height: 44px; /* Industry standard for touch targets */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .cartTrigger {
+    justify-self: end;
+    width: auto;
+    height: 44px;
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0 1rem;
+  }
+
+  .cartLabel {
+    font-size: 0.7rem;
+  }
+
+  .cartSubtotal {
+    font-size: 0.9rem;
+  }
+
+  .cartBadge {
+    top: -6px;
+    right: -2px;
   }
   
   .mainNav {

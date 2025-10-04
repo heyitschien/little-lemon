@@ -1,19 +1,52 @@
 import React, { createContext, useState, useEffect } from 'react';
 import type { MenuItem } from '../types/chat';
 
-export type CartItem = MenuItem & { quantity: number };
+export interface CartItemModifier {
+  id: string;
+  name: string;
+  priceDelta: number;
+}
+
+export type CartItem = MenuItem & {
+  lineId: string;
+  quantity: number;
+  modifiers?: CartItemModifier[];
+  notes?: string;
+};
 
 export interface CartContextValue {
   cartItems: CartItem[];
   cartCount: number;
+  cartSubtotal: number;
   cartTotal: number;
-  addToCart: (item: MenuItem) => void;
-  removeFromCart: (itemId: number) => void;
-  updateQuantity: (itemId: number, quantity: number) => void;
+  addToCart: (item: MenuItem, options?: { modifiers?: CartItemModifier[]; notes?: string }) => void;
+  removeFromCart: (lineId: string) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
 }
 
 const STORAGE_KEY = 'littleLemonCart';
+
+interface StoredCartItem {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  category?: string;
+  dietaryTags?: string[];
+  image?: string;
+  quantity: number;
+  lineId?: string;
+  modifiers?: CartItemModifier[];
+  notes?: string;
+}
+
+const generateLineId = (): string => {
+  if (typeof globalThis.crypto !== 'undefined' && typeof globalThis.crypto.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+  return `line_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+};
 
 const parseStoredCart = (value: string | null): CartItem[] => {
   if (!value) return [];
@@ -22,30 +55,52 @@ const parseStoredCart = (value: string | null): CartItem[] => {
     if (!Array.isArray(parsed)) {
       return [];
     }
-    return parsed
-      .map((item) => {
-        if (typeof item !== 'object' || item === null) return null;
-        const record = item as Partial<CartItem>;
-        if (
-          typeof record.id !== 'number' ||
-          typeof record.name !== 'string' ||
-          typeof record.price !== 'number' ||
-          typeof record.quantity !== 'number'
-        ) {
-          return null;
-        }
-        return {
-          id: record.id,
-          name: record.name,
-          description: record.description ?? '',
-          price: record.price,
-          category: record.category ?? '',
-          dietaryTags: Array.isArray(record.dietaryTags) ? record.dietaryTags : [],
-          image: record.image ?? '',
-          quantity: record.quantity
-        } satisfies CartItem;
-      })
-      .filter((item): item is CartItem => item !== null);
+
+    const sanitized: CartItem[] = [];
+
+    parsed.forEach((item) => {
+      if (typeof item !== 'object' || item === null) {
+        return;
+      }
+
+      const record = item as StoredCartItem;
+      if (
+        typeof record.id !== 'number' ||
+        typeof record.name !== 'string' ||
+        typeof record.price !== 'number' ||
+        typeof record.quantity !== 'number'
+      ) {
+        return;
+      }
+
+      const safeModifiers = Array.isArray(record.modifiers)
+        ? record.modifiers.filter((modifier): modifier is CartItemModifier => {
+            return (
+              modifier !== null &&
+              typeof modifier === 'object' &&
+              typeof modifier.id === 'string' &&
+              typeof modifier.name === 'string' &&
+              typeof modifier.priceDelta === 'number'
+            );
+          })
+        : undefined;
+
+      sanitized.push({
+        lineId: typeof record.lineId === 'string' ? record.lineId : generateLineId(),
+        id: record.id,
+        name: record.name,
+        description: record.description ?? '',
+        price: record.price,
+        category: record.category ?? '',
+        dietaryTags: Array.isArray(record.dietaryTags) ? record.dietaryTags : [],
+        image: record.image ?? '',
+        quantity: record.quantity,
+        modifiers: safeModifiers,
+        notes: typeof record.notes === 'string' ? record.notes : undefined
+      });
+    });
+
+    return sanitized;
   } catch (error) {
     console.error('Error loading cart from localStorage:', error);
     return [];
@@ -70,9 +125,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }
   }, [cartItems]);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: MenuItem, options?: { modifiers?: CartItemModifier[]; notes?: string }) => {
     setCartItems(prevItems => {
-      const existingItemIndex = prevItems.findIndex(cartItem => cartItem.id === item.id);
+      const modifiersKey = options?.modifiers?.map((modifier) => modifier.id).sort().join('|') ?? '';
+      const notesKey = options?.notes?.trim() ?? '';
+
+      const existingItemIndex = prevItems.findIndex(cartItem => {
+        const existingModifiersKey = cartItem.modifiers?.map((modifier) => modifier.id).sort().join('|') ?? '';
+        const existingNotesKey = cartItem.notes?.trim() ?? '';
+        return cartItem.id === item.id && existingModifiersKey === modifiersKey && existingNotesKey === notesKey;
+      });
 
       if (existingItemIndex >= 0) {
         const updatedItems = [...prevItems];
@@ -85,25 +147,28 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
       const newItem: CartItem = {
         ...item,
-        quantity: 1
+        lineId: generateLineId(),
+        quantity: 1,
+        modifiers: options?.modifiers,
+        notes: notesKey || undefined
       };
       return [...prevItems, newItem];
     });
   };
 
-  const removeFromCart = (itemId: number) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+  const removeFromCart = (lineId: string) => {
+    setCartItems(prevItems => prevItems.filter(item => item.lineId !== lineId));
   };
 
-  const updateQuantity = (itemId: number, quantity: number) => {
+  const updateQuantity = (lineId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(itemId);
+      removeFromCart(lineId);
       return;
     }
 
     setCartItems(prevItems =>
       prevItems.map(item =>
-        item.id === itemId ? { ...item, quantity } : item
+        item.lineId === lineId ? { ...item, quantity } : item
       )
     );
   };
@@ -115,14 +180,22 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   // Calculate total number of items in cart
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  
-  // Calculate total price of items in cart
-  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
+  // Calculate subtotal (items only)
+  const cartSubtotal = cartItems.reduce((total, item) => {
+    const modifiersTotal = item.modifiers?.reduce((sum, modifier) => sum + modifier.priceDelta, 0) ?? 0;
+    const linePrice = (item.price + modifiersTotal) * item.quantity;
+    return total + linePrice;
+  }, 0);
+
+  // For now total mirrors subtotal (fees to be added in later phases)
+  const cartTotal = cartSubtotal;
 
   // Value to be provided by the context
   const value: CartContextValue = {
     cartItems,
     cartCount,
+    cartSubtotal,
     cartTotal,
     addToCart,
     removeFromCart,
