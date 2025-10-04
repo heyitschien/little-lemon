@@ -65,12 +65,12 @@ const AboutPage = () => {
             <p>
               Mario, the elder brother, honed his culinary skills working in various restaurants throughout Italy, 
               eventually becoming a chef at a renowned establishment in Rome. Adrian, with his keen business sense 
-              and warm personality, complements his brother's culinary expertise by managing the restaurant's operations 
+              and warm personality, complements his brother&rsquo;s culinary expertise by managing the restaurant&rsquo;s operations 
               and creating an inviting atmosphere for guests.
             </p>
             <p>
               To craft the menu, Mario relies on family recipes passed down through generations and his experience 
-              as a chef in Italy. Each dish at Little Lemon carries the brothers' commitment to authentic flavors 
+              as a chef in Italy. Each dish at Little Lemon carries the brothers&rsquo; commitment to authentic flavors 
               and quality ingredients, creating a dining experience that feels both familiar and extraordinary.
             </p>
           </div>
@@ -91,7 +91,7 @@ const AboutPage = () => {
               />
             </div>
             <p>
-              At Little Lemon, we believe that dining is more than just eating—it's an experience that should 
+              At Little Lemon, we believe that dining is more than just eating—it&rsquo;s an experience that should 
               engage all the senses and create lasting memories. Our philosophy centers around three core principles:
             </p>
             <ul className={styles.philosophyList}>
@@ -107,7 +107,7 @@ const AboutPage = () => {
               </li>
               <li>
                 <span className={styles.listTitle}>Welcoming Atmosphere</span>
-                <p>We've created a space where everyone feels at home—whether you're celebrating a special occasion 
+                <p>We&rsquo;ve created a space where everyone feels at home—whether you&rsquo;re celebrating a special occasion 
                 or simply enjoying a weeknight dinner.</p>
               </li>
             </ul>
@@ -152,7 +152,7 @@ const AboutPage = () => {
           <div className={styles.visitContent}>
             <h2 className={styles.visitTitle}>Come Visit Us</h2>
             <p className={styles.visitText}>
-              We're located in the heart of Chicago and open Tuesday through Sunday for lunch and dinner.
+              We&rsquo;re located in the heart of Chicago and open Tuesday through Sunday for lunch and dinner.
               Reservations are recommended but walk-ins are always welcome.
             </p>
             <a href="/reservations" className={styles.reserveButton}>

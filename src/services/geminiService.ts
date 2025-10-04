@@ -1,10 +1,37 @@
 // Import menu data is no longer needed since we removed the ingredient spotlight feature
 
-const API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
+const API_KEY = import.meta.env?.VITE_REACT_APP_GEMINI_API_KEY ?? '';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${API_KEY}`;
 
+interface GeminiPartText {
+  text: string;
+}
 
-export const sendMessageToGemini = async (promptText) => {
+interface GeminiContent {
+  role: string;
+  parts: GeminiPartText[];
+}
+
+interface GeminiCandidate {
+  content?: GeminiContent;
+}
+
+interface GeminiResponsePayload {
+  candidates?: GeminiCandidate[];
+}
+
+interface GeminiRequestPayload {
+  contents: {
+    role: 'user';
+    parts: { text: string }[];
+  }[];
+  generationConfig: {
+    temperature: number;
+    maxOutputTokens: number;
+  };
+}
+
+export const sendMessageToGemini = async (promptText: string): Promise<string> => {
   if (!API_KEY) {
     console.error("Gemini API Key is missing. Please set VITE_REACT_APP_GEMINI_API_KEY in your .env file.");
     // This error will be caught by ChatFeatureContainer and displayed to the user.
@@ -28,7 +55,7 @@ You are Lemon, the Little Lemon restaurant's AI assistant. When recommending men
   // Combine system instructions with user prompt
   const combinedPrompt = systemInstructions + promptText;
 
-  const payload = {
+  const payload: GeminiRequestPayload = {
     contents: [{ role: "user", parts: [{ text: combinedPrompt }] }],
     generationConfig: {
       temperature: 0.2, // Lower temperature for more consistent outputs
@@ -51,7 +78,7 @@ You are Lemon, the Little Lemon restaurant's AI assistant. When recommending men
       throw new Error(`Gemini API request failed (sendMessageToGemini) with status ${response.status}: ${errorBody}`);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as GeminiResponsePayload;
 
     // Standard path for Gemini text response
     if (data.candidates && data.candidates.length > 0 &&

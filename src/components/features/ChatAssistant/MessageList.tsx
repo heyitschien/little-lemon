@@ -1,17 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import styles from './ChatAssistant.module.css';
+import type { ChatMessageList } from '../../../types/chat';
 
-const MessageList = ({ messages }) => {
-  const messagesEndRef = useRef(null);
+export interface MessageListProps {
+  messages: ChatMessageList;
+}
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]); // Scroll whenever messages update
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   if (!messages || messages.length === 0) {
     return (

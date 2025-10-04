@@ -17,6 +17,8 @@ import seafoodPaellaImg from '../assets/images/new-dishes/seafood-paella.png';
 import lambSouvlakiImg from '../assets/images/new-dishes/lamb-souvlaki.png';
 import galaktobourekoImg from '../assets/images/new-dishes/galaktoboureko.png';
 
+import type { MenuItem } from '../types/chat';
+
 // Placeholder for menuData.js
 // This file will export an array of menu item objects and categories.
 
@@ -25,9 +27,9 @@ export const menuCategories = [
   "Main Courses",
   "Desserts",
   "Drinks"
-];
+ ] as const;
 
-export const menuItems = [
+export const menuItems: MenuItem[] = [
   // Appetizers
   {
     id: 1,

@@ -154,7 +154,7 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
               max={maxDateString}
               required
               aria-required="true"
-              aria-invalid={isDateInvalid ? 'true' : 'false'}
+              aria-invalid={isDateInvalid}
               aria-describedby={isDateInvalid ? dateErrorId.current : undefined}
               aria-label="Select a date for your reservation"
             />
@@ -187,7 +187,7 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
             disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!formErrors.date}
             required
             aria-required="true"
-            aria-invalid={isTimeInvalid ? 'true' : 'false'}
+            aria-invalid={isTimeInvalid}
             aria-describedby={isTimeInvalid ? timeErrorId.current : undefined}
           >
             <option value="">Select a time</option>
@@ -232,7 +232,7 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
             onBlur={() => validateField('partySize', partySize)}
             required
             aria-required="true"
-            aria-invalid={isPartySizeInvalid ? 'true' : 'false'}
+            aria-invalid={isPartySizeInvalid}
             aria-describedby={isPartySizeInvalid ? partySizeErrorId.current : undefined}
           >
             <option value="">Select party size</option>

@@ -434,8 +434,13 @@ export function useReservation() {
         return false; // Indicate failure
       }
     } catch (error) {
-      console.error('Error submitting reservation via API:', error);
-      setErrorMessage(`An unexpected error occurred while submitting your reservation: ${error.message}. Please try again.`);
+      if (error instanceof Error) {
+        console.error('Error submitting reservation via API:', error);
+        setErrorMessage(`An unexpected error occurred while submitting your reservation: ${error.message}. Please try again.`);
+      } else {
+        console.error('Unknown error submitting reservation via API:', error);
+        setErrorMessage('An unexpected error occurred while submitting your reservation. Please try again.');
+      }
       return false; // Indicate failure
     } finally {
       setIsSubmitting(false);

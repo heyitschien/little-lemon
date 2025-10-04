@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './ReservationConfirmation.module.css';
-import type { ReservationFormData } from '../../../types/reservation';
+import type { ReservationSummary } from '../../../types/reservation';
 
 interface ReservationConfirmationProps {
-  reservationData: ReservationFormData;
+  reservationData: ReservationSummary;
   onConfirm: () => void;
   onModify: () => void;
   isSubmitting: boolean;
@@ -19,7 +19,12 @@ const ReservationConfirmation: React.FC<ReservationConfirmationProps> = ({
   const formatDateForDisplay = (dateString: string): string => {
     if (!dateString) return '';
     
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
     const [year, month, day] = dateString.split('-').map(Number);
     // Constructing date this way treats components as local time
     return new Date(year, month - 1, day).toLocaleDateString(undefined, options);

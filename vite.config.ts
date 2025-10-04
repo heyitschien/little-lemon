@@ -7,7 +7,7 @@ export default defineConfig({
   test: { // Vitest configuration block
     globals: true,
     environment: 'jsdom',
-    setupFiles: './vitest.setup.js',
+    setupFiles: './vitest.setup.ts',
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
