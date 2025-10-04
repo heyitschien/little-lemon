@@ -1,7 +1,5 @@
 # Little Lemon Restaurant - Meta Front-End Capstone Project
 
-![Reservation Flow Coverage](https://img.shields.io/badge/Reservation%20Flow%20Coverage-100%25-brightgreen)
-
 ## Project Overview
 This is the capstone project for the Meta Front-End Developer Professional Certificate program. The Little Lemon web application is a responsive React-based solution for a fictional Mediterranean restaurant, focusing on improving the user experience for table reservations.
 
@@ -17,16 +15,16 @@ Welcome to my Little Lemon Restaurant project! This guide will help you navigate
    cd little-lemon
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies** (project uses `pnpm` by default):
    ```
-   npm install
+   pnpm install
+   # or npm install
    ```
 
 3. **Run the application**:
    ```
-   npm start
-   # OR
-   npm run dev
+   pnpm dev
+   # or npm run dev
    ```
    The application will be available at [http://localhost:5173](http://localhost:5173)
    
@@ -37,58 +35,36 @@ Welcome to my Little Lemon Restaurant project! This guide will help you navigate
 #### 1. UX/UI Design Implementation
 The application follows the Little Lemon brand guidelines with a responsive design that works on mobile, tablet, and desktop devices.
 
-**Key pages to review:**
-- Home page: `/`
-- About page: `/about`
-- Menu page: `/menu`
-- **Reservations page**: `/reservations` (primary focus of the project)
-- My Reservations page: `/my-reservations`
-
-#### 2. Accessibility Features
-The application implements accessibility best practices:
-- Semantic HTML5 elements (header, nav, main, section, footer)
-- ARIA attributes for interactive elements
-- Keyboard navigation support (try tabbing through the reservation form)
-- Color contrast compliance for text readability
-- Alt text for all images
-
-**Key files to check:**
-- `src/components/layout/Header/Header.jsx`
-- `src/components/features/Reservation/ReservationForm.jsx`
-
-#### 3. Unit Testing
-The project includes comprehensive unit tests for the reservation functionality, which is the core business logic of the application.
-
 ![Reservation Flow Coverage](https://img.shields.io/badge/Reservation%20Flow%20Coverage-100%25-brightgreen)
 ![Overall Coverage](https://img.shields.io/badge/Overall%20Coverage-33.5%25-yellow)
 
 **Available Test Commands:**
 
-```bash
+```
 # Run all tests
-npm test
+pnpm test
 
 # Run tests with interactive UI
-npm run test:ui
+pnpm test:ui
 
 # Run tests with coverage report
-npm run test:coverage
+pnpm test:coverage
 
 # Generate detailed coverage report
-npm run coverage:report
+pnpm coverage:report
 
 # Run tests with coverage in UI mode
-npm run coverage:ui
+pnpm coverage:ui
 ```
 
 **Viewing Test Coverage:**
-After running `npm run coverage:report`, you can view the detailed HTML coverage report by opening the generated files in the `coverage` directory.
+After running `pnpm coverage:report`, you can view the detailed HTML coverage report by opening the generated files in the `coverage` directory.
 
 **Key test files to review:**
-- `src/components/features/Reservation/ReservationForm.test.jsx`
-- `src/components/features/Reservation/DateTimeSelector.test.jsx`
-- `src/components/features/Reservation/ReservationConfirmation.test.jsx`
-- `src/components/features/Reservation/ReservationList.test.jsx`
+- `src/components/features/Reservation/ReservationForm.test.tsx`
+- `src/components/features/Reservation/DateTimeSelector.test.tsx`
+- `src/components/features/Reservation/ReservationConfirmation.test.tsx`
+- `src/components/features/Reservation/ReservationList.test.tsx`
 - `src/hooks/useReservation.test.js`
 - `src/services/reservationService.test.js`
 
@@ -151,9 +127,12 @@ src/
 - React Router
 - Context API for state management
 
-## Developer
-- Chien Escalera Duong
-- June 2025
+## TypeScript Migration Snapshot
+
+- **Strict Types Enabled:** `tsconfig.json` enforces `strict`, `noImplicitAny`, and path aliases.
+- **Converted Domains:** Reservation workflow, chat assistant, hooks, and services now authored in `.ts/.tsx`.
+- **Typed Tests:** Vitest suites leverage `.test.tsx` with shared fixtures and `vitest.setup.ts` for matcher typings.
+- **Validation Commands:** `pnpm tsc --noEmit`, `pnpm lint`, and `pnpm test` run green as of 2025-10-03.
 
 ## Development Setup
 This project uses modern development tools for a professional React application.

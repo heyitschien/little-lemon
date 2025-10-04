@@ -23,17 +23,18 @@ cd little-lemon
 
 ### 2. Install dependencies
 ```bash
-npm install
+pnpm install
+# or npm install
 ```
 
 ### 3. Start the development server
 You can use either of these commands:
 
 ```bash
-# If you're familiar with Create React App:
-npm start
+# Preferred command (Vite):
+pnpm dev
 
-# If you're familiar with Vite:
+# Alternate (npm):
 npm run dev
 ```
 
