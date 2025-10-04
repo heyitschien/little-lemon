@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useCart } from '../../context/useCart';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './CartPage.module.css';
 import Button from '../../components/common/Button/Button';
 import CartMenuSection from '../../components/features/Cart/CartMenuSection';
@@ -124,6 +124,7 @@ const CartItem = ({ item, updateQuantity, removeFromCart }) => {
 
 const CartPage = () => {
   const { cartItems, cartSubtotal, updateQuantity, removeFromCart, clearCart } = useCart();
+  const navigate = useNavigate();
   const [deliveryTime, setDeliveryTime] = useState('20 minutes');
   const [cutleryNeeded, setCutleryNeeded] = useState(false);
   
@@ -241,13 +242,13 @@ const CartPage = () => {
               >
                 Clear Cart
               </Button>
-              <Button 
+              <Button
                 variant="primary"
-                onClick={() => alert('Checkout functionality would go here!')}
+                onClick={() => navigate('/checkout')}
                 ariaLabel="Proceed to checkout"
                 className={styles.checkoutButton}
               >
-                Checkout
+                Go to Checkout
               </Button>
             </div>
           </div>

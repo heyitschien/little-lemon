@@ -120,6 +120,30 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
   const isTimeInvalid = !!formErrors.time;
   const isPartySizeInvalid = !!formErrors.partySize;
 
+  const dateDescribedBy = 'date-instructions';
+  const dateInputAriaProps = isDateInvalid
+    ? {
+        'aria-invalid': 'true' as const,
+        'aria-describedby': `${dateErrorId.current} ${dateDescribedBy}`.trim()
+      }
+    : {
+        'aria-describedby': dateDescribedBy
+      };
+
+  const timeSelectAriaProps = isTimeInvalid
+    ? {
+        'aria-invalid': 'true' as const,
+        'aria-describedby': timeErrorId.current
+      }
+    : {};
+
+  const partySizeSelectAriaProps = isPartySizeInvalid
+    ? {
+        'aria-invalid': 'true' as const,
+        'aria-describedby': partySizeErrorId.current
+      }
+    : {};
+
   return (
     <div className={styles.dateTimeSelector} role="group" aria-labelledby="reservation-datetime-heading">
       <h2 id="reservation-datetime-heading" className={styles.sectionTitle}>Select Date & Time</h2>
@@ -154,9 +178,8 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
               max={maxDateString}
               required
               aria-required="true"
-              aria-invalid={isDateInvalid}
-              aria-describedby={isDateInvalid ? dateErrorId.current : undefined}
               aria-label="Select a date for your reservation"
+              {...dateInputAriaProps}
             />
           </div>
           <div className={styles.helperText} id="date-instructions">
@@ -187,8 +210,7 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
             disabled={!selectedDate || isLoadingTimes || availableTimes.length === 0 || !!formErrors.date}
             required
             aria-required="true"
-            aria-invalid={isTimeInvalid}
-            aria-describedby={isTimeInvalid ? timeErrorId.current : undefined}
+            {...timeSelectAriaProps}
           >
             <option value="">Select a time</option>
             {isLoadingTimes && <option value="" disabled>Loading times...</option>}
@@ -232,8 +254,7 @@ const DateTimeSelectorComponent: React.FC<DateTimeSelectorProps> = React.memo(({
             onBlur={() => validateField('partySize', partySize)}
             required
             aria-required="true"
-            aria-invalid={isPartySizeInvalid}
-            aria-describedby={isPartySizeInvalid ? partySizeErrorId.current : undefined}
+            {...partySizeSelectAriaProps}
           >
             <option value="">Select party size</option>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((size) => (

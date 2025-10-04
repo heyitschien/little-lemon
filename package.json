@@ -20,6 +20,8 @@
     "coverage:report": "cross-env MASTER_COVERAGE=true node scripts/generate-coverage-report.js"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^5.0.0",
+    "@stripe/stripe-js": "^8.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -35,6 +37,8 @@
     "@types/node": "^22.15.26",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@typescript-eslint/eslint-plugin": "^8.12.1",
+    "@typescript-eslint/parser": "^8.12.1",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^3.2.0",
     "@vitest/ui": "^3.2.0",
@@ -50,8 +54,6 @@
     "jest-axe": "^10.0.0",
     "jsdom": "^26.1.0",
     "prettier": "^3.5.3",
-    "@typescript-eslint/eslint-plugin": "^8.12.1",
-    "@typescript-eslint/parser": "^8.12.1",
     "typescript": "^5.6.3",
     "vite": "^6.3.5",
     "vitest": "^3.2.0",

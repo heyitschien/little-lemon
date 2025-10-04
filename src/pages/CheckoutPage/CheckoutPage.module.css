@@ -1,0 +1,66 @@
+.checkoutContainer {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.checkoutHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkoutHeader h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.checkoutHeader p {
+  color: #6b7280;
+}
+
+.checkoutContent {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.loadingState {
+  padding: 2rem;
+  text-align: center;
+}
+
+.emptyState {
+  max-width: 480px;
+  margin: 4rem auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.emptyState h1 {
+  font-size: 1.75rem;
+  color: #111827;
+}
+
+.emptyStateLink {
+  color: #495e57;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .checkoutContainer {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .checkoutContent {
+    padding: 1.5rem;
+  }
+}
