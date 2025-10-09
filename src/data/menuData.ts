@@ -80,7 +80,7 @@ export const menuItems: MenuItem[] = [
   {
     id: 6,
     category: "Main Courses",
-    name: "Traditional Moussaka",
+    name: "Moussaka",
     price: 19.50,
     description: "Layers of baked eggplant, seasoned ground lamb, and creamy béchamel sauce, a true Mediterranean classic.",
     image: traditionalMoussakaImg,
@@ -99,7 +99,7 @@ export const menuItems: MenuItem[] = [
   {
     id: 8,
     category: "Desserts",
-    name: "Grandma's Lemon Cake",
+    name: "Lemon Cake",
     price: 9.00,
     description: "Our famous lemon dessert, a secret family recipe. Moist, tangy, and utterly irresistible. Served with a dollop of fresh cream.",
     image: lemonDessertImg,
@@ -118,7 +118,7 @@ export const menuItems: MenuItem[] = [
   {
     id: 10,
     category: "Drinks",
-    name: "Freshly Squeezed Lemonade",
+    name: "Fresh Lemonade",
     price: 4.50,
     description: "Cool and refreshing, made daily with fresh lemons and a hint of mint.",
     image: freshlySqueezedLemonadeImg,
@@ -127,7 +127,7 @@ export const menuItems: MenuItem[] = [
   {
     id: 11,
     category: "Drinks",
-    name: "Mediterranean Mint Tea",
+    name: "Mint Tea",
     price: 4.00,
     description: "Aromatic black tea infused with fresh mint leaves, served chilled or hot.",
     image: mediterraneanMintTeaImg,

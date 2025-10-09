@@ -2,20 +2,20 @@
 
 ## Overview
 
-The Little Lemon AI Chat Assistant provides an interactive way for customers to get information about the restaurant's menu items. It uses the Gemini AI API to generate contextually relevant responses and displays rich menu item cards when specific dishes are recommended.
+The Little Lemon AI Chat Assistant provides an interactive way for customers to get information about the restaurant's menu items. It now uses Groq's hosted Llama models to generate contextually relevant responses and displays rich menu item cards when specific dishes are recommended.
 
 ## Model Information
 
-- **API**: Google Gemini API
-- **Model**: `gemma-3-27b-it` (Free tier model)
-- **Endpoint**: `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent`
+- **API**: Groq chat completions API (OpenAI-compatible)
+- **Model**: `llama-3.1-8b-instant` (current free-tier model)
+- **Endpoint**: `https://api.groq.com/openai/v1/chat/completions`
 
 ## Complete Setup Guide
 
 ### Prerequisites
 
 1. A React project set up with a modern bundler (like Vite)
-2. A Google Gemini API key (can be obtained from [Google AI Studio](https://makersuite.google.com/))
+2. A Groq API key (generated from the [Groq console](https://console.groq.com/))
 3. Basic menu data structure with items, descriptions, and images
 
 ### File Structure
@@ -34,7 +34,7 @@ src/
 │       ├── MenuItemCardChat.jsx
 │       └── MessageBubble.jsx
 ├── services/
-│   └── geminiService.js
+│   └── groqService.ts
 ├── data/
 │   └── menuData.js
 └── assets/
@@ -44,57 +44,44 @@ src/
 
 ### Environment Setup
 
-Create a `.env` file in your project root with your Gemini API key:
+Create a `.env` file in your project root with your Groq API key:
 
 ```
-VITE_REACT_APP_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_GROQ_API_KEY=your_groq_api_key_here
 ```
 
 ### Component Implementation
 
-#### 1. geminiService.js
+#### 1. groqService.ts
 
-```javascript
-import { menuItems as allMenuItems } from '../data/menuData'; // Import all menu items
+```ts
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.1-8b-instant';
 
-const API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${API_KEY}`;
-
-// Helper function to get a random subset of item names for the prompt
-const getRandomMenuItemsPrompt = (items, count = 3) => {
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count).map(item => item.name).join(', ');
-};
-
-export const sendMessageToGemini = async (promptText) => {
-  if (!API_KEY) {
-    console.error("Gemini API Key is missing. Please set VITE_REACT_APP_GEMINI_API_KEY in your .env file.");
-    throw new Error("API Key missing. Cannot send message.");
-  }
-
-  // Add system instructions as part of the user prompt instead of using system role
-  // This is more compatible with different Gemini models
-  const systemInstructions = `
-===SYSTEM INSTRUCTIONS (FOLLOW THESE EXACTLY)===
-You are Lemon, the Little Lemon restaurant's AI assistant. When recommending menu items, you MUST:
+const SYSTEM_INSTRUCTIONS = `You are Lemon, the Little Lemon restaurant's AI assistant. When recommending menu items, you MUST:
 1. ONLY recommend items that actually exist in our menu (with exact IDs 1-12)
 2. ALWAYS include the numeric IDs at the end of your response in this exact format: [ITEM_IDS:1,2,3]
 3. Make sure your item recommendations match what you describe in your text
 4. NEVER make up menu items or IDs that don't exist
-5. If recommending items for dietary restrictions (vegan, vegetarian, etc.), verify the items actually have those dietary tags
-===END SYSTEM INSTRUCTIONS===
+5. If recommending items for dietary restrictions (vegan, vegetarian, etc.), verify the items actually have those dietary tags`;
 
-`;
+export const sendMessageToGroq = async (promptText: string) => {
+  const apiKey = import.meta.env?.VITE_GROQ_API_KEY;
 
-  // Combine system instructions with user prompt
-  const combinedPrompt = systemInstructions + promptText;
+  if (!apiKey) {
+    console.error('Groq API Key is missing. Please set VITE_GROQ_API_KEY in your .env file.');
+    throw new Error('API Key missing. Cannot send message.');
+  }
 
   const payload = {
-    contents: [{ role: "user", parts: [{ text: combinedPrompt }] }],
-    generationConfig: {
-      temperature: 0.2, // Lower temperature for more consistent outputs
-      maxOutputTokens: 1024,
-    }
+    model: MODEL,
+    messages: [
+      { role: 'system', content: SYSTEM_INSTRUCTIONS },
+      { role: 'user', content: promptText }
+    ],
+    temperature: 0.2,
+    max_tokens: 1024,
+    stream: false
   };
 
   try {
@@ -102,31 +89,28 @@ You are Lemon, the Little Lemon restaurant's AI assistant. When recommending men
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('Error from Gemini API:', response.status, errorBody);
-      throw new Error(`Gemini API request failed with status ${response.status}: ${errorBody}`);
+      console.error('Error from Groq API:', response.status, errorBody);
+      throw new Error(`Groq API request failed with status ${response.status}: ${errorBody}`);
     }
 
     const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
 
-    // Standard path for Gemini text response
-    if (data.candidates && data.candidates.length > 0 &&
-        data.candidates[0].content && data.candidates[0].content.parts &&
-        data.candidates[0].content.parts.length > 0 &&
-        typeof data.candidates[0].content.parts[0].text === 'string') {
-      return data.candidates[0].content.parts[0].text;
-    } else {
-      console.error('Unexpected response structure from Gemini API:', data);
-      throw new Error("Received an unexpected response structure from the AI.");
+    if (typeof content === 'string') {
+      return content.trim();
     }
 
+    console.error('Unexpected response structure from Groq API:', data);
+    throw new Error('Received an unexpected response structure from the AI.');
   } catch (error) {
-    console.error('Network or other error calling Gemini API:', error);
+    console.error('Network or other error calling Groq API:', error);
     throw error;
   }
 };
@@ -167,7 +151,7 @@ export const menuItems = [
 import React, { useState, useEffect } from 'react';
 import FloatingChatButton from './FloatingChatButton';
 import ChatWindow from './ChatWindow';
-import { sendMessageToGemini } from '../../services/geminiService';
+import { sendMessageToGroq } from '../../services/groqService';
 import { menuItems, menuCategories } from '../../data/menuData';
 
 const ChatFeatureContainer = () => {
@@ -605,7 +589,7 @@ Create `ChatAssistant.module.css` with styles for all chat components:
 ### Integration Steps
 
 1. **Set up the API Key**:
-   - Create a `.env` file with your Gemini API key
+   - Create a `.env` file with your Groq API key
    - Make sure your bundler is configured to use environment variables
 
 2. **Import the Chat Feature**:
@@ -637,7 +621,7 @@ Create `ChatAssistant.module.css` with styles for all chat components:
 
 ### API Connection Issues
 
-If you encounter connection issues with the Gemini API:
+If you encounter connection issues with the Groq API:
 
 1. **Check your API key** is correctly set in the `.env` file
 2. **Verify the API endpoint** is correct for the model you're using
@@ -658,7 +642,7 @@ If menu cards aren't displaying correctly:
 - The chat history is stored in localStorage, which has a size limit (typically 5-10MB)
 - Consider implementing a maximum history length to prevent exceeding storage limits
 - Large menu datasets might need pagination or lazy loading for optimal performance
-- The free Gemini model has rate limits that may affect heavy usage scenarios
+- The Groq free-tier Llama models have rate limits that may affect heavy usage scenarios
 
 ## Usage Examples
 

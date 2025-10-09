@@ -30,6 +30,29 @@
   padding: 2rem;
 }
 
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  min-width: 280px;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 500;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+  z-index: 20;
+  transition: opacity 0.25s ease;
+}
+
+.toastSuccess {
+  background: rgba(34, 197, 94, 0.14);
+  color: #065f46;
+}
+
+.toastError {
+  background: rgba(248, 113, 113, 0.2);
+  color: #b91c1c;
+}
+
 .loadingState {
   padding: 2rem;
   text-align: center;
@@ -62,5 +85,11 @@
 
   .checkoutContent {
     padding: 1.5rem;
+  }
+
+  .toast {
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 1.5rem;
   }
 }

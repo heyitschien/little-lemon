@@ -39,10 +39,37 @@ export interface CheckoutPayment {
   paymentIntentClientSecret?: string;
 }
 
+export interface CheckoutConfirmationItem {
+  lineId: string;
+  name: string;
+  quantity: number;
+  price: number;
+  modifiers?: string[];
+  notes?: string;
+  lineTotal: number;
+}
+
+export interface CheckoutConfirmationSummary {
+  items: CheckoutConfirmationItem[];
+  subtotal: number;
+  tipAmount: number;
+  total: number;
+}
+
 export interface CheckoutConfirmation {
   orderId: string;
   etaMinutes: number;
   submittedAt: string;
+  fulfillment: {
+    method: FulfillmentMethod;
+    pickupTime?: string;
+    scheduledFor?: string;
+    instructions?: string;
+    cutlery?: boolean;
+    address?: CheckoutAddress;
+  };
+  contact: CheckoutContact;
+  summary: CheckoutConfirmationSummary;
 }
 
 export interface CheckoutState {

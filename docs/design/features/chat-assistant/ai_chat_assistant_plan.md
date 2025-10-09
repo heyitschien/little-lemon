@@ -12,7 +12,7 @@ This document outlines the architecture and implementation plan for an AI-powere
 
 ## 2. Proposed Architecture
 
-The AI Chat Assistant will be integrated into the existing React application, leveraging the Gemini API for its conversational AI capabilities and the existing `menuData.js` for menu information.
+The AI Chat Assistant will be integrated into the existing React application, leveraging the Groq chat completions API (llama-3.1-8b-instant) for its conversational capabilities and the existing `menuData.js` for menu information.
 
 ### 2.1 Frontend (React Components)
 
@@ -21,7 +21,7 @@ A new set of React components will be created to manage the chat interface and f
 -   **`ChatFeatureContainer.jsx`**: 
     -   The top-level component for the chat feature.
     -   Manages overall chat state (e.g., visibility, conversation history, loading status).
-    -   Handles communication with the `geminiService`.
+    -   Handles communication with the `groqService`.
     -   Could be instantiated in `App.jsx` (for global availability) or `MenuPage.jsx` (if specific to the menu).
 -   **`FloatingChatButton.jsx`**: 
     -   A persistent button (e.g., bottom-right of the screen) that toggles the visibility of the `ChatWindow`.
@@ -45,11 +45,11 @@ A new set of React components will be created to manage the chat interface and f
 
 ### 2.2 Services
 
--   **`geminiService.js`** (Existing - to be extended):
-    -   A new asynchronous function, e.g., `fetchChatResponse(userQuery, conversationHistory, menuContext)` will be added.
+-   **`groqService.ts`** (Existing - to be extended):
+    -   A new asynchronous function, e.g., `sendMessageToGroq(userQuery, conversationHistory, menuContext)` will be added.
     -   This function will:
-        -   Construct a detailed prompt for the Gemini API, including the user's query, relevant conversation history (for context), and essential information about Little Lemon's menu (to guide responses and item selection).
-        -   Send the request to the Gemini API.
+        -   Construct a detailed prompt for the Groq-hosted model, including the user's query, relevant conversation history (for context), and essential information about Little Lemon's menu (to guide responses and item selection).
+        -   Send the request to the Groq API (`https://api.groq.com/openai/v1/chat/completions`).
         -   Process the response. In Phase 1, this will be text. In Phase 2, this will include parsing out recommended menu item `id`s.
 
 ### 2.3 Data
@@ -61,7 +61,7 @@ A new set of React components will be created to manage the chat interface and f
         -   Ensure every menu item has a valid `image` path/URL.
         -   Add a `dietaryTags` array to each item (e.g., `dietaryTags: ["vegetarian", "gluten-free", "vegan"]`). This will significantly improve the AI's ability to filter and recommend accurately.
     -   Used by `ChatWindow.jsx` (or its children) to fetch full details of recommended items (using `id`s from AI) to render `MenuItemCardChat.jsx`.
-    -   Portions of this data (item names, categories, dietary tags) will be used to build the `menuContext` for the Gemini prompt.
+    -   Portions of this data (item names, categories, dietary tags) will be used to build the `menuContext` for the Groq prompt.
 
 ### 2.4 State Management
 
@@ -76,17 +76,17 @@ A new set of React components will be created to manage the chat interface and f
 
 1.  User clicks `FloatingChatButton.jsx` -> `ChatFeatureContainer.jsx` updates state to show `ChatWindow.jsx`.
 2.  User types in `ChatInput.jsx` and submits -> `ChatFeatureContainer.jsx` adds user message to state, sets loading state.
-3.  `ChatFeatureContainer.jsx` calls `fetchChatResponse` from `geminiService.js` with the query and context.
-4.  `geminiService.js` sends a prompt to Gemini API.
-5.  Gemini API returns a response.
-6.  `geminiService.js` processes the response (text or item `id`s).
+3.  `ChatFeatureContainer.jsx` calls `sendMessageToGroq` from `groqService.ts` with the query and context.
+4.  `groqService.ts` sends a prompt to the Groq chat completions endpoint.
+5.  Groq returns a response.
+6.  `groqService.ts` processes the response (text or item `id`s).
 7.  `ChatFeatureContainer.jsx` receives the AI response, adds AI message to state, clears loading state.
 8.  `MessageList.jsx` re-renders with new messages. If item `id`s are present (Phase 2), it fetches data from `menuData.js` and renders `MenuItemCardChat.jsx` components within the AI's `MessageBubble.jsx`.
 
 ## 3. Integration with Existing Architecture
 
 -   The main entry point, `ChatFeatureContainer.jsx`, will likely be rendered conditionally within `App.jsx` to make the chat globally accessible, or within `MenuPage.jsx` if it's intended to be menu-specific.
--   The extended `geminiService.js` will continue to use the `VITE_REACT_APP_GEMINI_API_KEY` from the `.env` file.
+-   The Groq integration will use the `VITE_GROQ_API_KEY` from the `.env` file (legacy Gemini keys can remain for backwards compatibility during migration).
 -   `menuData.js` will be imported and used as described above.
 
 ## 4. Component Hierarchy
@@ -121,9 +121,9 @@ App.jsx (or MenuPage.jsx)
     *   `MessageList.jsx` (renders simple text messages).
     *   `MessageBubble.jsx` (styles for user/AI text messages).
     *   `ChatInput.jsx` (captures user input, triggers send).
-2.  **Implement `fetchChatResponse` in `geminiService.js` (Text-Based):**
-    *   Develop an initial prompt for Gemini focusing on answering questions about the Little Lemon menu and providing text-based recommendations.
-    *   The prompt should instruct Gemini on its persona and how to use provided menu context (e.g., a summarized list of dishes and categories).
+2.  **Implement `sendMessageToGroq` in `groqService.ts` (Text-Based):**
+    *   Develop an initial prompt for the Groq-served Llama model focusing on answering questions about the Little Lemon menu and providing text-based recommendations.
+    *   The prompt should instruct the model on its persona and how to use provided menu context (e.g., a summarized list of dishes and categories).
 3.  **Integrate and Test:**
     *   Connect UI to the service.
     *   Display user messages and AI's text responses.
@@ -134,8 +134,8 @@ App.jsx (or MenuPage.jsx)
 1.  **Develop `MenuItemCardChat.jsx`:**
     *   Create a component to display a menu item's image, name, price, and short description, suitable for embedding in a chat message.
 2.  **Update `fetchChatResponse` & Prompt (for Item IDs):**
-    *   Modify the Gemini prompt to request a list of menu item `id`s (from `menuData.js`) when making recommendations, in a structured format (e.g., JSON array within the response text, or a specific field if the API supports structured output directly).
-    *   Update the service function to parse these `id`s from Gemini's response.
+    *   Modify the Groq prompt to request a list of menu item `id`s (from `menuData.js`) when making recommendations, in a structured format (e.g., JSON array within the response text, or a specific field if the API supports structured output directly).
+    *   Update the service function to parse these `id`s from Groq's response.
 3.  **Implement Dynamic Card Rendering:**
     *   In `ChatFeatureContainer.jsx` or `MessageList.jsx`, when an AI response contains item `id`s:
         *   Fetch the full details for each `id` from the imported `menuItems` array.
@@ -173,13 +173,13 @@ src/
 │   └── MenuPage/
 │       └── MenuPage.jsx
 ├── services/
-│   └── geminiService.js           # (To be extended)
+│   └── groqService.ts            # (To be extended)
 └── App.jsx
 ```
 
 ## 7. Key Considerations & Next Steps
 
--   **Prompt Engineering:** This will be an iterative process. Getting high-quality, relevant, and correctly formatted responses from Gemini is key.
+-   **Prompt Engineering:** This will be an iterative process. Getting high-quality, relevant, and correctly formatted responses from the Groq-served Llama model is key.
 -   **User Experience:** Continuous testing and refinement of the chat flow and UI.
 -   **Initial Decisions for User:**
     1.  Global chat (in `App.jsx`) or MenuPage-specific?
