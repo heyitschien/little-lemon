@@ -56,6 +56,12 @@
   margin: 0;
   flex-grow: 1;
   font-weight: 400; /* Match style guide Paragraph Text spec */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3em; /* lock to two lines regardless of font scaling */
 }
 
 .cardPriceContainer {

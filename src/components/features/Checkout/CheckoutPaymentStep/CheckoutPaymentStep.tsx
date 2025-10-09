@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import type { StripeCardElementChangeEvent, StripeCardElementOptions } from '@stripe/stripe-js';
 import { ValidationError } from 'yup';
 import styles from './CheckoutPaymentStep.module.css';
 import { useCheckout } from '../../../../hooks/useCheckout';
@@ -10,29 +8,19 @@ import mapYupErrors from '../../../../utils/validation/mapYupErrors';
 
 const TIP_PERCENT_PRESETS: ReadonlyArray<number> = [0, 10, 15, 20];
 
-const cardElementOptions: StripeCardElementOptions = {
-  style: {
-    base: {
-      color: '#111827',
-      fontFamily: '"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      fontSize: '16px',
-      '::placeholder': {
-        color: '#9ca3af'
-      }
-    },
-    invalid: {
-      color: '#dc2626'
-    },
-    complete: {
-      color: '#495e57'
-    }
-  },
-  hidePostalCode: true
-};
+const MOCK_PAYMENT_METHOD = {
+  id: 'pm_mock_4242',
+  brand: 'visa',
+  last4: '4242',
+  number: '4242 4242 4242 4242',
+  expiry: '04 / 27'
+} as const;
+
+const delay = (ms: number) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
 
 const CheckoutPaymentStep: React.FC = () => {
-  const stripe = useStripe();
-  const elements = useElements();
   const {
     state,
     updatePayment,
@@ -42,7 +30,7 @@ const CheckoutPaymentStep: React.FC = () => {
   } = useCheckout();
 
   const { cartSubtotal } = useCart();
-  const { payment, contact } = state;
+  const { payment } = state;
 
   const inferTipPercent = useCallback(() => {
     if (cartSubtotal <= 0) {
@@ -59,7 +47,6 @@ const CheckoutPaymentStep: React.FC = () => {
   });
   const [saveCard, setSaveCard] = useState<boolean>(payment.saveCard ?? false);
   const [billingSameAsContact, setBillingSameAsContact] = useState<boolean>(payment.billingSameAsContact ?? true);
-  const [cardError, setCardError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [paymentStatus, setPaymentStatus] = useState<
     | null
@@ -99,6 +86,20 @@ const CheckoutPaymentStep: React.FC = () => {
     setCustomTip(event.target.value);
   };
 
+  const cardDisplay = useMemo(() => {
+    const hasSaved = Boolean(payment.paymentMethodId);
+    const brand = payment.paymentMethodBrand ?? MOCK_PAYMENT_METHOD.brand;
+    const last4 = payment.paymentLast4 ?? MOCK_PAYMENT_METHOD.last4;
+    return {
+      brand,
+      number: hasSaved ? `**** **** **** ${last4}` : MOCK_PAYMENT_METHOD.number,
+      badge: hasSaved ? 'Mock card saved' : 'Demo mock card',
+      expiry: MOCK_PAYMENT_METHOD.expiry,
+      cvv: '123',
+      saved: hasSaved
+    } as const;
+  }, [payment.paymentLast4, payment.paymentMethodBrand, payment.paymentMethodId]);
+
   const runValidation = useCallback(async () => {
     try {
       await paymentSchema.validate(
@@ -126,6 +127,9 @@ const CheckoutPaymentStep: React.FC = () => {
       await runValidation();
       updatePayment({
         ...payment,
+        paymentMethodId: payment.paymentMethodId ?? (saveCard ? MOCK_PAYMENT_METHOD.id : undefined),
+        paymentMethodBrand: payment.paymentMethodBrand ?? (saveCard ? MOCK_PAYMENT_METHOD.brand : undefined),
+        paymentLast4: payment.paymentLast4 ?? (saveCard ? MOCK_PAYMENT_METHOD.last4 : undefined),
         tipAmount,
         saveCard,
         billingSameAsContact
@@ -135,62 +139,27 @@ const CheckoutPaymentStep: React.FC = () => {
     return unregister;
   }, [billingSameAsContact, payment, registerStepProcessor, runValidation, saveCard, tipAmount, updatePayment]);
 
-  const handleCardChange = (event: StripeCardElementChangeEvent) => {
-    if (event.error) {
-      setCardError(event.error.message ?? 'Card error');
-    } else {
-      setCardError(null);
-    }
-  };
-
   const handleSavePaymentMethod = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!stripe || !elements) {
-      return;
-    }
 
     setIsProcessing(true);
     setPaymentStatus(null);
 
     try {
       await runValidation();
-
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        throw new Error('Unable to access card input.');
-      }
-
-      const billingDetails = billingSameAsContact
-        ? {
-            name: `${contact.firstName} ${contact.lastName}`.trim(),
-            email: contact.email,
-            phone: contact.phone
-          }
-        : undefined;
-
-      const result = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-        billing_details: billingDetails
-      });
-
-      if (result.error || !result.paymentMethod) {
-        const message = result.error?.message ?? 'Unable to create payment method';
-        setCardError(message);
-        throw result.error ?? new Error(message);
-      }
+      await delay(600);
 
       updatePayment({
         ...payment,
-        paymentMethodId: result.paymentMethod.id,
-        paymentMethodBrand: result.paymentMethod.card?.brand,
-        paymentLast4: result.paymentMethod.card?.last4,
+        paymentMethodId: MOCK_PAYMENT_METHOD.id,
+        paymentMethodBrand: MOCK_PAYMENT_METHOD.brand,
+        paymentLast4: MOCK_PAYMENT_METHOD.last4,
         tipAmount,
         saveCard,
         billingSameAsContact
       });
 
-      setPaymentStatus({ type: 'success', message: 'Payment method saved. You can continue to review.' });
+      setPaymentStatus({ type: 'success', message: 'Mock card saved. You can continue to review.' });
     } catch (error) {
       if (error instanceof Error) {
         setPaymentStatus({ type: 'error', message: error.message });
@@ -222,7 +191,7 @@ const CheckoutPaymentStep: React.FC = () => {
     <form className={styles.paymentForm} onSubmit={handleSavePaymentMethod} noValidate>
       <div className={styles.sectionHeading}>
         <h2 className={styles.sectionTitle}>Payment details</h2>
-        <p className={styles.sectionDescription}>Secure payments powered by Stripe. Save your card to speed up future orders.</p>
+        <p className={styles.sectionDescription}>Demo checkout only — no cards are charged. Save the mock card to continue.</p>
       </div>
 
       <div className={styles.section}>
@@ -254,17 +223,25 @@ const CheckoutPaymentStep: React.FC = () => {
       <div className={styles.section}>
         <div>
           <h3 className={styles.sectionTitle}>Card information</h3>
-          <p className={styles.sectionDescription}>We store and encrypt your details securely with Stripe.</p>
+          <p className={styles.sectionDescription}>We autofill a mock Visa ending in 4242 so you can explore the flow.</p>
         </div>
         <div className={styles.cardWrapper}>
-          <div className={`${styles.cardField} ${cardError ? styles.cardFieldError : ''}`}>
-            <CardElement
-              options={cardElementOptions}
-              onChange={handleCardChange}
-              onReady={() => setCardError(null)}
-            />
+          <div className={styles.mockCard} aria-label="Mock payment card preview">
+            <div className={styles.mockCardHeader}>
+              <span className={styles.mockCardBrand}>{cardDisplay.brand.toUpperCase()}</span>
+              <span className={styles.mockCardBadge}>{cardDisplay.badge}</span>
+            </div>
+            <div className={styles.mockCardNumber}>{cardDisplay.number}</div>
+            <div className={styles.mockCardMeta}>
+              <span>
+                <strong>Exp</strong> {cardDisplay.expiry}
+              </span>
+              <span>
+                <strong>CVV</strong> {cardDisplay.cvv}
+              </span>
+            </div>
           </div>
-          {cardError && <span className={styles.errorText}>{cardError}</span>}
+          <p className={styles.helperText}>Use the button below to &quot;save&quot; this mock payment method and unlock the review step.</p>
         </div>
         <div className={styles.checkRow}>
           <input

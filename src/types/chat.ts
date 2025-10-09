@@ -33,7 +33,7 @@ export interface ChatMessage {
   itemCards?: MenuItem[] | null;
 }
 
-export interface GeminiResponse {
+export interface GroqResponse {
   messageText: string;
   itemCards: MenuItem[];
 }

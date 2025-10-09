@@ -1,6 +1,6 @@
 // src/components/layout/Header/Header.jsx
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Nav from '../Nav/Nav';
 import styles from './Header.module.css';
 import logoSrc from '../../../assets/icons/Logo.svg';
@@ -65,12 +65,14 @@ function Header() {
 
         {/* Logo - centered on mobile */}
         <div className={`${styles.logoContainer} ${logoLoaded ? styles.logoLoaded : ''}`}>
-          <img
-            src={logoSrc}
-            alt="Little Lemon Logo"
-            className={styles.logo}
-            onLoad={() => setLogoLoaded(true)}
-          />
+          <Link to="/" className={styles.logoLink} aria-label="Go to Little Lemon home">
+            <img
+              src={logoSrc}
+              alt="Little Lemon Logo"
+              className={styles.logo}
+              onLoad={() => setLogoLoaded(true)}
+            />
+          </Link>
           {!logoLoaded && <div className={styles.logoPlaceholder}></div>}
         </div>
 

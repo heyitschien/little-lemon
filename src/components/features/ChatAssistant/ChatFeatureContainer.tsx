@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FloatingChatButton from './FloatingChatButton';
 import ChatWindow from './ChatWindow';
-import { sendMessageToGemini } from '../../../services/geminiService';
+import { sendMessageToGroq } from '../../../services/groqService';
 import { menuItems, menuCategories } from '../../../data/menuData';
 import type {
   ChatMessage,
@@ -239,7 +239,7 @@ ${trimmedInput}`;
     }
 
     try {
-      const rawAiResponse = await sendMessageToGemini(promptForAI);
+      const rawAiResponse = await sendMessageToGroq(promptForAI);
 
       const itemExtractionRegex = /\[ITEM_IDS:([\w\s,-_]+)\](?=\s*$|\s*\n)/;
       const match = rawAiResponse.match(itemExtractionRegex);
@@ -314,7 +314,7 @@ ${trimmedInput}`;
       );
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Error sending message to Gemini:', error);
+        console.error('Error sending message to Groq:', error);
       }
 
       const errorAiMessage: ChatMessage = {

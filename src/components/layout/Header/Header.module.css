@@ -58,6 +58,18 @@
   image-rendering: -webkit-optimize-contrast; /* Improve image rendering on WebKit/Edge */
 }
 
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.logoLink:focus-visible {
+  outline: 2px solid #495E57;
+  outline-offset: 4px;
+}
+
 /* Mobile cart link styling */
 .cartTrigger {
   display: flex;

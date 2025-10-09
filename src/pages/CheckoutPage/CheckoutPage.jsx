@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from 'react';
-import { Elements } from '@stripe/react-stripe-js';
 import { Link } from 'react-router-dom';
 import styles from './CheckoutPage.module.css';
-import { getStripe } from '../../config/stripe';
 import { useCart } from '../../context/useCart';
 import { useCheckout } from '../../hooks/useCheckout';
 import CheckoutProgress from '../../components/features/Checkout/CheckoutProgress/CheckoutProgress';
@@ -30,7 +28,6 @@ const getStepComponent = (step) => {
 };
 
 const CheckoutPage = () => {
-  const stripePromise = getStripe();
   const { cartItems } = useCart();
   const {
     state,
@@ -83,32 +80,30 @@ const CheckoutPage = () => {
   }
 
   return (
-    <Elements stripe={stripePromise} options={{ appearance: { theme: 'stripe' } }}>
-      <section className={styles.checkoutContainer} aria-labelledby="checkout-title">
-        <header className={styles.checkoutHeader}>
-          <div>
-            <h1 id="checkout-title">Checkout</h1>
-            <p>Secure checkout powered by Stripe</p>
-          </div>
-          <CheckoutProgress currentStep={state.currentStep} steps={CHECKOUT_STEPS} />
-        </header>
+    <section className={styles.checkoutContainer} aria-labelledby="checkout-title">
+      <header className={styles.checkoutHeader}>
+        <div>
+          <h1 id="checkout-title">Checkout</h1>
+          <p>Secure checkout experience</p>
+        </div>
+        <CheckoutProgress currentStep={state.currentStep} steps={CHECKOUT_STEPS} />
+      </header>
 
-        <main className={styles.checkoutContent}>
-          <Suspense fallback={<div className={styles.loadingState}>Loading step…</div>}>
-            {getStepComponent(state.currentStep)}
-          </Suspense>
-        </main>
+      <main className={styles.checkoutContent}>
+        <Suspense fallback={<div className={styles.loadingState}>Loading step…</div>}>
+          {getStepComponent(state.currentStep)}
+        </Suspense>
+      </main>
 
-        <CheckoutNavigation
-          stepIndex={currentIndex}
-          totalSteps={totalSteps}
-          onBack={handleBack}
-          onNext={handleNext}
-          isNextDisabled={Object.keys(fieldErrors).length > 0}
-          nextLabel={state.currentStep === 'review' ? 'Place order' : 'Continue'}
-        />
-      </section>
-    </Elements>
+      <CheckoutNavigation
+        stepIndex={currentIndex}
+        totalSteps={totalSteps}
+        onBack={handleBack}
+        onNext={handleNext}
+        isNextDisabled={Object.keys(fieldErrors).length > 0}
+        nextLabel={state.currentStep === 'review' ? 'Place order' : 'Continue'}
+      />
+    </section>
   );
 };
 
